@@ -1,0 +1,4 @@
+Ibis.egg-info/*
+**.pyc
+**-checkpoint.ipynb
+Ibis/.env
