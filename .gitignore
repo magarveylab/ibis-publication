@@ -3,3 +3,4 @@ Ibis.egg-info/*
 **-checkpoint.ipynb
 Ibis/.env
 Ibis/Models/*
+Ibis/QdrantSnapshots/*

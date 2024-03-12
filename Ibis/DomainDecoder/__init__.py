@@ -3,7 +3,7 @@ from Ibis.Utilities.Qdrant.classification import (
     neighborhood_classification,
     KNNClassification,
 )
-from Ibis.ProteinDecoder.databases import (
+from Ibis.DomainDecoder.databases import (
     IbisAdenylation,
     IbisAcyltransferase,
     IbisKetosynthase,
