@@ -1,4 +1,5 @@
 import onnxruntime as ort
+from typing import Optional, List
 
 
 def get_providers(gpu_id: Optional[int]) -> List[str]:
@@ -8,10 +9,9 @@ def get_providers(gpu_id: Optional[int]) -> List[str]:
         return ["CPUExecutionProvider"]
 
 
-def get_onnx_base_model(model_fp: str, config: BertConfig, gpu_id: int):
+def get_onnx_base_model(model_fp: str, gpu_id: int):
     providers = get_providers(gpu_id=gpu_id)
     model = ort.InferenceSession(model_fp, providers=providers)
-    model.config = config
     return model
 
 

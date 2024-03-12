@@ -1,8 +1,6 @@
 from transformers import (
     PreTrainedModel,
     PreTrainedTokenizerFast,
-    BertConfig,
-    Pipeline,
 )
 from Ibis.Utilities.preprocess import (
     slice_proteins,
@@ -11,7 +9,6 @@ from Ibis.Utilities.preprocess import (
 )
 from Ibis.Utilities.onnx import get_onnx_base_model, get_onnx_head
 from Ibis.Utilities.tokenizers import get_protbert_tokenizer
-from Ibis.Utilities.configs import get_protbert_config
 from Ibis.Utilities.class_dicts import get_class_dict
 from Ibis.ProteinEmbedder.datastructs import (
     ModelInput,
@@ -22,39 +19,33 @@ from Ibis import curdir
 from tqdm import tqdm
 import numpy as np
 import os
-from typing import List
+from typing import List, Optional
 
 
-class ProteinEmbedderPipeline(Pipeline):
+class ProteinEmbedderPipeline:
 
     def __init__(
         self,
-        model_fp: str = os.environ.get("PROTEIN_EMBEDDER_MODEL_FP"),
-        ec1_head_fp: str = os.environ.get("EC1_HEAD_FP"),
-        config: BertConfig = get_protbert_config(),
+        model_fp: str = f"{curdir}/Models/ibis3_base.onnx",
+        ec1_head_fp: str = f"{curdir}/Models/ec1_head.onnx",
         protein_tokenizer: PreTrainedTokenizerFast = get_protbert_tokenizer(),
         ec1_cls_dict_fp: str = f"{curdir}/ProteinEmbedder/tables/ec1.csv",
         gpu_id: Optional[int] = None,
     ):
-        # load base transformer
-        model = get_onnx_base_model(
-            model_fp=model_fp, config=config, gpu_id=gpu_id
-        )
-        super().__init__(model=model, tokenizer=protein_tokenizer)
-        # load head
+        self.model = get_onnx_base_model(model_fp=model_fp, gpu_id=gpu_id)
+        self.tokenizer = protein_tokenizer
         self.ec1_head = get_onnx_head(model_fp=ec1_head_fp, gpu_id=gpu_id)
         self.ec1_cls_dict = get_class_dict(ec1_cls_dict_fp)
 
+    def __call__(self, sequence: str):
+        model_inputs = self.preprocess(sequence)
+        model_outputs = self._forward(model_inputs)
+        return self.postprocess(model_outputs)
+
     def run(self, sequences: List[str]):
-        return [self(s, **kwargs) for s in tqdm(sequences)]
+        return [self(s) for s in tqdm(sequences)]
 
-    def _sanitize_parameters(self):
-        preprocess_kwargs = {}
-        forward_kwargs = {}
-        postprocess_kwargs = {}
-        return preprocess_kwargs, forward_kwargs, postprocess_kwargs
-
-    def preprocess(self, sequence: str, **preprocess_kwargs) -> ModelInput:
+    def preprocess(self, sequence: str) -> ModelInput:
         windows = slice_proteins(sequence)
         lengths = [len(x) for x in windows]
         windows = [" ".join(x) for x in windows]
@@ -65,7 +56,7 @@ class ProteinEmbedderPipeline(Pipeline):
         return {
             "sequence": sequence,
             "lengths": lengths,
-            "batch_tokenized_inputs": tokenized_inputs,
+            "batch_tokenized_inputs": batch_tokenized_inputs,
         }
 
     def _forward(self, model_inputs: ModelInput) -> ModelOutput:
@@ -97,16 +88,14 @@ class ProteinEmbedderPipeline(Pipeline):
             "ec1_window_predictions": ec1_predictions,
         }
 
-    def postprocess(
-        self, model_outputs: ModelOutput, **postprocess_kwargs
-    ) -> PipelineOutput:
+    def postprocess(self, model_outputs: ModelOutput) -> PipelineOutput:
         # parameters
         sequence = model_outputs["sequence"]
-        min_slice_size = postprocess_kwargs["min_slice_size"]
+        min_slice_size = 0.1
         lengths = model_outputs["lengths"]
         indices = get_indices(min_slice_size, sequence, lengths)
         # finalize protein embedding (across windows)
-        cls_embeddings = model_outputs["cls_window_embedding"]
+        cls_embeddings = model_outputs["cls_window_embeddings"]
         avg_cls_embedding = np.mean(
             np.take(cls_embeddings, indices, axis=0), axis=0
         )
@@ -125,3 +114,7 @@ class ProteinEmbedderPipeline(Pipeline):
             "ec1": label,
             "ec1_score": score,
         }
+
+    @staticmethod
+    def softmax(x):
+        return np.exp(x) / np.exp(x).sum(-1, keepdims=True)

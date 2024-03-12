@@ -2,3 +2,4 @@ Ibis.egg-info/*
 **.pyc
 **-checkpoint.ipynb
 Ibis/.env
+Ibis/Models/*
