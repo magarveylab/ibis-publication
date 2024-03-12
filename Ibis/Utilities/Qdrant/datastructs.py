@@ -1,5 +1,16 @@
 import numpy as np
-from typing import TypedDict, List, Union
+from typing import TypedDict, List, Union, Literal
+
+acceptable_label_types = Literal[
+    "EC4Label",
+    "GeneFamilyLabel",
+    "BioactivePeptideLabel",
+    "MetabolismProteinFamilyLabel",
+    "KeggOrthologLabel",
+    "SubstrateLabel",
+    "DomainSubclassLabel",
+    "DomainFunctionalLabel",
+]
 
 
 class DataQuery(TypedDict):
@@ -7,13 +18,22 @@ class DataQuery(TypedDict):
     embedding: np.array
 
 
-class SimHitResponse(TypedDict):
+class DistHitResponse(TypedDict):
     subject_id: int
-    similarity: float
+    distance: float
     label: str
     data: dict
 
 
 class SearchResponse(TypedDict):
     query_id: int  # identifier
-    hits: List[SimHitResponse]
+    hits: List[DistHitResponse]
+
+
+class KnnOutput(TypedDict):
+    hash_id: str
+    label: str
+    label_type: acceptable_label_types
+    similarity: float
+    homology: float
+    reference_id: int  # hashed protein ID of reference protein

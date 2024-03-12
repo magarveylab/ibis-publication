@@ -18,15 +18,6 @@ def batchify(l: list, bs: int = 1000):
     return [l[x : x + bs] for x in range(0, len(l), bs)]
 
 
-def dist2sim(d: float) -> float:
-    if isinstance(d, float):
-        return 1 / (1 + d)
-    elif d is None:
-        return None
-    else:
-        raise TypeError
-
-
 # connection to client
 client = QdrantClient(
     host=os.environ.get("QDRANT_HOST"),
@@ -282,16 +273,10 @@ class QdrantBase:
         query_filter: models.Filter = None,
         consistency=None,
         distance_cutoff: float = None,  # NOT squared distance!!!
-        exact_mode: bool = False,
         ignore_self_matches: bool = True,
     ) -> List[SearchResponse]:
         self.check_status()
-        if exact_mode is True:
-            sps = {k: v for k, v in default_search_params}
-            sps["exact"] = True
-            search_params = models.SearchParams(**sps)
-        else:
-            search_params = models.SearchParams(**default_search_params)
+        search_params = models.SearchParams(**default_search_params)
         batches = batchify(queries, bs=batch_size)
         all_results = []
         for batch in tqdm(batches, leave=False):
@@ -323,12 +308,10 @@ class QdrantBase:
                     data = r.payload if return_data else {}
                     if r.id == qid and ignore_self_matches:
                         continue
-                    # convert distance to similarity
-                    sim = dist2sim(dist)
                     hits.append(
                         {
                             "subject_id": r.id,
-                            "similarity": sim,
+                            "distance": r.score,
                             "label": r.payload[self.label_alias],
                             "data": data,
                         }
