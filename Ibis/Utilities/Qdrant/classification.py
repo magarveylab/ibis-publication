@@ -10,7 +10,7 @@ from typing import Callable, Dict, List
 
 
 def dist2sim(d: float) -> float:
-    return 1 / (1 + d)
+    return round(1 / (1 + d), 3)
 
 
 def neighborhood_classification(
