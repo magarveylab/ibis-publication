@@ -12,6 +12,7 @@ def run_on_protein_sequences(sequences: List[str], gpu_id: int = 0):
 def run_on_prodigal_fps(
     filenames: Union[str, List[str]], output_dir: str, gpu_id: int = 0
 ):
+    # generates embedding fps in output directory
     if isinstance(filenames, str):
         filenames = [filenames]
     pipeline = ProteinEmbedderPipeline(gpu_id=gpu_id)
