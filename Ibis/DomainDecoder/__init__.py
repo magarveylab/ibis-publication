@@ -79,3 +79,16 @@ decode_enoylreductase = partial(
     apply_homology_cutoff=False,
     apply_cutoff_after_homology=False,
 )
+
+decode_thiolation = partial(
+    KNNClassification,
+    label_type="DomainSubclassLabel",
+    qdrant_db=IbisThiolation,
+    classification_method=neighborhood_classification,
+    top_n=5,
+    dist_cutoff=6.32,
+    apply_cutoff_before_homology=False,
+    homology_cutoff=1.0,
+    apply_homology_cutoff=True,
+    apply_cutoff_after_homology=True,
+)
