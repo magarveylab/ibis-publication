@@ -1,7 +1,4 @@
-from transformers import (
-    PreTrainedModel,
-    PreTrainedTokenizerFast,
-)
+from transformers import PreTrainedTokenizerFast
 from Ibis.Utilities.preprocess import (
     slice_proteins,
     batchify_tokenized_inputs,
@@ -18,7 +15,6 @@ from Ibis.ProteinEmbedder.datastructs import (
 from Ibis import curdir
 from tqdm import tqdm
 import numpy as np
-import os
 from typing import List, Optional
 
 
@@ -107,7 +103,7 @@ class ProteinEmbedderPipeline:
         label_id = int(logits.argmax())
         label = self.ec1_cls_dict.get(label_id)
         score = round(float(logits[label_id]), 2)
-        # output
+        # return output
         return {
             "sequence": sequence,
             "embedding": avg_cls_embedding,
