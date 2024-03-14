@@ -11,6 +11,7 @@ from Ibis.SecondaryMetabolismPredictor.postprocess import (
     call_bgcs_by_chemotype,
     add_orfs_to_bgcs,
 )
+from tqdm import tqdm
 import os
 from typing import List, Optional
 
@@ -75,7 +76,7 @@ def run_on_embedding_fps(
     internal_pipeline = InternalMetabolismPredictorPipeline(gpu_id=gpu_id)
     mibig_pipeline = MibigMetabolismPredictorPipeline(gpu_id=gpu_id)
     # analysis
-    for embedding_fp in filenames:
+    for embedding_fp in tqdm(filenames):
         name = embedding_fp.split("/")[-2]
         prodigal_fp = f"{output_dir}/{name}/prodigal.json"
         export_fp = f"{output_dir}/{name}/bgc_predictions.json"

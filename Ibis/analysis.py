@@ -1,4 +1,9 @@
-from Ibis import Prodigal, ProteinEmbedder, SecondaryMetabolismPredictor
+from Ibis import (
+    Prodigal,
+    ProteinEmbedder,
+    SecondaryMetabolismPredictor,
+    DomainPredictor,
+)
 import json
 import os
 from typing import List, Union
@@ -33,4 +38,11 @@ def run_ibis_on_genome(
         filenames=protein_embedding_filenames,
         output_dir=output_dir,
         gpu_id=gpu_id,
+    )
+    # fourth step: compute domain predictions
+    domain_pred_filenames = DomainPredictor.run_on_bgc_fps(
+        filenames=bgc_filenames,
+        output_dir=output_dir,
+        gpu_id=gpu_id,
+        cpu_cores=cpu_cores,
     )

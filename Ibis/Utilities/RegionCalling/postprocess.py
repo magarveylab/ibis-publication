@@ -181,4 +181,6 @@ def parallel_pipeline_token_region_calling(
     process = pool.imap_unordered(
         pipeline_token_region_calling, pipeline_outputs
     )
-    return [p for p in tqdm(process, total=len(pipeline_outputs))]
+    out = [p for p in tqdm(process, total=len(pipeline_outputs))]
+    pool.close()
+    return out

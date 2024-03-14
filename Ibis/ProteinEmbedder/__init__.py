@@ -1,4 +1,5 @@
 from Ibis.ProteinEmbedder.pipeline import ProteinEmbedderPipeline
+from tqdm import tqdm
 import pickle
 import json
 import os
@@ -17,7 +18,7 @@ def run_on_prodigal_fps(
     # load pipeline
     pipeline = ProteinEmbedderPipeline(gpu_id=gpu_id)
     # analysis
-    for prodigal_fp in filenames:
+    for prodigal_fp in tqdm(filenames):
         name = prodigal_fp.split("/")[-2]
         export_filename = f"{output_dir}/{name}/protein_embedding.pkl"
         if os.path.exists(export_filename) == False:
