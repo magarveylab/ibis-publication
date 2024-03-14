@@ -1,0 +1,1 @@
+{"orf_to_orf": {"[BLANK]": 0, "[MASK]": 1, "[CLS]": 2, "[UNK]": 3}, "orf_to_domain": {"[BLANK]": 0, "[MASK]": 1, "[CLS]": 2, "[UNK]": 3}, "domain_to_domain": {"[BLANK]": 0, "[MASK]": 1, "[CLS]": 2, "[UNK]": 3}, "domain_to_domain_embedding": {"[BLANK]": 0, "[MASK]": 1, "[CLS]": 2, "[UNK]": 3}}

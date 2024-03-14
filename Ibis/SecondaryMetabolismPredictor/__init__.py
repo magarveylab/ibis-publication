@@ -3,8 +3,8 @@ from Ibis.SecondaryMetabolismPredictor.preprocess import (
     get_tensors_from_genome,
 )
 from Ibis.SecondaryMetabolismPredictor.pipeline import (
-    MibigChemotypePredictorPipeline,
-    InternalChemotypePredictorPipeline,
+    MibigMetabolismPredictorPipeline,
+    InternalMetabolismPredictorPipeline,
 )
 from Ibis.SecondaryMetabolismPredictor.postprocess import (
     call_bgcs_by_proximity,
@@ -17,16 +17,16 @@ from typing import List, Optional
 def run_on_orfs(
     orfs: List[OrfInput],
     gpu_id: Optional[int] = None,
-    internal_pipeline: Optional[SecondaryMetabolismAnnotatorPipeline] = None,
-    mibig_pipeline: Optional[MibigChemotypePredictorPipeline] = None,
+    internal_pipeline: Optional[InternalMetabolismPredictorPipeline] = None,
+    mibig_pipeline: Optional[MibigMetabolismPredictorPipeline] = None,
     min_threshold: int = 10000,
     ignore_orfs_wo_embedding: bool = False,
 ) -> List[ClusterOutput]:
     # load pipeline
     if internal_pipeline == None:
-        internal_pipeline = InternalChemotypePredictorPipeline(gpu_id=gpu_id)
+        internal_pipeline = InternalMetabolismPredictorPipeline(gpu_id=gpu_id)
     if mibig_pipeline == None:
-        mibig_pipeline = MibigChemotypePredictorPipeline(gpu_id=gpu_id)
+        mibig_pipeline = MibigMetabolismPredictorPipeline(gpu_id=gpu_id)
     # enumerate orf ids (need it as ints for tensor stacks)
     orf_traceback = {}
     for idx, o in enumerate(orfs):

@@ -39,11 +39,11 @@ def add_meta_data_to_output(
     return out
 
 
-class MibigChemotypePredictorPipeline:
+class MibigMetabolismPredictorPipeline:
 
     def __init__(
         self,
-        model_dir: str = f"{curdir}/Models/mibig_chemotype_cluster_caller",
+        model_dir: str = f"{curdir}/Models/mibig_metabolism_predictor",
         gpu_id: Optional[int] = None,
     ):
         # load models (torchscript format)
@@ -133,11 +133,11 @@ class MibigChemotypePredictorPipeline:
         return output
 
 
-class InternalChemotypePredictorPipeline:
+class InternalMetabolismPredictorPipeline:
 
     def __init__(
         self,
-        model_dir: str = f"{curdir}/Models/internal_chemotype_cluster_caller",
+        model_dir: str = f"{curdir}/Models/internal_metabolism_predictor",
         class_dict_fp: str = f"{curdir}/SecondaryMetabolismPredictor/tables/chemotypes.csv",
     ):
         # class dicts
