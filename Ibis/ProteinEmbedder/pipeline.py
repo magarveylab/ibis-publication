@@ -22,8 +22,8 @@ class ProteinEmbedderPipeline:
 
     def __init__(
         self,
-        model_fp: str = f"{curdir}/Models/ibis3_base.onnx",
-        ec1_head_fp: str = f"{curdir}/Models/ec1_head.onnx",
+        model_fp: str = f"{curdir}/Models/protein_embedder.onnx",
+        ec1_head_fp: str = f"{curdir}/Models/ec1_predictor.onnx",
         protein_tokenizer: PreTrainedTokenizerFast = get_protbert_tokenizer(),
         ec1_cls_dict_fp: str = f"{curdir}/ProteinEmbedder/tables/ec1.csv",
         gpu_id: Optional[int] = None,

@@ -19,8 +19,8 @@ class PropeptidePredictorPipeline:
 
     def __init__(
         self,
-        model_fp: str = f"{curdir}/Models/ibis3_base.onnx",
-        propeptide_head_fp: str = f"{curdir}/Models/propeptide_residue_head.onnx",
+        model_fp: str = f"{curdir}/Models/protein_embedder.onnx",
+        propeptide_head_fp: str = f"{curdir}/Models/propeptide_predictor.onnx",
         protein_tokenizer: PreTrainedTokenizerFast = get_protbert_tokenizer(),
         propeptide_cls_dict_fp: str = f"{curdir}/PropeptidePredictor/tables/propeptide_residue.csv",
         gpu_id: Optional[int] = None,

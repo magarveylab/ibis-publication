@@ -21,7 +21,7 @@ class DomainEmbedderPipeline:
 
     def __init__(
         self,
-        model_fp: str = f"{curdir}/Models/domain_base.onnx",
+        model_fp: str = f"{curdir}/Models/domain_embedder.onnx",
         protein_tokenizer: PreTrainedTokenizerFast = get_protbert_tokenizer(),
         gpu_id: Optional[int] = None,
     ):

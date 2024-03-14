@@ -19,8 +19,8 @@ class DomainPredictorPipeline:
 
     def __init__(
         self,
-        model_fp: str = f"{curdir}/Models/ibis3_base.onnx",
-        domain_head_fp: str = f"{curdir}/Models/domain_residue_head.onnx",
+        model_fp: str = f"{curdir}/Models/protein_embedder.onnx",
+        domain_head_fp: str = f"{curdir}/Models/domain_predictor.onnx",
         protein_tokenizer: PreTrainedTokenizerFast = get_protbert_tokenizer(),
         domain_cls_dict_fp: str = f"{curdir}/DomainPredictor/tables/domain_residue.csv",
         gpu_id: Optional[int] = None,

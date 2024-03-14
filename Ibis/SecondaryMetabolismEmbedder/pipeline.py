@@ -1,9 +1,24 @@
+from Ibis.SecondaryMetabolismEmbedder.datastructs import (
+    ClusterInput,
+    ClusterEmbeddingOutput,
+)
+from Ibis.SecondaryMetabolismEmbedder.preprocess import BGCGraph
+from Ibis.Utilities.GraphStructs.HeteroGraph import (
+    get_lookup_from_hetero,
+    batch_to_homogeneous,
+)
+from torch_geometric.data import Data, Batch
+from glob import glob
+import numpy as np
+import torch
+from typing import Optional, Dict
+
 vocab_dir = f"{curdir}/SecondaryMetabolismEmbedder/vocab"
 node_vocab = json.load(open(f"{vocab_dir}/node_vocab.json"))
 edge_vocab = json.load(open(f"{vocab_dir}/edge_vocab.json"))
 
 
-class BGCEmbedderPipeline:
+class MetabolismEmbedderPipeline:
 
     def __init__(
         self,

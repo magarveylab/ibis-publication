@@ -22,3 +22,10 @@ class ClusterInput(TypedDict):
     orfs: List[OrfInput]
     mibig_chemotypes: List[str]
     internal_chemotypes: List[str]
+
+
+class ClusterEmbeddingOutput(TypedDict):
+    contig_id: int
+    contig_start: int
+    contig_stop: int
+    embedding: np.array
