@@ -1,19 +1,22 @@
 from Ibis.ProteinEmbedder.pipeline import ProteinEmbedderPipeline
+from Ibis.ProteinEmbedder.datastructs import PipelineOutput
 from tqdm import tqdm
 import pickle
 import json
 import os
-from typing import List, Union
+from typing import List
 
 
-def run_on_protein_sequences(sequences: List[str], gpu_id: int = 0):
+def run_on_protein_sequences(
+    sequences: List[str], gpu_id: int = 0
+) -> List[PipelineOutput]:
     pipeline = ProteinEmbedderPipeline(gpu_id=gpu_id)
     return pipeline.run(sequences)
 
 
 def run_on_prodigal_fps(
     filenames: List[str], output_dir: str, gpu_id: int = 0
-):
+) -> List[str]:
     protein_embedding_filenames = []
     # load pipeline
     pipeline = ProteinEmbedderPipeline(gpu_id=gpu_id)

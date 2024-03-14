@@ -1,8 +1,10 @@
 from Ibis import (
     Prodigal,
     ProteinEmbedder,
+    ProteinDecoder,
     SecondaryMetabolismPredictor,
     DomainPredictor,
+    DomainEmbedder,
 )
 import json
 import os
@@ -42,12 +44,19 @@ def run_ibis_on_genome(
     ko_pred_filenames = ProteinDecoder.decode_ko_from_embedding_fps(
         filenames=protein_embedding_filenames, output_dir=output_dir
     )
+    ###
+    # **TO DO** compute primary metabolism predictions
+    ###
     # compute bgc boundaries
     bgc_filenames = SecondaryMetabolismPredictor.run_on_embedding_fps(
         filenames=protein_embedding_filenames,
         output_dir=output_dir,
         gpu_id=gpu_id,
     )
+    # compute gene family predictions
+
+    # compute gene predictions
+
     # compute domain predictions
     domain_pred_filenames = DomainPredictor.run_on_bgc_fps(
         filenames=bgc_filenames,
@@ -56,3 +65,23 @@ def run_ibis_on_genome(
         cpu_cores=cpu_cores,
     )
     # compute domain embeddings
+    domain_embedding_filenames = DomainEmbedder.run_on_domain_pred_fps(
+        filenames=domain_pred_filenames, output_dir=output_dir, gpu_id=gpu_id
+    )
+    # compute a domain substrate predictions
+
+    # compute at domain substrate predictions
+
+    # compute ks domain functional predictions
+
+    # compute kr domain functional predictions
+
+    # compute dh domain functional predictions
+
+    # compute er domain functional predictions
+
+    # compute t domain subclass predictions
+
+    # compute propeptide predictions
+
+    # compute metabolism embeddings
