@@ -22,27 +22,37 @@ def run_ibis_on_genome(
     cpu_cores: int = 1,
 ):
     # this function will be used to model airflow pipeline
-    # first step: run prodigal
+    # setup working directories
     setup_working_directories(
         filenames=nuc_fasta_filenames, output_dir=output_dir
     )
+    # prodigal prediction
     prodigal_filenames = Prodigal.parallel_run_on_nuc_fasta_fps(
         filenames=fasta_filenames, output_dir=output_dir, cpu_cores=cpu_cores
     )
-    # second step: compute protein embeddings
+    # compute protein embeddings
     protein_embedding_filenames = ProteinEmbedder.run_on_prodigal_fps(
         filenames=prodigal_filenames, output_dir=output_dir, gpu_id=gpu_id
     )
-    # third step: compute bgc boundaries
+    # compute ec predictions
+    ec_pred_filenames = ProteinDecoder.decode_ec_from_embedding_fps(
+        filenames=protein_embedding_filenames, output_dir=output_dir
+    )
+    # compute ko predictions
+    ko_pred_filenames = ProteinDecoder.decode_ko_from_embedding_fps(
+        filenames=protein_embedding_filenames, output_dir=output_dir
+    )
+    # compute bgc boundaries
     bgc_filenames = SecondaryMetabolismPredictor.run_on_embedding_fps(
         filenames=protein_embedding_filenames,
         output_dir=output_dir,
         gpu_id=gpu_id,
     )
-    # fourth step: compute domain predictions
+    # compute domain predictions
     domain_pred_filenames = DomainPredictor.run_on_bgc_fps(
         filenames=bgc_filenames,
         output_dir=output_dir,
         gpu_id=gpu_id,
         cpu_cores=cpu_cores,
     )
+    # compute domain embeddings
