@@ -22,6 +22,7 @@ class ModelOutput(TypedDict):
 
 
 class PipelineOutput(TypedDict):
+    protein_id: int
     sequence: str
     embedding: np.array
     ec1: str

@@ -20,6 +20,19 @@ class ModelOutput(TypedDict):
     domain_window_predictions: np.array
 
 
+class TokenOutput(TypedDict):
+    pos: int
+    label: str
+    score: float
+
+
+class PipelineIntermediateOutput(TypedDict):
+    domain_id: int
+    sequence: str
+    residue_classification: List[TokenOutput]
+
+
 class PipelineOutput(TypedDict):
+    domain_id: int
     sequence: str
     regions: List[TokenRegionOutput]

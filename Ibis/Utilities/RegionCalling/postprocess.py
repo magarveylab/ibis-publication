@@ -2,6 +2,7 @@ from Ibis.Utilities.RegionCalling.datastructs import (
     TokenOutput,
     TokenRegionOutput,
 )
+from multiprocessing import Pool
 import networkx as nx
 import numpy as np
 from collections import Counter
@@ -67,7 +68,7 @@ class TokenGraph:
             return max(set(labels), key=lambda x: labels_counted[x])
 
 
-def TokenRegionCaller(
+def token_region_calling(
     token_results: List[TokenOutput], min_nodes: int = 10, max_dist: int = 10
 ) -> TokenRegionOutput:
     out = []
@@ -158,3 +159,26 @@ def TokenRegionCaller(
             {"label": label, "start": start, "end": end, "score": score}
         )
     return sorted(out, key=lambda x: x["start"])
+
+
+def pipeline_token_region_calling(
+    pipeline_output: PipelineIntermediateOutput,
+) -> PipelineOutput:
+    return {
+        "domain_id": pipeline_output["domain_id"],
+        "sequence": pipeline_output["sequence"],
+        "regions": token_region_calling(
+            pipeline_output["residue_classification"]
+        ),
+    }
+
+
+def parallel_pipeline_token_region_calling(
+    pipeline_outputs: List[PipelineIntermediateOutput],
+    cpu_cores: int = 1,
+) -> List[PipelineOutput]:
+    pool = Pool(cpu_cores)
+    process = pool.imap_unordered(
+        pipeline_token_region_calling, pipeline_outputs
+    )
+    return [p for p in tqdm(process, total=len(pipeline_outputs))]

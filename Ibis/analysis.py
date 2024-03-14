@@ -1,0 +1,36 @@
+from Ibis import Prodigal, ProteinEmbedder, SecondaryMetabolismPredictor
+import json
+import os
+from typing import List, Union
+
+
+def setup_working_directories(filenames: List[str], output_dir: str):
+    for fp in filenames:
+        basename = os.basename(fp)
+        os.makedirs(f"{output_dir}/{basename}", exist_ok=True)
+
+
+def run_ibis_on_genome(
+    nuc_fasta_filenames: List[str],
+    output_dir: str,
+    gpu_id: int = 0,
+    cpu_cores: int = 1,
+):
+    # this function will be used to model airflow pipeline
+    # first step: run prodigal
+    setup_working_directories(
+        filenames=nuc_fasta_filenames, output_dir=output_dir
+    )
+    prodigal_filenames = Prodigal.parallel_run_on_nuc_fasta_fps(
+        filenames=fasta_filenames, output_dir=output_dir, cpu_cores=cpu_cores
+    )
+    # second step: compute protein embeddings
+    protein_embedding_filenames = ProteinEmbedder.run_on_prodigal_fps(
+        filenames=prodigal_filenames, output_dir=output_dir, gpu_id=gpu_id
+    )
+    # third step: compute bgc boundaries
+    bgc_filenames = SecondaryMetabolismPredictor.run_on_embedding_fps(
+        filenames=protein_embedding_filenames,
+        output_dir=output_dir,
+        gpu_id=gpu_id,
+    )

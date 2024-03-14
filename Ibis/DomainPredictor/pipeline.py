@@ -3,7 +3,9 @@ from Ibis.Utilities.preprocess import slice_proteins, batchify_tokenized_inputs
 from Ibis.Utilities.onnx import get_onnx_base_model, get_onnx_head
 from Ibis.Utilities.tokenizers import get_protbert_tokenizer
 from Ibis.Utilities.class_dicts import get_class_dict
-from Ibis.Utilities.RegionCalling.postprocess import TokenRegionCaller
+from Ibis.Utilities.RegionCalling.postprocess import (
+    parallel_pipeline_token_region_calling,
+)
 from Ibis.DomainPredictor.datastructs import (
     ModelInput,
     ModelOutput,
@@ -24,21 +26,26 @@ class DomainPredictorPipeline:
         protein_tokenizer: PreTrainedTokenizerFast = get_protbert_tokenizer(),
         domain_cls_dict_fp: str = f"{curdir}/DomainPredictor/tables/domain_residue.csv",
         gpu_id: Optional[int] = None,
+        cpu_cores: int = 1,
     ):
         self.model = get_onnx_base_model(model_fp=model_fp, gpu_id=gpu_id)
+        self.cpu_cores = cpu_cores
         self.tokenizer = protein_tokenizer
         self.domain_head = get_onnx_head(
             model_fp=domain_head_fp, gpu_id=gpu_id
         )
         self.domain_cls_dict = get_class_dict(domain_cls_dict_fp)
 
-    def __call__(self, sequence: str):
+    def __call__(self, sequence: str) -> PipelineIntermediateOutput:
         model_inputs = self.preprocess(sequence)
         model_outputs = self._forward(model_inputs)
         return self.postprocess(model_outputs)
 
-    def run(self, sequences: List[str]):
-        return [self(s) for s in tqdm(sequences)]
+    def run(self, sequences: List[str]) -> PipelineOutput:
+        out = [self(s) for s in tqdm(sequences)]
+        return parallel_pipeline_token_region_calling(
+            pipeline_outputs=out, cpu_cores=self.cpu_cores
+        )
 
     def preprocess(self, sequence: str) -> ModelInput:
         windows = slice_proteins(sequence)
@@ -75,7 +82,9 @@ class DomainPredictorPipeline:
             "domain_window_predictions": domain_predictions,
         }
 
-    def postprocess(self, model_outputs: ModelOutput) -> PipelineOutput:
+    def postprocess(
+        self, model_outputs: ModelOutput
+    ) -> PipelineIntermediateOutput:
         logits = model_outputs["domain_window_predictions"]
         # average logits
         logits = self.softmax(
@@ -96,12 +105,11 @@ class DomainPredictorPipeline:
                         "score": top_score,
                     }
                 )
-        # region calling
-        regions = TokenRegionCaller(residue_classification)
         # return output
         return {
+            "domain_id": xxhash.xxh32(sequence).intdigest(),
             "sequence": sequence,
-            "domain_regions": regions,
+            "residue_classification": residue_classification,
         }
 
     def merge_overlap_average(self, a, b, step=256):

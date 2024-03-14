@@ -15,6 +15,7 @@ from Ibis.ProteinEmbedder.datastructs import (
 from Ibis import curdir
 from tqdm import tqdm
 import numpy as np
+import xxhash
 from typing import List, Optional
 
 
@@ -38,7 +39,7 @@ class ProteinEmbedderPipeline:
         model_outputs = self._forward(model_inputs)
         return self.postprocess(model_outputs)
 
-    def run(self, sequences: List[str]):
+    def run(self, sequences: List[str]) -> PipelineOutput:
         return [self(s) for s in tqdm(sequences)]
 
     def preprocess(self, sequence: str) -> ModelInput:
@@ -100,6 +101,7 @@ class ProteinEmbedderPipeline:
         score = round(float(logits[label_id]), 2)
         # return output
         return {
+            "protein_id": xxhash.xxh32(sequence).intdigest(),
             "sequence": sequence,
             "embedding": avg_cls_embedding,
             "ec1": label,

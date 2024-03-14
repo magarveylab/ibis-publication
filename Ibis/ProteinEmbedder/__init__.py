@@ -1,5 +1,6 @@
 from Ibis.ProteinEmbedder.pipeline import ProteinEmbedderPipeline
 import pickle
+import json
 import os
 from typing import List, Union
 
@@ -10,18 +11,21 @@ def run_on_protein_sequences(sequences: List[str], gpu_id: int = 0):
 
 
 def run_on_prodigal_fps(
-    filenames: Union[str, List[str]], output_dir: str, gpu_id: int = 0
+    filenames: List[str], output_dir: str, gpu_id: int = 0
 ):
-    # generates embedding fps in output directory
-    if isinstance(filenames, str):
-        filenames = [filenames]
+    protein_embedding_filenames = []
+    # load pipeline
     pipeline = ProteinEmbedderPipeline(gpu_id=gpu_id)
-    for filename in filenames:
-        basename = os.path.basename(filename)
-        export_filename = f"{output_dir}/{basename}.pkl"
-        if os.path.exists(export_filename):
-            continue
-        sequences = [p["sequence"] for p in json.load(open(filename))]
-        out = pipeline.run(sequences)
-        with open(export_filename, "wb") as f:
-            pickle.dump(out, f)
+    # analysis
+    for prodigal_fp in filenames:
+        name = prodigal_fp.split("/")[-2]
+        export_filename = f"{output_dir}/{name}/protein_embedding.pkl"
+        if os.path.exists(export_filename) == False:
+            sequences = [p["sequence"] for p in json.load(open(prodigal_fp))]
+            out = pipeline.run(sequences)
+            with open(export_filename, "wb") as f:
+                pickle.dump(out, f)
+        protein_embedding_filenames.append(export_filename)
+    # delete pipeline
+    del pipeline
+    return protein_embedding_filenames

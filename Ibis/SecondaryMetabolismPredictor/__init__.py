@@ -11,6 +11,7 @@ from Ibis.SecondaryMetabolismPredictor.postprocess import (
     call_bgcs_by_chemotype,
     add_orfs_to_bgcs,
 )
+import os
 from typing import List, Optional
 
 
@@ -64,3 +65,50 @@ def run_on_orfs(
         regions=chemotype_based_bgcs, orfs=orfs, orf_traceback=orf_traceback
     )
     return chemotype_based_bgcs
+
+
+def run_on_embedding_fps(
+    filenames: List[str], output_dir: str, gpu_id: int = 0
+):
+    bgc_filenames = []
+    # load pipeline
+    internal_pipeline = InternalMetabolismPredictorPipeline(gpu_id=gpu_id)
+    mibig_pipeline = MibigMetabolismPredictorPipeline(gpu_id=gpu_id)
+    # analysis
+    for embedding_fp in filenames:
+        name = embedding_fp.split("/")[-2]
+        prodigal_fp = f"{output_dir}/{name}/prodigal.json"
+        export_fp = f"{output_dir}/{name}/bgc_predictions.json"
+        if os.path.exists(export_fp) == False:
+            # create embedding lookup
+            embedding_looup = {}
+            for protein in pickle.load(open(embedding_fp, "rb")):
+                embedding_lookup[protein["protein_id"]] = protein["embedding"]
+            # create input data
+            orfs = []
+            for orf in json.load(open(prodigal_fp)):
+                protein_id = orf["protein_id"]
+                if protein_id not in embedding_lookup:
+                    continue
+                embedding = embedding_lookup[protein_id]
+                orfs.append(
+                    {
+                        "contig_id": orf["contig_id"],
+                        "contig_start": orf["contig_start"],
+                        "contig_stop": orf["contig_stop"],
+                        "embedding": embedding,
+                    }
+                )
+            # run pipeline
+            out = run_on_orfs(
+                orfs=orfs,
+                internal_pipeline=internal_pipeline,
+                mibig_pipeline=mibig_pipeline,
+            )
+            with open(export_fp, "w") as f:
+                json.dump(out, f)
+        bgc_filenames.append(export_fp)
+    # delete pipeline
+    del internal_pipeline
+    del mibig_pipeline
+    return bgc_filenames
