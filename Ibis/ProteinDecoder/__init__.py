@@ -11,6 +11,7 @@ from Ibis.ProteinDecoder.databases import (
     IbisMolecule,
 )
 from functools import partial
+from tqdm import tqdm
 import pickle
 import os
 from typing import List, Callable
@@ -84,7 +85,7 @@ def decode_from_embedding_fps(
 ) -> List[str]:
     # run on all proteins
     decode_pred_filenames = []
-    for embedding_fp in filenames:
+    for embedding_fp in tqdm(filenames):
         name = fp.split("/")[-2]
         export_fp = f"{output_dir}/{name}/{decode_name}_predictions.json"
         if os.path.exists(export_fp) == False:

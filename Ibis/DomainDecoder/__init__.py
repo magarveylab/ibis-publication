@@ -13,6 +13,8 @@ from Ibis.DomainDecoder.databases import (
     IbisThiolation,
 )
 from functools import partial
+from tqdm import tqdm
+from typing import List
 
 decode_adenylation = partial(
     KNNClassification,
@@ -92,3 +94,10 @@ decode_thiolation = partial(
     apply_homology_cutoff=True,
     apply_cutoff_after_homology=True,
 )
+
+
+def decode_from_embedding_fps(
+    filenames: List[str], output_dir: str, gpu_id: int = 0
+):
+    for fp in filenames:
+        pass
