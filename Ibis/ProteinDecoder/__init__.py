@@ -13,6 +13,7 @@ from Ibis.ProteinDecoder.databases import (
 from functools import partial
 import pickle
 import os
+from typing import List, Callable
 
 decode_ec = partial(
     KNNClassification,
@@ -75,37 +76,24 @@ decode_gene = partial(
 )
 
 
-def decode_ec_from_embedding_fps(filenames: List[str], output_dir: str):
+def decode_from_embedding_fps(
+    filenames: List[str],
+    output_dir: str,
+    decode_fn: Callable,
+    decode_name: str,
+) -> List[str]:
     # run on all proteins
-    ec_pred_filenames = []
+    decode_pred_filenames = []
     for embedding_fp in filenames:
         name = fp.split("/")[-2]
-        export_fp = f"{output_dir}/{name}/ec_predictions.json"
+        export_fp = f"{output_dir}/{name}/{decode_name}_predictions.json"
         if os.path.exists(export_fp) == False:
             data_queries = [
                 {"query_id": p["protein_id"], "embedding": p["embedding"]}
                 for p in pickle.load(open(embedding_fp, "rb"))
             ]
-            out = decode_ec(data_queries)
+            out = decode_fn(data_queries)
             with open(export_fp, "w") as f:
                 json.dump(out, f)
-        ec_pred_filenames.append(export_fp)
-    return ec_pred_filenames
-
-
-def decode_ko_from_embedding_fps(filenames: List[str], output_dir: str):
-    # run on all proteins
-    ko_pred_filenames = []
-    for embedding_fp in filenames:
-        name = fp.split("/")[-2]
-        export_fp = f"{output_dir}/{name}/ko_predictions.json"
-        if os.path.exists(export_fp) == False:
-            data_queries = [
-                {"query_id": p["protein_id"], "embedding": p["embedding"]}
-                for p in pickle.load(open(embedding_fp, "rb"))
-            ]
-            out = decode_ko(data_queries)
-            with open(export_fp, "w") as f:
-                json.dump(out, f)
-        ko_pred_filenames.append(export_fp)
-    return ko_pred_filenames
+        decode_pred_filenames.append(export_fp)
+    return decode_pred_filenames

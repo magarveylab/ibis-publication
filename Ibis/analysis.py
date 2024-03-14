@@ -37,16 +37,22 @@ def run_ibis_on_genome(
         filenames=prodigal_filenames, output_dir=output_dir, gpu_id=gpu_id
     )
     # compute ec predictions
-    ec_pred_filenames = ProteinDecoder.decode_ec_from_embedding_fps(
-        filenames=protein_embedding_filenames, output_dir=output_dir
+    ec_pred_filenames = ProteinDecoder.decode_from_embedding_fps(
+        filenames=protein_embedding_filenames,
+        output_dir=output_dir,
+        decode_fn=ProteinDecoder.decode_ec,
+        decode_name="ec",
     )
     # compute ko predictions
-    ko_pred_filenames = ProteinDecoder.decode_ko_from_embedding_fps(
-        filenames=protein_embedding_filenames, output_dir=output_dir
+    ko_pred_filenames = ProteinDecoder.decode_from_embedding_fps(
+        filenames=protein_embedding_filenames,
+        output_dir=output_dir,
+        decode_fn=ProteinDecoder.decode_ko,
+        decode_name="ko",
     )
-    ###
+    ######################################################
     # **TO DO** compute primary metabolism predictions
-    ###
+    ######################################################
     # compute bgc boundaries
     bgc_filenames = SecondaryMetabolismPredictor.run_on_embedding_fps(
         filenames=protein_embedding_filenames,
