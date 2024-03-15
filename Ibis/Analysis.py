@@ -85,13 +85,13 @@ def run_ibis_on_genome(
         decode_fn=ProteinDecoder.decode_molecule,
         decode_name="molecule",
     )
-    # # compute domain predictions
-    # domain_pred_filenames = DomainPredictor.run_on_bgc_fps(
-    #     filenames=bgc_filenames,
-    #     output_dir=output_dir,
-    #     gpu_id=gpu_id,
-    #     cpu_cores=cpu_cores,
-    # )
+    # compute domain predictions
+    domain_pred_filenames = DomainPredictor.run_on_bgc_fps(
+        filenames=bgc_filenames,
+        output_dir=output_dir,
+        gpu_id=gpu_id,
+        cpu_cores=cpu_cores,
+    )
     # # compute domain embeddings
     # domain_embedding_filenames = DomainEmbedder.run_on_domain_pred_fps(
     #     filenames=domain_pred_filenames, output_dir=output_dir, gpu_id=gpu_id

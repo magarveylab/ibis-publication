@@ -15,6 +15,8 @@ from Ibis.DomainPredictor.datastructs import (
 from Ibis import curdir
 from tqdm import tqdm
 import numpy as np
+import functools
+import xxhash
 from typing import List, Optional
 
 
@@ -75,7 +77,7 @@ class DomainPredictorPipeline:
         batch_last_hidden_state = []
         for inp in batch_tokenized_inputs:
             lhs = self.model.run(["last_hidden_state"], dict(inp))
-            batch_last_hidden_state.append(lhs)
+            batch_last_hidden_state.append(lhs[0])
         # domain residue annotation
         batch_predictions = []
         for inp in batch_last_hidden_state:
@@ -93,6 +95,7 @@ class DomainPredictorPipeline:
     def postprocess(
         self, model_outputs: ModelOutput
     ) -> PipelineIntermediateOutput:
+        sequence = model_outputs["sequence"]
         logits = model_outputs["domain_window_predictions"]
         # average logits
         logits = self.softmax(
@@ -129,3 +132,7 @@ class DomainPredictorPipeline:
         )
         out_arr = np.concatenate([a, b[overlapping_length:]], axis=0)
         return out_arr
+
+    @staticmethod
+    def softmax(x):
+        return np.exp(x) / np.exp(x).sum(-1, keepdims=True)

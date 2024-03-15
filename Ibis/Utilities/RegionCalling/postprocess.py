@@ -5,9 +5,10 @@ from Ibis.Utilities.RegionCalling.datastructs import (
     PipelineOutput,
 )
 from multiprocessing import Pool
+from collections import Counter
 import networkx as nx
 import numpy as np
-from collections import Counter
+from tqdm import tqdm
 from typing import List, Set, Optional
 
 
@@ -90,12 +91,7 @@ def token_region_calling(
     ]
     # capture annotations that meet minimum probability cutoff
     for r in token_results:
-        if len(r["labels"]) == 0:
-            continue
-        best_label = max(r["labels"], key=lambda x: x["score"])
-        token_graph.add_node(
-            r["pos"], label=best_label["label"], score=best_label["score"]
-        )
+        token_graph.add_node(r["pos"], label=r["label"], score=r["score"])
     # draw connections between neraby positions sharing label
     nodes_to_examine = token_graph.nodes_with_labels
     for idx, n1 in enumerate(nodes_to_examine):
@@ -166,12 +162,15 @@ def token_region_calling(
 def pipeline_token_region_calling(
     pipeline_output: PipelineIntermediateOutput,
 ) -> PipelineOutput:
+    residue_classification = pipeline_output["residue_classification"]
+    if len(residue_classification) == 0:
+        regions = []
+    else:
+        regions = token_region_calling(residue_classification)
     return {
-        "domain_id": pipeline_output["domain_id"],
+        "protein_id": pipeline_output["protein_id"],
         "sequence": pipeline_output["sequence"],
-        "regions": token_region_calling(
-            pipeline_output["residue_classification"]
-        ),
+        "regions": regions,
     }
 
 

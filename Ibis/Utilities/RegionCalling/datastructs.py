@@ -15,12 +15,12 @@ class TokenRegionOutput(TypedDict):
 
 
 class PipelineIntermediateOutput(TypedDict):
-    domain_id: int
+    protein_id: int
     sequence: str
     residue_classification: List[TokenOutput]
 
 
 class PipelineOutput(TypedDict):
-    domain_id: int
+    protein_id: int
     sequence: str
     regions: List[TokenRegionOutput]
