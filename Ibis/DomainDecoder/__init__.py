@@ -14,6 +14,7 @@ from Ibis.DomainDecoder.databases import (
 )
 from functools import partial
 from tqdm import tqdm
+import xxhash
 from typing import List
 
 decode_adenylation = partial(
@@ -97,7 +98,38 @@ decode_thiolation = partial(
 
 
 def decode_from_embedding_fps(
-    filenames: List[str], output_dir: str, gpu_id: int = 0
+    filenames: List[str],
+    output_dir: str,
+    decode_fn: Callable,
+    target_domain: str,
 ):
-    for fp in filenames:
-        pass
+    decode_pred_filenames = []
+    for embedding_fp in tqdm(filenames):
+        name = embedding_fp.split("/")[-2]
+        export_fp = f"{output_dir}/{name}/{target_domain}_predictions.json"
+        if os.path.exists(export_fp) == False:
+            # find domains to analyze
+            domains_to_run = set()
+            domain_pred_fp = f"{output_dir}/{name}/domain_predictions.json"
+            for prot in json.load(open(domain_pred_fp)):
+                prot_seq = prot["sequence"]
+                for region in prot["regions"]:
+                    if region["label"] == target_domain:
+                        start, end = region["start"], region["end"]
+                        domain_seq = prot_seq[start:end]
+                        domain_id = xxhash.xxh32(domain_seq).intdigest()
+                        domains_to_run.add(domain_id)
+            # analysis
+            data_queries = [
+                {"query_id": p["protein_id"], "embedding": p["embedding"]}
+                for p in pickle.load(open(embedding_fp, "rb"))
+                if p["protein_id"] in domains_to_run
+            ]
+            if len(data_queries) == 0:
+                out = []
+            else:
+                out = decode_fn(data_queries)
+            with open(export_fp, "w") as f:
+                json.dump(out, f)
+        decode_pred_filenames.append(export_fp)
+    return decode_pred_filenames

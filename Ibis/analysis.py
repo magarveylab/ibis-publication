@@ -5,6 +5,7 @@ from Ibis import (
     SecondaryMetabolismPredictor,
     DomainPredictor,
     DomainEmbedder,
+    DomainDecoder,
 )
 import json
 import os
@@ -60,8 +61,26 @@ def run_ibis_on_genome(
         gpu_id=gpu_id,
     )
     # compute gene family predictions
-
+    gene_family_pred_filenames = ProteinDecoder.decode_from_bgc_filenames(
+        filenames=bgc_filenames,
+        output_dir=output_dir,
+        decode_fn=ProteinDecoder.decode_gene_family,
+        decode_name="gene_family",
+    )
     # compute gene predictions
+    gene_pred_filenames = ProteinDecoder.decode_from_bgc_filenames(
+        filenames=bgc_filenames,
+        output_dir=output_dir,
+        decode_fn=ProteinDecoder.decode_gene,
+        decode_name="gene",
+    )
+    # compute molecule predictions (ripps and bacteriocins)
+    mol_pred_filenames = ProteinDecoder.decode_from_bgc_filenames(
+        filenames=bgc_filenames,
+        output_dir=output_dir,
+        decode_fn=ProteinDecoder.decode_molecule,
+        decode_name="molecule",
+    )
 
     # compute domain predictions
     domain_pred_filenames = DomainPredictor.run_on_bgc_fps(
@@ -74,20 +93,55 @@ def run_ibis_on_genome(
     domain_embedding_filenames = DomainEmbedder.run_on_domain_pred_fps(
         filenames=domain_pred_filenames, output_dir=output_dir, gpu_id=gpu_id
     )
-    # compute a domain substrate predictions
-
-    # compute at domain substrate predictions
-
-    # compute ks domain functional predictions
-
-    # compute kr domain functional predictions
-
-    # compute dh domain functional predictions
-
-    # compute er domain functional predictions
-
-    # compute t domain subclass predictions
-
+    # compute adenylation predictions
+    adenylation_pred_filenames = DomainDecoder.decode_from_embedding_fps(
+        filenames=domain_embedding_filenames,
+        output_dir=output_dir,
+        decode_fn=DomainDecoder.decode_adenylation,
+        target_domain="A",
+    )
+    # compute acyltransferase predictions
+    acyltransferase_pred_filenames = DomainDecoder.decode_from_embedding_fps(
+        filenames=domain_embedding_filenames,
+        output_dir=output_dir,
+        decode_fn=DomainDecoder.decode_acyltransferase,
+        target_domain="AT",
+    )
+    # compute ketosynthase domain functional predictions
+    ketosynthase_pred_filenames = DomainDecoder.decode_from_embedding_fps(
+        filenames=domain_embedding_filenames,
+        output_dir=output_dir,
+        decode_fn=DomainDecoder.decode_ketosynthase,
+        target_domain="KS",
+    )
+    # compute ketoreductase domain functional predictions
+    ketoreductase_pred_filenames = DomainDecoder.decode_from_embedding_fps(
+        filenames=domain_embedding_filenames,
+        output_dir=output_dir,
+        decode_fn=DomainDecoder.decode_ketoreductase,
+        target_domain="KR",
+    )
+    # compute dehydratase domain functional predictions
+    dehydratase_pred_filenames = DomainDecoder.decode_from_embedding_fps(
+        filenames=domain_embedding_filenames,
+        output_dir=output_dir,
+        decode_fn=DomainDecoder.decode_dehydratase,
+        target_domain="DH",
+    )
+    # compute enoylreductase domain functional predictions
+    enoylreductase_pred_filenames = DomainDecoder.decode_from_embedding_fps(
+        filenames=domain_embedding_filenames,
+        output_dir=output_dir,
+        decode_fn=DomainDecoder.decode_enoylreductase,
+        target_domain="ER",
+    )
+    # compute thiolation domain subclass predictions
+    thiolation_pred_filenames = DomainDecoder.decode_from_embedding_fps(
+        filenames=domain_embedding_filenames,
+        output_dir=output_dir,
+        decode_fn=DomainDecoder.decode_thiolation,
+        target_domain="T",
+    )
     # compute propeptide predictions
 
     # compute metabolism embeddings
