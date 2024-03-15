@@ -64,27 +64,27 @@ def run_ibis_on_genome(
         output_dir=output_dir,
         gpu_id=gpu_id,
     )
-    # # compute gene family predictions
-    # gene_family_pred_filenames = ProteinDecoder.decode_from_bgc_filenames(
-    #     filenames=bgc_filenames,
-    #     output_dir=output_dir,
-    #     decode_fn=ProteinDecoder.decode_gene_family,
-    #     decode_name="gene_family",
-    # )
-    # # compute gene predictions
-    # gene_pred_filenames = ProteinDecoder.decode_from_bgc_filenames(
-    #     filenames=bgc_filenames,
-    #     output_dir=output_dir,
-    #     decode_fn=ProteinDecoder.decode_gene,
-    #     decode_name="gene",
-    # )
-    # # compute molecule predictions (ripps and bacteriocins)
-    # mol_pred_filenames = ProteinDecoder.decode_from_bgc_filenames(
-    #     filenames=bgc_filenames,
-    #     output_dir=output_dir,
-    #     decode_fn=ProteinDecoder.decode_molecule,
-    #     decode_name="molecule",
-    # )
+    # compute gene family predictions
+    gene_family_pred_filenames = ProteinDecoder.decode_from_bgc_filenames(
+        filenames=bgc_filenames,
+        output_dir=output_dir,
+        decode_fn=ProteinDecoder.decode_gene_family,
+        decode_name="gene_family",
+    )
+    # compute gene predictions
+    gene_pred_filenames = ProteinDecoder.decode_from_bgc_filenames(
+        filenames=bgc_filenames,
+        output_dir=output_dir,
+        decode_fn=ProteinDecoder.decode_gene,
+        decode_name="gene",
+    )
+    # compute molecule predictions (ripps and bacteriocins)
+    mol_pred_filenames = ProteinDecoder.decode_from_bgc_filenames(
+        filenames=bgc_filenames,
+        output_dir=output_dir,
+        decode_fn=ProteinDecoder.decode_molecule,
+        decode_name="molecule",
+    )
     # # compute domain predictions
     # domain_pred_filenames = DomainPredictor.run_on_bgc_fps(
     #     filenames=bgc_filenames,

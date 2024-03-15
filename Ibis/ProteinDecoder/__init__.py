@@ -53,7 +53,6 @@ decode_gene_family = partial(
     KNNClassification,
     qdrant_db=IbisGeneFamily,
     classification_method=neighborhood_classification,
-    partition_names=None,
     top_n=5,
     dist_cutoff=29.58,
     apply_cutoff_before_homology=True,
@@ -108,30 +107,43 @@ def decode_from_bgc_filenames(
         name = bgc_fp.split("/")[-2]
         export_fp = f"{output_dir}/{name}/{decode_name}_predictions.json"
         if os.path.exists(export_fp) == False:
-            embedding_fp = f"{output_dir}/{name}/protein_embeddings.pkl"
-            embedding_lookup = {}
+            # load embeddings
+            hash_embedding_lookup = {}
+            embedding_fp = f"{output_dir}/{name}/protein_embedding.pkl"
             for p in pickle.load(open(embedding_fp, "rb")):
-                orf_id = (
-                    f'{p["contig_id"]}_{p["contig_start"]}_{p["contig_stop"]}'
-                )
-                embedding_lookup[orf_id] = {
-                    "query_id": p["protein_id"],
-                    "embedding": p["embedding"],
+                protein_id = p["protein_id"]
+                embedding = p["embedding"]
+                hash_embedding_lookup[protein_id] = embedding
+            # connect embeddings to orfs
+            orf_embedding_lookup = {}
+            prodigal_fp = f"{output_dir}/{name}/prodigal.json"
+            for p in json.load(open(prodigal_fp)):
+                contig_id = p["contig_id"]
+                contig_start = p["contig_start"]
+                contig_stop = p["contig_stop"]
+                protein_id = p["protein_id"]
+                orf_id = f"{contig_id}_{contig_start}_{contig_stop}"
+                embedding = hash_embedding_lookup[protein_id]
+                orf_embedding_lookup[orf_id] = {
+                    "query_id": protein_id,
+                    "embedding": embedding,
                 }
+            # build data queries
             data_queries = []
             if decode_name == "molecule":
-                for cluster in pickle.load(open(bgc_fp, "rb")):
+                for cluster in json.load(open(bgc_fp)):
                     internal_chemotypes = cluster["internal_chemotypes"]
                     if (
                         "Bacteriocin" in internal_chemotypes
                         and "Ripp" in internal_chemotypes
                     ):
                         for orf_id in cluster["orfs"]:
-                            data_queries.append(embedding_lookup[orf_id])
+                            data_queries.append(orf_embedding_lookup[orf_id])
             else:
-                for cluster in pickle.load(open(bgc_fp, "rb")):
+                for cluster in json.load(open(bgc_fp)):
                     for orf_id in cluster["orfs"]:
-                        data_queries.append(embedding_lookup[orf_id])
+                        data_queries.append(orf_embedding_lookup[orf_id])
+            # analysis
             out = decode_fn(data_queries)
             with open(export_fp, "w") as f:
                 json.dump(out, f)
