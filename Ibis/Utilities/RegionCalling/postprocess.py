@@ -1,12 +1,14 @@
 from Ibis.Utilities.RegionCalling.datastructs import (
     TokenOutput,
     TokenRegionOutput,
+    PipelineIntermediateOutput,
+    PipelineOutput,
 )
 from multiprocessing import Pool
 import networkx as nx
 import numpy as np
 from collections import Counter
-from typing import List
+from typing import List, Set, Optional
 
 
 class TokenGraph:

@@ -1,5 +1,5 @@
 import numpy as np
-from typing import List, TypedDict
+from typing import List, TypedDict, Literal, Optional
 
 
 class DomainInput(TypedDict):
@@ -17,7 +17,7 @@ class OrfInput(TypedDict):
 
 
 class SecondaryPredictionDict(TypedDict):
-    label: Union["core", "peripheral"]
+    label: Literal["core", "peripheral"]
     score: float
 
 
@@ -26,17 +26,17 @@ class ChemotypePredictionDict(TypedDict):
     score: float
 
 
-class AnnotatedOrfDict(TypedDict, total=False):
+class InternalAnnotatedOrfDict(TypedDict, total=False):
     orf_id: int
     secondary: SecondaryPredictionDict
     chemotype: Optional[ChemotypePredictionDict]
 
 
-class AnnotatedOrfDictWithMeta(TypedDict, total=False):
+class InternalAnnotatedOrfDictWithMeta(TypedDict, total=False):
     orf_id: int
     secondary: SecondaryPredictionDict
     chemotypes: Optional[ChemotypePredictionDict]
-    contig_id: Union[str, int]
+    contig_id: int
     contig_start: int
     contig_stop: int
 
@@ -49,7 +49,7 @@ class MibigAnnotatedOrfDict(TypedDict):
 class MibigAnnotatedOrfDictWithMeta(TypedDict):
     orf_id: int
     chemotypes: List[ChemotypePredictionDict]
-    contig_id: Union[str, int]
+    contig_id: int
     contig_start: int
     contig_stop: int
 

@@ -7,10 +7,12 @@ from Ibis.Utilities.GraphStructs.HeteroGraph import (
     get_lookup_from_hetero,
     batch_to_homogeneous,
 )
+from Ibis import curdir
 from torch_geometric.data import Data, Batch
 from glob import glob
 import numpy as np
 import torch
+import json
 from typing import Optional, Dict
 
 vocab_dir = f"{curdir}/SecondaryMetabolismEmbedder/vocab"

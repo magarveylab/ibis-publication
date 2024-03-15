@@ -1,7 +1,8 @@
-from Ibis.SecondaryMetabolismPredictor.postprocess import (
-    AnnotatedOrfDictWithMeta,
+from Ibis.SecondaryMetabolismPredictor.datastructs import (
+    InternalAnnotatedOrfDictWithMeta,
     MibigAnnotatedOrfDictWithMeta,
     ClusterOutput,
+    OrfInput,
 )
 from Ibis.SecondaryMetabolismPredictor.standardization import (
     get_internal_chemotype_lookup,
@@ -18,7 +19,8 @@ mibig_chemotype_standardization = get_mibig_chemotype_standardization()
 
 
 def call_bgcs_by_proximity(
-    all_orfs: List[AnnotatedOrfDictWithMeta], min_threshold: int = 10000
+    all_orfs: List[InternalAnnotatedOrfDictWithMeta],
+    min_threshold: int = 10000,
 ) -> List[List[int]]:
     # sort orfs
     all_orfs = sorted(
@@ -113,7 +115,7 @@ def call_bgcs_by_proximity(
 
 
 def call_bgcs_by_chemotype(
-    all_orfs: List[AnnotatedOrfDictWithMeta],
+    all_orfs: List[InternalAnnotatedOrfDictWithMeta],
     mibig_lookup: Dict[int, MibigAnnotatedOrfDictWithMeta],
     min_threshold: int = 10000,
     min_frequency: float = 0.1,
@@ -237,7 +239,7 @@ def call_bgcs_by_chemotype(
 
 def add_orfs_to_bgcs(
     regions: List[ClusterOutput],
-    orfs: List[neo4jOrfInput],
+    orfs: List[OrfInput],
     orf_traceback: Dict[int, str],
 ):
     # reorganize data

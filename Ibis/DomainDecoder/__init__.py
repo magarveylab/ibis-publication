@@ -15,7 +15,7 @@ from Ibis.DomainDecoder.databases import (
 from functools import partial
 from tqdm import tqdm
 import xxhash
-from typing import List
+from typing import List, Callable
 
 decode_adenylation = partial(
     KNNClassification,

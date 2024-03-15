@@ -2,6 +2,7 @@ from Ibis.Prodigal.datastructs import ProdigalOutput
 from multiprocessing import Pool
 from functools import partial
 from Bio import SeqIO
+from tqdm import tqdm
 import pyrodigal
 import xxhash
 import json
@@ -42,13 +43,13 @@ def run_on_nuc_fasta_fp(nuc_fasta_fp: str, output_dir: str = None):
         proteins = run_prodigal(nuc_fasta_fp)
         with open(output_fp, "w") as f:
             json.dump(proteins, f)
-    return output
+    return output_fp
 
 
 def parallel_run_on_nuc_fasta_fps(
     filenames: List[str], output_dir: str, cpu_cores: int = 1
 ):
-    funct = partial(run_on_single_nuc_fasta_fp, output_dir=output_dir)
+    funct = partial(run_on_nuc_fasta_fp, output_dir=output_dir)
     pool = Pool(cpu_cores)
     process = pool.imap_unordered(funct, filenames)
     out = [p for p in tqdm(process, total=len(filenames))]

@@ -1,4 +1,7 @@
-from Ibis.SecondaryMetabolismPredictor.datastructs import OrfInput
+from Ibis.SecondaryMetabolismPredictor.datastructs import (
+    OrfInput,
+    ClusterOutput,
+)
 from Ibis.SecondaryMetabolismPredictor.preprocess import (
     get_tensors_from_genome,
 )

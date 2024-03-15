@@ -9,6 +9,7 @@ from Ibis.Utilities.RegionCalling.postprocess import (
 from Ibis.DomainPredictor.datastructs import (
     ModelInput,
     ModelOutput,
+    PipelineIntermediateOutput,
     PipelineOutput,
 )
 from Ibis import curdir

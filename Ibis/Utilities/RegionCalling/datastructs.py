@@ -1,4 +1,4 @@
-from typing import TypedDict
+from typing import TypedDict, List
 
 
 class TokenOutput(TypedDict):
