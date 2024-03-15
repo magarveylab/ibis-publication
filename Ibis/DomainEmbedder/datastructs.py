@@ -21,5 +21,6 @@ class ModelOutput(TypedDict):
 
 
 class PipelineOutput(TypedDict):
+    domain_id: int
     sequence: str
     embedding: np.array

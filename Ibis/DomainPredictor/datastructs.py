@@ -1,4 +1,3 @@
-from Ibis.Utilities.RegionCalling.datastructs import TokenRegionOutput
 import numpy as np
 from typing import TypedDict, List
 
@@ -30,6 +29,14 @@ class PipelineIntermediateOutput(TypedDict):
     protein_id: int
     sequence: str
     residue_classification: List[TokenOutput]
+
+
+class TokenRegionOutput(TypedDict):
+    domain_id: int
+    label: str
+    start: int
+    stop: int
+    score: float
 
 
 class PipelineOutput(TypedDict):

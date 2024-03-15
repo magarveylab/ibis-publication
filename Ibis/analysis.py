@@ -7,6 +7,7 @@ from Ibis import (
     DomainEmbedder,
     DomainDecoder,
     PropeptidePredictor,
+    SecondaryMetabolismEmbedder,
 )
 import json
 import os
@@ -150,3 +151,10 @@ def run_ibis_on_genome(
         cpu_cores=cpu_cores,
     )
     # compute metabolism embeddings
+    bgc_embedding_filenames = (
+        SecondaryMetabolismEmbedder.run_on_domain_embedding_fps(
+            filenames=domain_embedding_filenames,
+            output_dir=output_dir,
+            gpu_id=gpu_id,
+        )
+    )

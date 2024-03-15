@@ -71,7 +71,7 @@ def run_on_orfs(
 def run_on_embedding_fps(
     filenames: List[str], output_dir: str, gpu_id: int = 0
 ):
-    bgc_filenames = []
+    bgc_pred_filenames = []
     # load pipeline
     internal_pipeline = InternalMetabolismPredictorPipeline(gpu_id=gpu_id)
     mibig_pipeline = MibigMetabolismPredictorPipeline(gpu_id=gpu_id)
@@ -108,8 +108,8 @@ def run_on_embedding_fps(
             )
             with open(export_fp, "w") as f:
                 json.dump(out, f)
-        bgc_filenames.append(export_fp)
+        bgc_pred_filenames.append(export_fp)
     # delete pipeline
     del internal_pipeline
     del mibig_pipeline
-    return bgc_filenames
+    return bgc_pred_filenames

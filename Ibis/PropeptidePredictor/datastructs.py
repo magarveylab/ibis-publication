@@ -35,5 +35,5 @@ class PipelineOutput(TypedDict):
     protein_id: int
     sequence: str
     start: int
-    end: int
+    stop: int
     score: float

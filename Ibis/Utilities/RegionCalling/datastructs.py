@@ -10,7 +10,7 @@ class TokenOutput(TypedDict):
 class TokenRegionOutput(TypedDict):
     label: str
     start: int
-    end: int
+    stop: int
     score: float
 
 

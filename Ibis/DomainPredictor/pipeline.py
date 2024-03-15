@@ -43,9 +43,16 @@ class DomainPredictorPipeline:
 
     def run(self, sequences: List[str]) -> PipelineOutput:
         out = [self(s) for s in tqdm(sequences)]
-        return parallel_pipeline_token_region_calling(
+        out = parallel_pipeline_token_region_calling(
             pipeline_outputs=out, cpu_cores=self.cpu_cores
         )
+        # add domain hash ids
+        for p in out:
+            seq = p["sequence"]
+            for r in p["regions"]:
+                start, stop = r["start"], r["stop"]
+                r["domain_id"] = xxhash.xxh32(seq[start:stop]).intdigest()
+        return out
 
     def preprocess(self, sequence: str) -> ModelInput:
         windows = slice_proteins(sequence)

@@ -127,8 +127,8 @@ def token_region_calling(
             continue
         # cache
         start = min(community)
-        end = max(community)
-        regions.append((community_label, start, end))
+        stop = max(community)
+        regions.append((community_label, start, stop))
     # sometimes there is adjavent duplication of regions - combine these regions
     region_graph = nx.Graph()
     regions = sorted(regions, key=lambda x: x[1])
@@ -144,8 +144,8 @@ def token_region_calling(
         combined_r = sorted(combined_r, key=lambda x: x[1])
         label = combined_r[0][0]
         start = combined_r[0][1]
-        end = combined_r[-1][2]
-        nodes = list(range(start, end + 1))
+        stop = combined_r[-1][2]
+        nodes = list(range(start, stop + 1))
         score_list = [
             token_graph[n]["score"]
             for n in nodes
@@ -153,10 +153,10 @@ def token_region_calling(
         ]
         support = len(score_list)
         score = round(float(np.mean(score_list)), 2)
-        length = end - start
+        length = stop - start
         # cache
         out.append(
-            {"label": label, "start": start, "end": end, "score": score}
+            {"label": label, "start": start, "stop": stop, "score": score}
         )
     return sorted(out, key=lambda x: x["start"])
 
