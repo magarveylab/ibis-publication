@@ -37,10 +37,10 @@ def run_ibis_on_genome(
         output_dir=output_dir,
         cpu_cores=cpu_cores,
     )
-    # # compute protein embeddings
-    # protein_embedding_filenames = ProteinEmbedder.run_on_prodigal_fps(
-    #     filenames=prodigal_filenames, output_dir=output_dir, gpu_id=gpu_id
-    # )
+    # compute protein embeddings
+    protein_embedding_filenames = ProteinEmbedder.run_on_prodigal_fps(
+        filenames=prodigal_filenames, output_dir=output_dir, gpu_id=gpu_id
+    )
     # # compute ec predictions
     # ec_pred_filenames = ProteinDecoder.decode_from_embedding_fps(
     #     filenames=protein_embedding_filenames,

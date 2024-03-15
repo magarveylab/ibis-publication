@@ -62,7 +62,7 @@ class ProteinEmbedderPipeline:
         batch_pooler_output = []
         for inp in batch_tokenized_inputs:
             po = self.model.run(["pooler_output"], dict(inp))
-            batch_pooler_output.append(po)
+            batch_pooler_output.append(po[0])
         # concatenate outputs
         pooler_output = np.concatenate(batch_pooler_output)
         # EC1 sequence classification head prediction
