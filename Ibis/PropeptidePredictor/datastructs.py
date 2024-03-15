@@ -19,7 +19,20 @@ class ModelOutput(TypedDict):
     propeptide_window_predictions: np.array
 
 
+class TokenOutput(TypedDict):
+    pos: int
+    label: str
+    score: float
+
+
+class PipelineIntermediateOutput(TypedDict):
+    protein_id: int
+    sequence: str
+    residue_classification: List[TokenOutput]
+
+
 class PipelineOutput(TypedDict):
+    protein_id: int
     sequence: str
     start: int
     end: int

@@ -107,7 +107,7 @@ class DomainPredictorPipeline:
                 )
         # return output
         return {
-            "domain_id": xxhash.xxh32(sequence).intdigest(),
+            "protein_id": xxhash.xxh32(sequence).intdigest(),
             "sequence": sequence,
             "residue_classification": residue_classification,
         }

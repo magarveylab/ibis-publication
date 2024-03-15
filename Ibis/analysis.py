@@ -6,6 +6,7 @@ from Ibis import (
     DomainPredictor,
     DomainEmbedder,
     DomainDecoder,
+    PropeptidePredictor,
 )
 import json
 import os
@@ -81,7 +82,6 @@ def run_ibis_on_genome(
         decode_fn=ProteinDecoder.decode_molecule,
         decode_name="molecule",
     )
-
     # compute domain predictions
     domain_pred_filenames = DomainPredictor.run_on_bgc_fps(
         filenames=bgc_filenames,
@@ -143,5 +143,10 @@ def run_ibis_on_genome(
         target_domain="T",
     )
     # compute propeptide predictions
-
+    propeptide_pred_filenames = PropeptidePredictor.run_on_mol_pred_fps(
+        filenames=mol_pred_filenames,
+        output_dir=output_dir,
+        gpu_id=gpu_id,
+        cpu_cores=cpu_cores,
+    )
     # compute metabolism embeddings

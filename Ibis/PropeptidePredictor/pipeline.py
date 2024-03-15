@@ -3,10 +3,13 @@ from Ibis.Utilities.preprocess import slice_proteins, batchify_tokenized_inputs
 from Ibis.Utilities.onnx import get_onnx_base_model, get_onnx_head
 from Ibis.Utilities.tokenizers import get_protbert_tokenizer
 from Ibis.Utilities.class_dicts import get_class_dict
-from Ibis.Utilities.RegionCalling.postprocess import TokenRegionCaller
+from Ibis.Utilities.RegionCalling.postprocess import (
+    parallel_pipeline_token_region_calling,
+)
 from Ibis.PropeptidePredictor.datastructs import (
     ModelInput,
     ModelOutput,
+    PipelineIntermediateOutput,
     PipelineOutput,
 )
 from Ibis import curdir
@@ -24,6 +27,7 @@ class PropeptidePredictorPipeline:
         protein_tokenizer: PreTrainedTokenizerFast = get_protbert_tokenizer(),
         propeptide_cls_dict_fp: str = f"{curdir}/PropeptidePredictor/tables/propeptide_residue.csv",
         gpu_id: Optional[int] = None,
+        cpu_cores: int = 1,
     ):
         self.model = get_onnx_base_model(model_fp=model_fp, gpu_id=gpu_id)
         self.tokenizer = protein_tokenizer
@@ -31,14 +35,35 @@ class PropeptidePredictorPipeline:
             model_fp=propeptide_head_fp, gpu_id=gpu_id
         )
         self.propeptide_cls_dict = get_class_dict(propeptide_cls_dict_fp)
+        self.cpu_cores = cpu_cores
 
-    def __call__(self, sequence: str):
+    def __call__(self, sequence: str) -> PipelineIntermediateOutput:
         model_inputs = self.preprocess(sequence)
         model_outputs = self._forward(model_inputs)
         return self.postprocess(model_outputs)
 
-    def run(self, sequences: List[str]):
-        return [self(s) for s in tqdm(sequences)]
+    def run(self, sequences: List[str]) -> List[PipelineOutput]:
+        out = [self(s) for s in tqdm(sequences)]
+        out = parallel_pipeline_token_region_calling(
+            pipeline_outputs=out, cpu_cores=self.cpu_cores
+        )
+        cleaned_out = []
+        for p in out:
+            prop_regions = [r for r in p["regions"] if r["label"] == "prop"]
+            if len(prop_regions) > 0:
+                prop = max(prop_regions, key=lambda x: x["end"] - x["start"])
+            else:
+                prop = {}
+            cleaned_out.append(
+                {
+                    "protein_id": p["protein_id"],
+                    "sequence": p["sequence"],
+                    "start": prop.get("start"),
+                    "end": prop.get("end"),
+                    "score": prop.get("score"),
+                }
+            )
+        return out
 
     def preprocess(self, sequence: str) -> ModelInput:
         windows = slice_proteins(sequence)
@@ -77,7 +102,9 @@ class PropeptidePredictorPipeline:
             "propeptide_window_predictions": propeptide_predictions,
         }
 
-    def postprocess(self, model_outputs: ModelOutput) -> PipelineOutput:
+    def postprocess(
+        self, model_outputs: ModelOutput
+    ) -> PipelineIntermediateOutput:
         logits = model_outputs["propeptide_window_predictions"]
         # average logits
         logits = self.softmax(
@@ -98,20 +125,11 @@ class PropeptidePredictorPipeline:
                         "score": top_score,
                     }
                 )
-        # region calling
-        regions = TokenRegionCaller(residue_classification)
-        # only keep the largest propeptide region
-        prop_regions = [r for r in regions if r["label"] == "prop"]
-        if len(prop_regions) > 0:
-            prop = max(prop_regions, key=lambda x: x["end"] - x["start"])
-        else:
-            prop = {}
         # return output
         return {
+            "domain_id": xxhash.xxh32(sequence).intdigest(),
             "sequence": sequence,
-            "start": prop.get("start"),
-            "end": prop.get("end"),
-            "score": prop.get("score"),
+            "residue_classification": residue_classification,
         }
 
     def merge_overlap_average(self, a, b, step=256):
