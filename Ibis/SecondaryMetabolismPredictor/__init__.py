@@ -15,6 +15,8 @@ from Ibis.SecondaryMetabolismPredictor.postprocess import (
     add_orfs_to_bgcs,
 )
 from tqdm import tqdm
+import pickle
+import json
 import os
 from typing import List, Optional
 
@@ -60,7 +62,7 @@ def run_on_orfs(
     else:
         mibig_lookup = {}
     chemotype_based_bgcs = call_bgcs_by_chemotype(
-        all_orfs=secondary_annotated_orfs,
+        all_orfs=internal_annotated_orfs,
         mibig_lookup=mibig_lookup,
         min_threshold=min_threshold,
     )
@@ -85,7 +87,7 @@ def run_on_embedding_fps(
         export_fp = f"{output_dir}/{name}/bgc_predictions.json"
         if os.path.exists(export_fp) == False:
             # create embedding lookup
-            embedding_looup = {}
+            embedding_lookup = {}
             for protein in pickle.load(open(embedding_fp, "rb")):
                 embedding_lookup[protein["protein_id"]] = protein["embedding"]
             # create input data

@@ -58,12 +58,12 @@ def run_ibis_on_genome(
     # ######################################################
     # # **TO DO** compute primary metabolism predictions
     # ######################################################
-    # # compute bgc boundaries
-    # bgc_filenames = SecondaryMetabolismPredictor.run_on_embedding_fps(
-    #     filenames=protein_embedding_filenames,
-    #     output_dir=output_dir,
-    #     gpu_id=gpu_id,
-    # )
+    # compute bgc boundaries
+    bgc_filenames = SecondaryMetabolismPredictor.run_on_embedding_fps(
+        filenames=protein_embedding_filenames,
+        output_dir=output_dir,
+        gpu_id=gpu_id,
+    )
     # # compute gene family predictions
     # gene_family_pred_filenames = ProteinDecoder.decode_from_bgc_filenames(
     #     filenames=bgc_filenames,

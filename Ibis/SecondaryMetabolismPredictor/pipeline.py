@@ -139,6 +139,7 @@ class InternalMetabolismPredictorPipeline:
         self,
         model_dir: str = f"{curdir}/Models/internal_metabolism_predictor",
         class_dict_fp: str = f"{curdir}/SecondaryMetabolismPredictor/tables/chemotypes.csv",
+        gpu_id: Optional[int] = None,
     ):
         # class dicts
         self.chemotype_class_dict = get_class_dict(class_dict_fp)
