@@ -52,16 +52,13 @@ class QdrantBase:
                 raise ValueError("memory_strategy must be provided.")
             if label_alias is None:
                 raise ValueError("label_alias must be provided.")
-            print(f"Creating new collection {collection_name}...")
             self.create_collection(
                 embedding_dim=embedding_dim,
                 memory_strategy=memory_strategy,
                 memmap_threshold=memmap_threshold,
                 **kwargs,
             )
-            print(f"Finished creating collection {collection_name}.")
         else:
-            print(f"Loading existing collection {collection_name}.")
             self.check_status()
 
     def create_collection(

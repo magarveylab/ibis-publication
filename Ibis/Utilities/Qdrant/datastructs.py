@@ -1,16 +1,5 @@
 import numpy as np
-from typing import TypedDict, List, Union, Literal
-
-acceptable_label_types = Literal[
-    "EC4Label",
-    "GeneFamilyLabel",
-    "BioactivePeptideLabel",
-    "MetabolismProteinFamilyLabel",
-    "KeggOrthologLabel",
-    "SubstrateLabel",
-    "DomainSubclassLabel",
-    "DomainFunctionalLabel",
-]
+from typing import TypedDict, List
 
 
 class DataQuery(TypedDict):
@@ -33,7 +22,6 @@ class SearchResponse(TypedDict):
 class KnnOutput(TypedDict):
     hash_id: str
     label: str
-    label_type: acceptable_label_types
     similarity: float
     homology: float
     reference_id: int  # hashed protein ID of reference protein

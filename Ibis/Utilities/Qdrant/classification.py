@@ -1,6 +1,5 @@
 from Ibis.Utilities.Qdrant.datastructs import (
     DistHitResponse,
-    acceptable_label_types,
     KnnOutput,
     DataQuery,
 )
@@ -15,7 +14,6 @@ def dist2sim(d: float) -> float:
 
 def neighborhood_classification(
     hits: List[DistHitResponse],
-    label_type: acceptable_label_types,
     top_n: int = 1,
     dist_cutoff: float = 0.0,
     apply_cutoff_before_homology: bool = True,
@@ -61,14 +59,12 @@ def neighborhood_classification(
         "label": label,
         "reference_id": distance_lookup[label][distance],
         "homology": homology_score,
-        "label_type": label_type,
         "similarity": dist2sim(distance),
     }
 
 
 def ontology_neighborhood_classification(
     hits: List[DistHitResponse],
-    label_type: acceptable_label_types,
     top_n: int = 1,
     dist_cutoff: float = 0.0,
     apply_cutoff_before_homology: bool = True,
@@ -133,14 +129,12 @@ def ontology_neighborhood_classification(
         "label": pred["label"],
         "reference_id": pred["reference_id"],
         "homology": homology_score,
-        "label_type": label_type,
         "similarity": dist2sim(pred["distance"]),
     }
 
 
 def KNNClassification(
     query_list: List[DataQuery],
-    label_type: acceptable_label_types,
     qdrant_db: QdrantBase = None,
     classification_method: Callable = None,
     top_n: int = 1,
@@ -150,7 +144,7 @@ def KNNClassification(
     apply_homology_cutoff: bool = False,
     apply_cutoff_after_homology: bool = False,
     batch_size: int = 1000,
-) -> Dict[int, KnnOutput]:
+) -> List[KnnOutput]:
     # Initialize Qdrant Database
     db = qdrant_db()
     # run KNN
@@ -171,7 +165,6 @@ def KNNClassification(
         else:
             result[query] = classification_method(
                 hits,
-                label_type=label_type,
                 top_n=top_n,
                 dist_cutoff=dist_cutoff,
                 apply_cutoff_before_homology=apply_cutoff_before_homology,
@@ -179,9 +172,21 @@ def KNNClassification(
                 apply_homology_cutoff=apply_homology_cutoff,
                 apply_cutoff_after_homology=apply_cutoff_after_homology,
             )
-            if result[query] is not None:
-                # reassign hash id to align with Graph upload.
-                result[query]["hash_id"] = query
+    # clean output
+    output = []
+    for hash_id, pred in result.items():
+        if pred is None:
+            output.append(
+                {
+                    "hash_id": hash_id,
+                    "label": None,
+                    "similarity": None,
+                    "homology": None,
+                }
+            )
+        else:
+            pred["hash_id"] = hash_id
+            output.append(pred)
     # terminate connection
     del db
-    return result
+    return output

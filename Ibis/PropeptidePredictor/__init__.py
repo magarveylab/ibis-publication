@@ -27,7 +27,11 @@ def run_on_mol_pred_fps(
         if os.path.exists(export_fp) == False:
             proteins_to_run = set()
             for p in json.load(open(mol_pred_fp)):
-                if p["homology"] >= 0.6 and p["label"] != "Bacteriocin":
+                if (
+                    p["homology"] is not None
+                    and p["homology"] >= 0.6
+                    and p["label"] != "Bacteriocin"
+                ):
                     proteins_to_run.add(p["hash_id"])
             if len(proteins_to_run) > 0:
                 sequences = set()

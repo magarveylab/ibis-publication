@@ -19,7 +19,6 @@ from typing import List, Callable
 
 decode_adenylation = partial(
     KNNClassification,
-    label_type="SubstrateLabel",
     qdrant_db=IbisAdenylation,
     classification_method=ontology_neighborhood_classification,
     top_n=3,
@@ -30,7 +29,6 @@ decode_adenylation = partial(
 
 decode_acyltransferase = partial(
     KNNClassification,
-    label_type="SubstrateLabel",
     qdrant_db=IbisAcyltransferase,
     classification_method=ontology_neighborhood_classification,
     top_n=5,
@@ -41,7 +39,6 @@ decode_acyltransferase = partial(
 
 decode_ketosynthase = partial(
     KNNClassification,
-    label_type="DomainFunctionalLabel",
     qdrant_db=IbisKetosynthase,
     classification_method=neighborhood_classification,
     top_n=5,
@@ -52,7 +49,6 @@ decode_ketosynthase = partial(
 
 decode_ketoreductase = partial(
     KNNClassification,
-    label_type="DomainFunctionalLabel",
     qdrant_db=IbisKetoreductase,
     classification_method=neighborhood_classification,
     top_n=5,
@@ -63,7 +59,6 @@ decode_ketoreductase = partial(
 
 decode_dehydratase = partial(
     KNNClassification,
-    label_type="DomainFunctionalLabel",
     qdrant_db=IbisDehydratase,
     classification_method=neighborhood_classification,
     top_n=5,
@@ -74,7 +69,6 @@ decode_dehydratase = partial(
 
 decode_enoylreductase = partial(
     KNNClassification,
-    label_type="DomainFunctionalLabel",
     qdrant_db=IbisDehydratase,
     classification_method=neighborhood_classification,
     top_n=5,
@@ -85,7 +79,6 @@ decode_enoylreductase = partial(
 
 decode_thiolation = partial(
     KNNClassification,
-    label_type="DomainSubclassLabel",
     qdrant_db=IbisThiolation,
     classification_method=neighborhood_classification,
     top_n=5,

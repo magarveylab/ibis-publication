@@ -13,12 +13,12 @@ from Ibis.ProteinDecoder.databases import (
 from functools import partial
 from tqdm import tqdm
 import pickle
+import json
 import os
 from typing import List, Callable
 
 decode_ec = partial(
     KNNClassification,
-    label_type="EC4Label",
     qdrant_db=IbisEC,
     classification_method=ontology_neighborhood_classification,
     top_n=5,
@@ -30,7 +30,6 @@ decode_ec = partial(
 decode_ko = partial(
     KNNClassification,
     qdrant_db=IbisKO,
-    label_type="KeggOrthologLabel",
     classification_method=neighborhood_classification,
     top_n=5,
     dist_cutoff=26.06,
@@ -41,7 +40,6 @@ decode_ko = partial(
 
 decode_molecule = partial(
     KNNClassification,
-    label_type="BioactivePeptideLabel",
     qdrant_db=IbisMolecule,
     classification_method=neighborhood_classification,
     top_n=5,
@@ -53,7 +51,6 @@ decode_molecule = partial(
 
 decode_gene_family = partial(
     KNNClassification,
-    label_type="GeneFamilyLabel",
     qdrant_db=IbisGeneFamily,
     classification_method=neighborhood_classification,
     partition_names=None,
@@ -66,7 +63,6 @@ decode_gene_family = partial(
 
 decode_gene = partial(
     KNNClassification,
-    label_type="GeneLabel",
     qdrant_db=IbisGene,
     classification_method=neighborhood_classification,
     top_n=1,
