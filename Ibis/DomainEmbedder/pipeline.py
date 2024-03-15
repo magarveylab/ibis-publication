@@ -14,6 +14,7 @@ from Ibis.ProteinEmbedder.datastructs import (
 from Ibis import curdir
 from tqdm import tqdm
 import numpy as np
+import xxhash
 from typing import List, Optional
 
 
@@ -75,7 +76,7 @@ class DomainEmbedderPipeline:
         cls_embeddings = model_outputs["cls_window_embeddings"]
         avg_cls_embedding = np.mean(
             np.take(cls_embeddings, indices, axis=0), axis=0
-        )
+        )[0]
         # return output
         return {
             "domain_id": xxhash.xxh32(sequence).intdigest(),

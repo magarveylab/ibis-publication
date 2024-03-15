@@ -1,6 +1,9 @@
 from Ibis.DomainEmbedder.pipeline import DomainEmbedderPipeline
 from Ibis.DomainEmbedder.datastructs import PipelineOutput
 from tqdm import tqdm
+import pickle
+import json
+import os
 from typing import List
 
 
@@ -26,14 +29,12 @@ def run_on_domain_pred_fps(
         if os.path.exists(export_filename) == False:
             sequences = set()
             for protein in json.load(open(domain_pred_fp)):
-                prot_sequence = protein["sequnce"]
+                prot_sequence = protein["sequence"]
                 for domain in protein["regions"]:
                     domain_label = domain["label"]
                     if domain_label in target_domains:
-                        start, end = domain["start"], domain["end"]
-                        domain_sequence = prot_sequence[
-                            domain_start:domain_end
-                        ]
+                        start, stop = domain["start"], domain["stop"]
+                        domain_sequence = prot_sequence[start:stop]
                         sequences.add(domain_sequence)
             out = pipeline.run(list(sequences))
             with open(export_filename, "wb") as f:

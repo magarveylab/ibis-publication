@@ -92,10 +92,10 @@ def run_ibis_on_genome(
         gpu_id=gpu_id,
         cpu_cores=cpu_cores,
     )
-    # # compute domain embeddings
-    # domain_embedding_filenames = DomainEmbedder.run_on_domain_pred_fps(
-    #     filenames=domain_pred_filenames, output_dir=output_dir, gpu_id=gpu_id
-    # )
+    # compute domain embeddings
+    domain_embedding_filenames = DomainEmbedder.run_on_domain_pred_fps(
+        filenames=domain_pred_filenames, output_dir=output_dir, gpu_id=gpu_id
+    )
     # # compute adenylation predictions
     # adenylation_pred_filenames = DomainDecoder.decode_from_embedding_fps(
     #     filenames=domain_embedding_filenames,
