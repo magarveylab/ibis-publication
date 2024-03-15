@@ -43,7 +43,10 @@ def run_on_bgc_fps(
                     for orf_id in cluster["orfs"]:
                         sequences_to_run.add(sequence_lookup[orf_id])
             # analysis
-            out = pipeline.run(list(sequences_to_run))
+            if len(sequences_to_run) > 0:
+                out = pipeline.run(list(sequences_to_run))
+            else:
+                out = []
             with open(export_fp, "w") as f:
                 json.dump(out, f)
         domain_pred_filenames.append(export_fp)

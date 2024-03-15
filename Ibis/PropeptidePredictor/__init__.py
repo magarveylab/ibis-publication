@@ -22,7 +22,7 @@ def run_on_mol_pred_fps(
     pipeline = PropeptidePredictorPipeline(gpu_id=gpu_id, cpu_cores=cpu_cores)
     # analysis
     for mol_pred_fp in filenames:
-        name = mol_pred_fp.split("/")[-1].split(".")[0]
+        name = mol_pred_fp.split("/")[-2]
         export_fp = f"{output_dir}/{name}/propeptide_predictions.json"
         if os.path.exists(export_fp) == False:
             proteins_to_run = set()
@@ -39,7 +39,9 @@ def run_on_mol_pred_fps(
                 for p in json.load(open(prodigal_fp)):
                     if p["hash_id"] in proteins_to_run:
                         sequences.add(p["sequence"])
-            out = propeptide_predictor.run(list(sequences))
+                out = pipeline.run(list(sequences))
+            else:
+                out = []
             with open(export_fp, "w") as f:
                 json.dump(out, f)
         propeptide_pred_filenames.append(export_fp)

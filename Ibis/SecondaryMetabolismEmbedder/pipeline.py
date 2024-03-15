@@ -76,9 +76,10 @@ class MetabolismEmbedderPipeline:
             self.graph_pooler.to(f"cuda:{self.gpu_id}")
 
     def __call__(self, report: ClusterInput) -> ClusterEmbeddingOutput:
-        contig_id = report["contig_id"]
-        contig_start = report["contig_start"]
-        contig_stop = report["contig_stop"]
+        contig_id, contig_start, contig_stop = report["cluster_id"].split("_")
+        contig_id = int(contig_id)
+        contig_start = int(contig_start)
+        contig_stop = int(contig_stop)
         data = self.preprocess(report)
         embedding = self._forward(data)
         return {

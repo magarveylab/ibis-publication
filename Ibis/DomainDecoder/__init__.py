@@ -15,6 +15,9 @@ from Ibis.DomainDecoder.databases import (
 from functools import partial
 from tqdm import tqdm
 import xxhash
+import pickle
+import json
+import os
 from typing import List, Callable
 
 decode_adenylation = partial(
@@ -108,15 +111,15 @@ def decode_from_embedding_fps(
                 prot_seq = prot["sequence"]
                 for region in prot["regions"]:
                     if region["label"] == target_domain:
-                        start, end = region["start"], region["end"]
-                        domain_seq = prot_seq[start:end]
+                        start, stop = region["start"], region["stop"]
+                        domain_seq = prot_seq[start:stop]
                         domain_id = xxhash.xxh32(domain_seq).intdigest()
                         domains_to_run.add(domain_id)
             # analysis
             data_queries = [
-                {"query_id": p["protein_id"], "embedding": p["embedding"]}
+                {"query_id": p["domain_id"], "embedding": p["embedding"]}
                 for p in pickle.load(open(embedding_fp, "rb"))
-                if p["protein_id"] in domains_to_run
+                if p["domain_id"] in domains_to_run
             ]
             if len(data_queries) == 0:
                 out = []

@@ -6,6 +6,8 @@ from Ibis.SecondaryMetabolismEmbedder.pipeline import (
     MetabolismEmbedderPipeline,
 )
 from tqdm import tqdm
+import pickle
+import json
 import os
 from typing import List, Optional
 
@@ -17,7 +19,7 @@ def embed_clusters(
 ) -> List[ClusterEmbeddingOutput]:
     # load pipeline
     if pipeline == None:
-        pipeline = BGCEmbedderPipeline(gpu_id=gpu_id)
+        pipeline = MetabolismEmbedderPipeline(gpu_id=gpu_id)
     # embed
     out = [pipeline(c) for c in tqdm(clusters, desc="Embedding bgcs")]
     return out
@@ -28,10 +30,10 @@ def run_on_domain_embedding_fps(
 ):
     bgc_emb_filenames = []
     # load pipeline
-    pipeline = BGCEmbedderPipeline(gpu_id=gpu_id)
+    pipeline = MetabolismEmbedderPipeline(gpu_id=gpu_id)
     # analysis
     for dom_emb_fp in tqdm(filenames):
-        name = fp.split("/")[-2]
+        name = dom_emb_fp.split("/")[-2]
         export_fp = f"{output_dir}/{name}/bgc_embeddings.pkl"
         if os.path.exists(export_fp) == False:
             # load domain embeddings
@@ -39,7 +41,7 @@ def run_on_domain_embedding_fps(
             for d in pickle.load(open(dom_emb_fp, "rb")):
                 dom_emb_lookup[d["domain_id"]] = d["embedding"]
             # load protein embeddings
-            prot_emb_fp = f"{output_dir}/{name}/protein_embeddings.pkl"
+            prot_emb_fp = f"{output_dir}/{name}/protein_embedding.pkl"
             prot_emb_lookup = {}
             for p in pickle.load(open(prot_emb_fp, "rb")):
                 prot_emb_lookup[p["protein_id"]] = p["embedding"]
@@ -95,7 +97,7 @@ def run_on_domain_embedding_fps(
                     }
                 )
             # analysis
-            out = [pipeline(c) for c in tqdm(clusters)]
+            out = [pipeline(c) for c in tqdm(cluster_inputs)]
             with open(export_fp, "wb") as f:
                 pickle.dump(out, f)
         bgc_emb_filenames.append(export_fp)
