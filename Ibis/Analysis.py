@@ -1,17 +1,19 @@
-from Ibis import (
-    Prodigal,
-    ProteinEmbedder,
-    ProteinDecoder,
-    SecondaryMetabolismPredictor,
-    DomainPredictor,
-    DomainEmbedder,
-    DomainDecoder,
-    PropeptidePredictor,
-    SecondaryMetabolismEmbedder,
-)
 import json
 import os
 from typing import List, Union
+
+from Ibis import (
+    DomainDecoder,
+    DomainEmbedder,
+    DomainPredictor,
+    PrimaryMetabolismPredictor,
+    Prodigal,
+    PropeptidePredictor,
+    ProteinDecoder,
+    ProteinEmbedder,
+    SecondaryMetabolismEmbedder,
+    SecondaryMetabolismPredictor,
+)
 
 
 def setup_working_directories(filenames: List[str], output_dir: str):
@@ -58,6 +60,14 @@ def run_ibis_on_genome(
     # ######################################################
     # # **TO DO** compute primary metabolism predictions
     # ######################################################
+    # compute primary metabolism predictions
+    primary_metabolism_pred_filenames = (
+        PrimaryMetabolismPredictor.parallel_run_on_pyrodigal_fps(
+            filenames=prodigal_filenames,
+            output_dir=output_dir,
+            cpu_cores=cpu_cores,
+        )
+    )
     # compute bgc boundaries
     bgc_filenames = SecondaryMetabolismPredictor.run_on_embedding_fps(
         filenames=protein_embedding_filenames,
