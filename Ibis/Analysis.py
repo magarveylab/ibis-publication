@@ -57,13 +57,10 @@ def run_ibis_on_genome(
         decode_fn=ProteinDecoder.decode_ko,
         decode_name="ko",
     )
-    # ######################################################
-    # # **TO DO** compute primary metabolism predictions
-    # ######################################################
     # compute primary metabolism predictions
     primary_metabolism_pred_filenames = (
-        PrimaryMetabolismPredictor.parallel_run_on_pyrodigal_fps(
-            filenames=prodigal_filenames,
+        PrimaryMetabolismPredictor.parallel_run_on_ko_pred_fps(
+            filenames=ko_pred_filenames,
             output_dir=output_dir,
             cpu_cores=cpu_cores,
         )

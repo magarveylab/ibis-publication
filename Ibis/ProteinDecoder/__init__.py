@@ -84,10 +84,25 @@ def decode_from_embedding_fps(
         name = embedding_fp.split("/")[-2]
         export_fp = f"{output_dir}/{name}/{decode_name}_predictions.json"
         if os.path.exists(export_fp) == False:
-            data_queries = [
-                {"query_id": p["protein_id"], "embedding": p["embedding"]}
-                for p in pickle.load(open(embedding_fp, "rb"))
-            ]
+            data_queries = []
+            if decode_name == "ec":
+                for p in pickle.load(open(embedding_fp, "rb")):
+                    # only consider enzymes for ec predictions
+                    if p["ec1"] != "EC:-":
+                        data_queries.append(
+                            {
+                                "query_id": p["protein_id"],
+                                "embedding": p["embedding"],
+                            }
+                        )
+            else:
+                for p in pickle.load(open(embedding_fp, "rb")):
+                    data_queries.append(
+                        {
+                            "query_id": p["protein_id"],
+                            "embedding": p["embedding"],
+                        }
+                    )
             out = decode_fn(data_queries)
             with open(export_fp, "w") as f:
                 json.dump(out, f)

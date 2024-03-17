@@ -15,28 +15,27 @@ from Ibis.PrimaryMetabolismPredictor.preprocess import (
 )
 
 
-def run_on_pyrodigal_fp(
-    pyrodigal_fp: str,
+def run_on_ko_pred_fp(
+    ko_pred_fp: str,
     output_dir: str,
     ec_homology_cutoff: float = 0.6,
     ko_homology_cutoff: float = 0.2,
     module_score: float = 0.7,
     allow_inf_ec: bool = True,
 ):
-    filename = os.path.basename(os.path.dirname(pyrodigal_fp))
+    filename = os.path.basename(os.path.dirname(ko_pred_fp))
     export_fp = os.path.join(
         output_dir, filename, "primary_metabolism_predictions.json"
     )
-    ko_fp = os.path.join(output_dir, filename, "ko_predictions.json")
-    ec_fp = os.path.join(output_dir, filename, "ec_predictions.json")
+    prodigal_fp = os.path.join(output_dir, filename, "prodigal.json")
+    ec_pred_fp = os.path.join(output_dir, filename, "ec_predictions.json")
     embed_fp = os.path.join(output_dir, filename, "protein_embedding.pkl")
     if os.path.exists(export_fp) == False:
         # do things.
         annots = merge_protein_annotations(
-            pyrodigal_fp=pyrodigal_fp,
-            ko_fp=ko_fp,
-            ec_fp=ec_fp,
-            embed_fp=embed_fp,
+            prodigal_fp=prodigal_fp,
+            ko_pred_fp=ko_pred_fp,
+            ec_pred_fp=ec_pred_fp,
         )
         ec_results = annotate_enzyme_orfs_with_pathways(
             orfs=annots,
@@ -58,12 +57,12 @@ def run_on_pyrodigal_fp(
     return export_fp
 
 
-def parallel_run_on_pyrodigal_fps(
+def parallel_run_on_ko_pred_fps(
     filenames: List[str],
     output_dir: str,
     cpu_cores: int = 1,
 ):
-    funct = partial(run_on_pyrodigal_fp, output_dir=output_dir)
+    funct = partial(run_on_ko_pred_fp, output_dir=output_dir)
     pool = Pool(cpu_cores)
     process = pool.imap_unordered(funct, filenames)
     out = [p for p in tqdm(process, total=len(filenames))]
