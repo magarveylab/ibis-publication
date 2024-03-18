@@ -30,9 +30,9 @@ knn_meta_lookup = {
 }
 
 
-def upload_knn_rels(
+def upload_knn(
     annotations: List[KNNData], label_type: str, bs: int = 1000
-):
+) -> bool:
     if label_type not in knn_meta_lookup:
         raise ValueError(f"Invalid Label Type: {label_type}")
     rel = knn_meta_lookup[label_type]["rel"]
@@ -48,15 +48,6 @@ def upload_knn_rels(
             ON MATCH
                 SET n.date = date(),
                     n.{process} = True,
-        """
-        )
-        # create relationship
-        run_cypher(
-            f"""
-            UNWIND {batch_str} as row
-            MATCH (n: OrfEmbedding {{hash_id: row.hash_id}}),
-                  (m: OrfAnnotation {{hash_id: row.hash_id}})
-            MERGE (n)-[r: orf_embedding_to_annotation]->(m)
         """
         )
         # add knn relationships
@@ -89,3 +80,4 @@ def upload_knn_rels(
                     r.date = date()
         """
         )
+    return True
