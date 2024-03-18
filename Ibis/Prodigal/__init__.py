@@ -1,5 +1,5 @@
 from Ibis.Prodigal.datastructs import ProdigalOutput
-from Ibis.Prodigal.upload import upload_contigs, upload_genomes, upload_contigs
+from Ibis.Prodigal.upload import upload_contigs, upload_genomes, upload_contigs, upload_orfs
 from multiprocessing import Pool
 from functools import partial
 from Bio import SeqIO
@@ -78,7 +78,7 @@ def upload_genome_from_fp(
             "filepath": nuc_fasta_fp,
             "contig_ids": list(contig_ids),
         }
-        return upload_genome(
+        return upload_genomes(
             genomes=[genome], contigs_uploaded=contigs_uploaded
         )
     else:
