@@ -1,8 +1,9 @@
+import os
+import time
+from typing import List, Set, TypedDict
+
 from neo4j.exceptions import TransientError
 from neomodel import db
-import time
-import os
-from typing import List, Set, TypedDict
 
 # initialize database
 neo4j_username = os.environ.get("NEO4J_USERNAME")
@@ -99,5 +100,33 @@ def upload_embeddings(
             UNWIND {stringfy_dicts(batch, keys=['hash_id', 'embedding'])} as row
             MATCH (n: {node_type} {{hash_id: row.hash_id}})
             CALL db.create.setNodeVectorProperty(n, 'embedding', row.embedding)
+        """
+        )
+
+
+def upload_rel_batch(
+    n1_node_type: str,
+    n1_property: str,
+    n2_node_type: str,
+    n2_property: str,
+    values: List[dict],
+    rel_name: str,
+    n1_value_key: Optional[str] = None,
+    n2_value_key: Optional[str] = None,
+    bs: int = 1000,
+):
+    if n1_value_key == None:
+        n1_value_key = n1_property
+    if n2_value_key == None:
+        n2_value_key = n2_property
+    batches = batchify(values, bs=bs)
+    for batch in tqdm(batches):
+        batch_str = stringfy_dicts(batch, keys=[n1_value_key, n2_value_key])
+        run_cypher(
+            f"""
+            UNWIND {batch_str} as row
+            MATCH (u:{n1_node_type} {{{n1_property}: row.{n1_value_key}}}),
+                (r:{n2_node_type} {{{n2_property}: row.{n2_value_key}}})
+            MERGE (u)-[:{rel_name}]->(r)
         """
         )
