@@ -76,7 +76,7 @@ def upload_embeddings(
     # batchify data
     batches = batchify(data, bs=bs)
     # submit batches
-    for batch in tqdm(batches):
+    for batch in tqdm(batches, desc=f"Uploading embeddings for {node_type}"):
         # check if ids exist in database
         if filter_ids == True:
             existing_ids = get_existing_hash_ids(

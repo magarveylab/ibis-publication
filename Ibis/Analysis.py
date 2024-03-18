@@ -22,22 +22,11 @@ def setup_working_directories(filenames: List[str], output_dir: str):
         os.makedirs(f"{output_dir}/{basename}", exist_ok=True)
 
 
-def get_genome_lookup(
-    filenames: List[str], genome_ids: List[int]
-) -> Dict[str, int]:
-    genome_lookup = {}
-    for fp, genome_id in zip(filenames, genome_ids):
-        genome_lookup[os.path.basename(fp)] = genome_id
-    return genome_lookup
-
-
 def run_ibis_on_genome(
     nuc_fasta_filenames: List[str],
     output_dir: str,
-    genome_ids: List[int] = [],
     gpu_id: int = 0,
     cpu_cores: int = 1,
-    upload_to_knowledge_graph: bool = False,
 ):
     # this function will be used to model airflow pipeline
     # setup working directories
@@ -53,19 +42,6 @@ def run_ibis_on_genome(
         output_dir=output_dir,
         cpu_cores=cpu_cores,
     )
-    # upload contigs, genomes, orfs
-    if upload_to_knowledge_graph:
-        contigs_uploaded = Prodigal.upload_contigs_from_prodigal_fps(
-            filenames=prodigal_filenames
-        )
-        genomes_uploaded = Prodigal.upload_genomes_from_prodigal_fps(
-            filenames=prodigal_filenames,
-            genome_lookup=genome_lookup,
-            contigs_uploaded=contigs_uploaded,
-        )
-        contigs_uploaded = Prodigal.upload_orfs_from_prodigal_fps(
-            filenames=prodigal_filenames, contigs_uploaded=contigs_uploaded
-        )
     # compute protein embeddings
     protein_embedding_filenames = ProteinEmbedder.run_on_prodigal_fps(
         filenames=prodigal_filenames, output_dir=output_dir, gpu_id=gpu_id
@@ -194,4 +170,30 @@ def run_ibis_on_genome(
             output_dir=output_dir,
             gpu_id=gpu_id,
         )
+    )
+
+
+def upload_to_knowledge_graph(
+    nuc_fasta_filename: str, output_dir: str, genome_id: Optional[int] = None
+):
+    name = os.path.basename(nuc_fasta_filename)
+    if isintance(genome_id, int):
+        genome_lookup = {name: genome_id}
+    else:
+        genome_lookup = {}
+    # file paths
+    prodigal_fp = f"{output_dir}/{name}/prodigal.json"
+    protein_embedding_fp = f"{output_dir}/{name}/protein_embedding.json"
+    # upload contigs
+    contigs_uploaded = Prodigal.upload_contigs_from_fp(prodigal_fp=prodigal_fp)
+    # upload genomes
+    genomes_uploaded = Prodigal.upload_genome_from_fp(
+        prodigal_fp=prodigal_fp,
+        nuc_fasta_fp=nuc_fasta_filename,
+        genome_id=genome_id,
+        contigs_uploaded=contigs_uploaded,
+    )
+    # upload contigs
+    contigs_uploaded = Prodigal.upload_orfs_from_fp(
+        prodigal_fp=prodigal_fp, contigs_uploaded=contigs_uploaded
     )

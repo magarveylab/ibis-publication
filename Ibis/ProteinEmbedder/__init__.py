@@ -33,3 +33,11 @@ def run_on_prodigal_fps(
     # delete pipeline
     del pipeline
     return protein_embedding_filenames
+
+
+def upload_protein_embeddings_from_fps(
+    filenames: List[str], output_dir: str, uploaded_orfs: bool, bs: int = 1000
+) -> bool:
+    to_upload = []
+    for emb_fp in filenames:
+        name
