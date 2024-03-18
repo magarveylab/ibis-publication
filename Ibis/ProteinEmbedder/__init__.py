@@ -22,7 +22,7 @@ def run_on_prodigal_fps(
     pipeline = ProteinEmbedderPipeline(gpu_id=gpu_id)
     # analysis
     for prodigal_fp in tqdm(filenames):
-        name = prodigal_fp.split("/")[-2]
+        name = os.path.basename(os.path.dirname(prodigal_fp))
         export_filename = f"{output_dir}/{name}/protein_embedding.pkl"
         if os.path.exists(export_filename) == False:
             sequences = [p["sequence"] for p in json.load(open(prodigal_fp))]

@@ -20,7 +20,7 @@ def run_on_bgc_fps(
     pipeline = DomainPredictorPipeline(gpu_id=gpu_id, cpu_cores=cpu_cores)
     # analysis
     for bgc_fp in tqdm(filenames):
-        name = bgc_fp.split("/")[-2]
+        name = os.path.basename(os.path.dirname(bgc_fp))
         export_fp = f"{output_dir}/{name}/domain_predictions.json"
         if os.path.exists(export_fp) == False:
             # load sequence lookup

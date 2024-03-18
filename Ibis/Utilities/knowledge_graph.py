@@ -2,7 +2,7 @@ from neo4j.exceptions import TransientError
 from neomodel import db
 import time
 import os
-from typing import List
+from typing import List, Set, TypedDict
 
 # initialize database
 neo4j_username = os.environ.get("NEO4J_USERNAME")
@@ -42,3 +42,62 @@ def stringfy_dicts(l: List[dict], keys: List[str]):
         l = l.replace(f"""'{k}'""", f"{k}")
         l = l.replace(f'''"{k}"''', f"{k}")
     return l
+
+
+def get_existing_hash_ids(node_type: str, ids: List[int]) -> Set[int]:
+    response = run_cypher(
+        f"""UNWIND {ids} as row
+            MATCH (n: {node_type} {{hash_id: row}})
+            RETURN n.hash_id
+    """
+    )
+    present_ids = set(i[0] for i in response[0])
+    response = run_cypher(
+        f"""UNWIND {list(present_ids)} as row
+            MATCH (n: {node_type} {{hash_id: row, embedding: null}})
+            RETURN n.hash_id
+    """
+    )
+    ids_with_missing_embeddings = set(i[0] for i in response[0])
+    return present_ids - ids_with_missing_embeddings
+
+
+class EmbeddingDict(TypedDict):
+    hash_id: int
+    embedding: List[int]
+
+
+def upload_embeddings(
+    node_type: str,
+    data: List[EmbeddingDict],
+    filter_ids: bool = True,
+    bs: int = 10,
+):
+    # batchify data
+    batches = batchify(data, bs=bs)
+    # submit batches
+    for batch in tqdm(batches):
+        # check if ids exist in database
+        if filter_ids == True:
+            existing_ids = get_existing_hash_ids(
+                node_type=node_type, ids=[i["hash_id"] for i in batch]
+            )
+            missing = set(unique) - existing_ids
+            if len(missing) == 0:
+                continue  # skip iteration if no data to upload
+            batch = [i for i in batch if i["hash_id"] in missing]
+        # create ids
+        to_create = [i["hash_id"] for i in batch]
+        run_cypher(
+            f"""UNWIND {to_create} as row
+                MERGE (n: {node_type} {{hash_id: row}})
+        """
+        )
+        # upload embeddings
+        run_cypher(
+            f"""
+            UNWIND {stringfy_dicts(batch, keys=['hash_id', 'embedding'])} as row
+            MATCH (n: {node_type} {{hash_id: row.hash_id}})
+            CALL db.create.setNodeVectorProperty(n, 'embedding', row.embedding)
+        """
+        )

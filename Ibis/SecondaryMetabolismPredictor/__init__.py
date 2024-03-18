@@ -82,7 +82,7 @@ def run_on_embedding_fps(
     mibig_pipeline = MibigMetabolismPredictorPipeline(gpu_id=gpu_id)
     # analysis
     for embedding_fp in tqdm(filenames):
-        name = embedding_fp.split("/")[-2]
+        name = os.path.basename(os.path.dirname(embedding_fp))
         prodigal_fp = f"{output_dir}/{name}/prodigal.json"
         export_fp = f"{output_dir}/{name}/bgc_predictions.json"
         if os.path.exists(export_fp) == False:

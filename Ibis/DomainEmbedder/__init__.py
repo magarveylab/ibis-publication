@@ -24,7 +24,7 @@ def run_on_domain_pred_fps(
     pipeline = DomainEmbedderPipeline(gpu_id=gpu_id)
     # analysis
     for domain_pred_fp in tqdm(filenames):
-        name = domain_pred_fp.split("/")[-2]
+        name = os.path.basename(os.path.dirname(domain_pred_fp))
         export_filename = f"{output_dir}/{name}/domain_embedding.pkl"
         if os.path.exists(export_filename) == False:
             sequences = set()

@@ -33,7 +33,7 @@ def run_on_domain_embedding_fps(
     pipeline = MetabolismEmbedderPipeline(gpu_id=gpu_id)
     # analysis
     for dom_emb_fp in tqdm(filenames):
-        name = dom_emb_fp.split("/")[-2]
+        name = os.path.basename(os.path.dirname(dom_emb_fp))
         export_fp = f"{output_dir}/{name}/bgc_embeddings.pkl"
         if os.path.exists(export_fp) == False:
             # load domain embeddings

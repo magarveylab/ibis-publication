@@ -81,7 +81,7 @@ def decode_from_embedding_fps(
     # run on all proteins
     decode_pred_filenames = []
     for embedding_fp in tqdm(filenames):
-        name = embedding_fp.split("/")[-2]
+        name = os.path.basename(os.path.dirname(embedding_fp))
         export_fp = f"{output_dir}/{name}/{decode_name}_predictions.json"
         if os.path.exists(export_fp) == False:
             data_queries = []
@@ -119,7 +119,7 @@ def decode_from_bgc_filenames(
     # run on only proteins in bgc
     decode_pred_filenames = []
     for bgc_fp in tqdm(filenames):
-        name = bgc_fp.split("/")[-2]
+        name = os.path.basename(os.path.dirname(bgc_fp))
         export_fp = f"{output_dir}/{name}/{decode_name}_predictions.json"
         if os.path.exists(export_fp) == False:
             # load embeddings

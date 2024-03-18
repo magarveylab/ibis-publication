@@ -101,7 +101,7 @@ def decode_from_embedding_fps(
 ):
     decode_pred_filenames = []
     for embedding_fp in tqdm(filenames):
-        name = embedding_fp.split("/")[-2]
+        name = os.path.basename(os.path.dirname(embedding_fp))
         export_fp = f"{output_dir}/{name}/{target_domain}_predictions.json"
         if os.path.exists(export_fp) == False:
             # find domains to analyze

@@ -22,7 +22,7 @@ def run_on_mol_pred_fps(
     pipeline = PropeptidePredictorPipeline(gpu_id=gpu_id, cpu_cores=cpu_cores)
     # analysis
     for mol_pred_fp in filenames:
-        name = mol_pred_fp.split("/")[-2]
+        name = os.path.basename(os.path.dirname(mol_pred_fp))
         export_fp = f"{output_dir}/{name}/propeptide_predictions.json"
         if os.path.exists(export_fp) == False:
             proteins_to_run = set()
