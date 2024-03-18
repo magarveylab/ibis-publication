@@ -52,3 +52,7 @@ def run_on_bgc_fps(
         domain_pred_filenames.append(export_fp)
     del pipeline
     return domain_pred_filenames
+
+
+def upload_domains_from_fp():
+    pass

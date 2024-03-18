@@ -1,23 +1,25 @@
+import functools
+from typing import List, Optional
+
+import numpy as np
+import xxhash
+from tqdm import tqdm
 from transformers import PreTrainedTokenizerFast
-from Ibis.Utilities.preprocess import slice_proteins, batchify_tokenized_inputs
-from Ibis.Utilities.onnx import get_onnx_base_model, get_onnx_head
-from Ibis.Utilities.tokenizers import get_protbert_tokenizer
-from Ibis.Utilities.class_dicts import get_class_dict
-from Ibis.Utilities.RegionCalling.postprocess import (
-    parallel_pipeline_token_region_calling,
-)
+
+from Ibis import curdir
 from Ibis.DomainPredictor.datastructs import (
     ModelInput,
     ModelOutput,
     PipelineIntermediateOutput,
     PipelineOutput,
 )
-from Ibis import curdir
-from tqdm import tqdm
-import numpy as np
-import functools
-import xxhash
-from typing import List, Optional
+from Ibis.Utilities.class_dicts import get_class_dict
+from Ibis.Utilities.onnx import get_onnx_base_model, get_onnx_head
+from Ibis.Utilities.preprocess import batchify_tokenized_inputs, slice_proteins
+from Ibis.Utilities.RegionCalling.postprocess import (
+    parallel_pipeline_token_region_calling,
+)
+from Ibis.Utilities.tokenizers import get_protbert_tokenizer
 
 
 class DomainPredictorPipeline:

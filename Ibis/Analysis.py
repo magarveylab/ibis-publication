@@ -1,6 +1,5 @@
-import json
 import os
-from typing import Dict, List, Union
+from typing import Dict, List, Optional
 
 from Ibis import (
     DomainDecoder,
@@ -32,9 +31,6 @@ def run_ibis_on_genome(
     # setup working directories
     setup_working_directories(
         filenames=nuc_fasta_filenames, output_dir=output_dir
-    )
-    genome_lookup = get_genome_lookup(
-        filenames=nuc_fasta_filenames, genome_ids=genome_ids
     )
     # prodigal prediction
     prodigal_filenames = Prodigal.parallel_run_on_nuc_fasta_fps(
@@ -257,3 +253,6 @@ def upload_to_knowledge_graph(
         label_type="BioactivePeptideLabel",
         protein_embs_uploaded=protein_embs_uploaded,
     )
+    # upload domain predictions
+
+    # upload
