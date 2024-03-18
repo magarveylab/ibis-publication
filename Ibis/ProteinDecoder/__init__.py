@@ -10,6 +10,7 @@ from Ibis.ProteinDecoder.databases import (
     IbisGene,
     IbisMolecule,
 )
+from Ibis.ProteinDecoder.upload import upload_knn
 from functools import partial
 from tqdm import tqdm
 import pickle
@@ -166,5 +167,12 @@ def decode_from_bgc_filenames(
     return decode_pred_filenames
 
 
-def upload_protein_decode_from_fp():
-    pass
+def upload_protein_decoding_from_fp(
+    knn_fp: str, label_type: str, protein_embs_uploaded: bool
+) -> bool:
+    if protein_embs_uploaded:
+        return upload_knn(
+            annotations=json.load(open(knn_fp)), label_type=label_type
+        )
+    else:
+        return False

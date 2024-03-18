@@ -180,6 +180,11 @@ def get_filelookup(nuc_fasta_filename: str, output_dir: str) -> Dict[str, str]:
         "protein_embedding_fp": f"{output_dir}/{name}/protein_embedding.pkl",
         "bgc_pred_fp": f"{output_dir}/{name}/bgc_predictions.json",
         "primary_metabolism_pred_fp": f"{output_dir}/{name}/primary_metabolism_predictions.json",
+        "ec_pred_fp": f"{output_dir}/{name}/ec_predictions.json",
+        "ko_pred_fp": f"{output_dir}/{name}/ko_predictions.json",
+        "gene_family_pred_fp": f"{output_dir}/{name}/gene_family_predictions.json",
+        "gene_pred_fp": f"{output_dir}/{name}/gene_predictions.json",
+        "mol_pred_fp": f"{output_dir}/{name}/molecule_predictions.json",
     }
     # check if missing files
     for k, v in filelookup.items():
@@ -214,7 +219,7 @@ def upload_to_knowledge_graph(
         prodigal_fp=filelookup["prodigal_fp"],
         contigs_uploaded=contigs_uploaded,
     )
-    # upload protein embeddings
+    # upload protein embeddings and ec1 annotations
     protein_embs_uploaded = ProteinEmbedder.upload_protein_embeddings_from_fp(
         prodigal_fp=filelookup["prodigal_fp"],
         protein_embedding_fp=filelookup["protein_embedding_fp"],
@@ -222,4 +227,33 @@ def upload_to_knowledge_graph(
         primary_metabolism_pred_fp=filelookup["primary_metabolism_pred_fp"],
         orfs_uploaded=orfs_uploaded,
     )
-    #
+    # upload ec predictions
+    ec_uploaded = ProteinDecoder.upload_protein_decoding_from_fp(
+        ec_pred_fp=filelookup["ec_pred_fp"],
+        label_type="EC4Label",
+        protein_embs_uploaded=protein_embs_uploaded,
+    )
+    # upload ko predictions
+    ko_uploaded = ProteinDecoder.upload_protein_decoding_from_fp(
+        ko_pred_fp=filelookup["ko_pred_fp"],
+        label_type="KeggOrthologLabel",
+        protein_embs_uploaded=protein_embs_uploaded,
+    )
+    # upload gene family predictions
+    gene_family_uploaded = ProteinDecoder.upload_protein_decoding_from_fp(
+        gene_family_pred_fp=filelookup["gene_family_pred_fp"],
+        label_type="GeneFamilyLabel",
+        protein_embs_uploaded=protein_embs_uploaded,
+    )
+    # upload gene predictions
+    gene_uploaded = ProteinDecoder.upload_protein_decoding_from_fp(
+        gene_pred_fp=filelookup["gene_pred_fp"],
+        label_type="GeneLabel",
+        protein_embs_uploaded=protein_embs_uploaded,
+    )
+    # upload molecule predictions
+    mol_uploaded = ProteinDecoder.upload_protein_decoding_from_fp(
+        mol_pred_fp=filelookup["mol_pred_fp"],
+        label_type="BioactivePeptideLabel",
+        protein_embs_uploaded=protein_embs_uploaded,
+    )

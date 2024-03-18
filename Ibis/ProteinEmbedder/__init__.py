@@ -1,6 +1,9 @@
 from Ibis.ProteinEmbedder.pipeline import ProteinEmbedderPipeline
 from Ibis.ProteinEmbedder.datastructs import PipelineOutput
-from Ibis.ProteinEmbedder.upload import upload_protein_embeddings
+from Ibis.ProteinEmbedder.upload import (
+    upload_protein_embeddings,
+    upload_ec1_annotations,
+)
 from tqdm import tqdm
 import pickle
 import json
@@ -48,7 +51,16 @@ def upload_protein_embeddings_from_fp(
     for p in pickle.load(open(protein_embedding_fp, "rb")):
         protein_id = p["protein_id"]
         embedding = p["embedding"]
-        embedding_lookup[protein_id] = embedding
+        ec1_label = p["ec1"]
+        ec1_score = p["ec1_score"]
+        is_enzyme = False if ec1_label == "EC:-" else True
+        embedding_lookup[protein_id] = {
+            "protein_id": protein_id,
+            "embedding": embedding,
+            "ec1_label": ec1_label,
+            "ec1_score": ec1_score,
+            "is_enzyme": is_enzyme,
+        }
     # caputre orfs involved in metabolism
     relevant_orfs = set()
     primary_data = json.load(open(primary_metabolism_pred_fp))
@@ -68,13 +80,11 @@ def upload_protein_embeddings_from_fp(
         orf_id = f"{contig_id}_{contig_start}_{contig_stop}"
         if orf_id in relevant_orfs:
             protein_id = p["protein_id"]
-            embedding = embedding_lookup[protein_id]
-            to_upload.append(
-                {
-                    "protein_id": protein_id,
-                    "embedding": embedding,
-                }
-            )
-    return upload_protein_embeddings(
+            to_upload.append(embedding_lookup[protein_id])
+    embedding_uploaded = upload_protein_embeddings(
         orfs=to_upload, orfs_uploaded=orfs_uploaded
     )
+    ec1_uploaded = upload_ec1_annotations(
+        orfs=to_upload, embedding_uploaded=embedding_uploaded
+    )
+    return True
