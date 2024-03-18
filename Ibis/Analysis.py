@@ -173,27 +173,52 @@ def run_ibis_on_genome(
     )
 
 
+def get_filelookup(nuc_fasta_filename: str, output_dir: str) -> Dict[str, str]:
+    name = os.path.basename(nuc_fasta_filename)
+    filelookup = {
+        "prodigal_fp": f"{output_dir}/{name}/prodigal.json",
+        "protein_embedding_fp": f"{output_dir}/{name}/protein_embedding.pkl",
+        "bgc_pred_fp": f"{output_dir}/{name}/bgc_predictions.json",
+        "primary_metabolism_pred_fp": f"{output_dir}/{name}/primary_metabolism_predictions.json",
+    }
+    # check if missing files
+    for k, v in filelookup.items():
+        if os.path.exists(v) == False:
+            return None
+    else:
+        return filelookup
+
+
 def upload_to_knowledge_graph(
     nuc_fasta_filename: str, output_dir: str, genome_id: Optional[int] = None
 ):
-    name = os.path.basename(nuc_fasta_filename)
-    if isintance(genome_id, int):
-        genome_lookup = {name: genome_id}
-    else:
-        genome_lookup = {}
     # file paths
-    prodigal_fp = f"{output_dir}/{name}/prodigal.json"
-    protein_embedding_fp = f"{output_dir}/{name}/protein_embedding.json"
+    filelookup = get_filelookup(
+        nuc_fasta_filename=nuc_fasta_filename, output_dir=output_dir
+    )
+    if filelookup is None:
+        raise ValueError("Missing files")
     # upload contigs
-    contigs_uploaded = Prodigal.upload_contigs_from_fp(prodigal_fp=prodigal_fp)
+    contigs_uploaded = Prodigal.upload_contigs_from_fp(
+        prodigal_fp=filelookup["prodigal_fp"]
+    )
     # upload genomes
     genomes_uploaded = Prodigal.upload_genome_from_fp(
-        prodigal_fp=prodigal_fp,
+        prodigal_fp=filelookup["prodigal_fp"],
         nuc_fasta_fp=nuc_fasta_filename,
         genome_id=genome_id,
         contigs_uploaded=contigs_uploaded,
     )
-    # upload contigs
-    contigs_uploaded = Prodigal.upload_orfs_from_fp(
-        prodigal_fp=prodigal_fp, contigs_uploaded=contigs_uploaded
+    # upload orfs
+    orfs_uploaded = Prodigal.upload_orfs_from_fp(
+        prodigal_fp=filelookup["prodigal_fp"],
+        contigs_uploaded=contigs_uploaded,
+    )
+    # upload protein embeddings
+    protein_embs_uploaded = ProteinEmbedder.upload_protein_embeddings_from_fp(
+        prodigal_fp=filelookup["prodigal_fp"],
+        protein_embedding_fp=filelookup["protein_embedding_fp"],
+        bgc_pred_fp=filelookup["bgc_pred_fp"],
+        primary_metabolism_pred_fp=filelookup["primary_metabolism_pred_fp"],
+        orfs_uploaded=orfs_uploaded,
     )

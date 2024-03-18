@@ -17,7 +17,7 @@ class OrfDict(TypedDict):
 
 
 def upload_protein_embeddings(
-    orfs: List[OrfDict], uploaded_orfs: bool, bs: int = 1000
+    orfs: List[OrfDict], orfs_uploaded: bool, bs: int = 1000
 ):
     # upload embeddings
     unique = {}
@@ -27,7 +27,7 @@ def upload_protein_embeddings(
         unique[hash_id] = {"hash_id": hash_id, "embedding": embedding}
     upload_embeddings(node_type="OrfEmbedding", data=list(unique.values()))
     # connect embeddings to orfs
-    if uploaded_orfs:
+    if orfs_uploaded:
         # reformat rels
         rels = []
         for o in orfs:
