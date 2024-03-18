@@ -22,8 +22,8 @@ def ec3_converter(ec):
         return ec
 
 
-def get_reference_pathways() -> pd.DataFrame:
-    df_fp = os.path.join(_dat_dir, "cactus_db_pathways.csv")
+def get_reference_pathways():
+    df_fp = os.path.join(_dat_dir, "pathways.csv")
     df = pd.read_csv(df_fp)
     df = df[df["ec_numbers"].notna()].copy()
     df["ec_numbers"] = df["ec_numbers"].map(lambda x: set(x.split("|")))

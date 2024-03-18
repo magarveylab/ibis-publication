@@ -26,7 +26,7 @@ class EnzymeKOData(TypedDict):
 
 
 class AnnotationOutput(TypedDict):
-    pathway_id: int
+    neo4j_id: int
     pathway_description: str
     completeness_score: int
     candidate_orfs: Dict[str, Set[orf_id_type]]

@@ -95,7 +95,7 @@ def annotate_enzyme_orfs_with_pathways(
                         for k, v in pathway.items()
                         if k
                         in [
-                            "pathway_id",
+                            "neo4j_id",
                             "pathway_description",
                             "kegg_module_id",
                         ]
@@ -212,6 +212,7 @@ class KOAnnotator:
         for rule_dat in self.rules:
             mod_name = rule_dat["module_name"]
             mod_desc = rule_dat["pathway_name"]
+            neo4j_id = rule_dat["neo4j_id"]
             rule = rule_dat["rule"]
             kos = []
             true_srs = []
@@ -229,7 +230,7 @@ class KOAnnotator:
             if score >= self.module_completeness_threshold:
                 out.append(
                     {
-                        "pathway_id": mod_name,
+                        "neo4j_id": neo4j_id,
                         "pathway_description": mod_desc,
                         "kegg_module_id": mod_name,
                         "completeness_score": round(score, 3),
