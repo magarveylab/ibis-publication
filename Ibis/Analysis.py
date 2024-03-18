@@ -1,6 +1,6 @@
 import json
 import os
-from typing import List, Union
+from typing import Dict, List, Union
 
 from Ibis import (
     DomainDecoder,
