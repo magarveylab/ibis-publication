@@ -216,6 +216,17 @@ def upload_to_knowledge_graph(
         prodigal_fp=filelookup["prodigal_fp"],
         contigs_uploaded=contigs_uploaded,
     )
+    # upload primary metabolism
+    primary_metabolism_uploaded = (
+        PrimaryMetabolismPredictor.upload_primary_metabolism_from_fp(
+            primary_metabolism_pred_fp=filelookup[
+                "primary_metabolism_pred_fp"
+            ],
+            genome_id=genome_id,
+            orfs_uploaded=orfs_uploaded,
+            genome_uploaded=genomes_uploaded,
+        )
+    )
     # upload protein embeddings and ec1 annotations
     protein_embs_uploaded = ProteinEmbedder.upload_protein_embeddings_from_fp(
         prodigal_fp=filelookup["prodigal_fp"],
@@ -260,4 +271,3 @@ def upload_to_knowledge_graph(
         prodigal_fp=filelookup["prodigal_fp"],
         orfs_uploaded=orfs_uploaded,
     )
-    # upload

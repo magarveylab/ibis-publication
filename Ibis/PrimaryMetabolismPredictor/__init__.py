@@ -72,7 +72,10 @@ def parallel_run_on_ko_pred_fps(
 
 
 def upload_primary_metabolism_from_fp(
-    primary_metabolism_pred_fp: str, genome_id: int
+    primary_metabolism_pred_fp: str,
+    genome_id: int,
+    orfs_uploaded: bool,
+    genome_uploaded: bool,
 ):
     if isinstance(genome_id, int):
         preds = []
@@ -93,6 +96,10 @@ def upload_primary_metabolism_from_fp(
                         "orf_ids": list(candidate_orf_ids),
                     }
                 )
-        return upload_predicted_pathways(preds=preds)
+        return upload_predicted_pathways(
+            preds=preds,
+            orfs_uploaded=orfs_uploaded,
+            genome_uploaded=genome_uploaded,
+        )
     else:
         return False
