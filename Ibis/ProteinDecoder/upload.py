@@ -1,10 +1,8 @@
-from Ibis.Utilities.knowledge_graph import (
-    run_cypher,
-    batchify,
-    stringfy_dicts,
-)
-from tqdm import tqdm
 from typing import List, TypedDict
+
+from tqdm import tqdm
+
+from Ibis.Utilities.knowledge_graph import batchify, run_cypher, stringfy_dicts
 
 
 class KNNData(TypedDict):

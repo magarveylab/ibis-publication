@@ -1,22 +1,24 @@
+from typing import List, Optional
+
+import numpy as np
+import xxhash
+from tqdm import tqdm
 from transformers import PreTrainedTokenizerFast
-from Ibis.Utilities.preprocess import (
-    slice_proteins,
-    batchify_tokenized_inputs,
-    get_indices,
-)
-from Ibis.Utilities.onnx import get_onnx_base_model, get_onnx_head
-from Ibis.Utilities.tokenizers import get_protbert_tokenizer
-from Ibis.Utilities.class_dicts import get_class_dict
+
+from Ibis import curdir
 from Ibis.ProteinEmbedder.datastructs import (
     ModelInput,
     ModelOutput,
     PipelineOutput,
 )
-from Ibis import curdir
-from tqdm import tqdm
-import numpy as np
-import xxhash
-from typing import List, Optional
+from Ibis.Utilities.class_dicts import get_class_dict
+from Ibis.Utilities.onnx import get_onnx_base_model, get_onnx_head
+from Ibis.Utilities.preprocess import (
+    batchify_tokenized_inputs,
+    get_indices,
+    slice_proteins,
+)
+from Ibis.Utilities.tokenizers import get_protbert_tokenizer
 
 
 class ProteinEmbedderPipeline:
