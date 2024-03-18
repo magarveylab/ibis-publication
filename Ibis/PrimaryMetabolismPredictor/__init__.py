@@ -13,6 +13,7 @@ from Ibis.PrimaryMetabolismPredictor.annotation import (
 from Ibis.PrimaryMetabolismPredictor.preprocess import (
     merge_protein_annotations,
 )
+from Ibis.PrimaryMetabolismPredictor.upload import upload_primary_metabolism
 
 
 def run_on_ko_pred_fp(
@@ -68,3 +69,10 @@ def parallel_run_on_ko_pred_fps(
     out = [p for p in tqdm(process, total=len(filenames))]
     pool.close()
     return out
+
+
+def upload_primary_metabolism_from_fp(fp: str, genome_id: int):
+    if isinstance(genome_id, int):
+        upload_primary_metabolism(fp=fp, genome_id=genome_id)
+    else:
+        return False
