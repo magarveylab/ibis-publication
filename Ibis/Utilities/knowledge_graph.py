@@ -1,15 +1,19 @@
+import os
+import time
+from typing import List, Set, TypedDict
+
 from neo4j.exceptions import TransientError
 from neomodel import db
-import time
-import os
-from typing import List, Set, TypedDict
+from tqdm import tqdm
 
 # initialize database
 neo4j_username = os.environ.get("NEO4J_USERNAME")
 neo4j_password = os.environ.get("NEO4J_PASSWORD")
 neo4j_host = os.environ.get("NEO4J_HOST")
 neo4j_port = os.environ.get("NEO4J_PORT")
-neo4j_url = f"bolt://{neo4j_username}:{neo4j_passwordpassword}@{neo4j_host}:{neo4j_port}"
+neo4j_url = (
+    f"bolt://{neo4j_username}:{neo4j_password}@{neo4j_host}:{neo4j_port}"
+)
 db.set_connection(neo4j_url)
 
 
@@ -79,10 +83,11 @@ def upload_embeddings(
     for batch in tqdm(batches, desc=f"Uploading embeddings for {node_type}"):
         # check if ids exist in database
         if filter_ids == True:
+            present_ids = set(i["hash_id"] for i in batch)
             existing_ids = get_existing_hash_ids(
                 node_type=node_type, ids=[i["hash_id"] for i in batch]
             )
-            missing = set(unique) - existing_ids
+            missing = set(present_ids) - existing_ids
             if len(missing) == 0:
                 continue  # skip iteration if no data to upload
             batch = [i for i in batch if i["hash_id"] in missing]

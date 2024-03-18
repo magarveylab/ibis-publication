@@ -1,5 +1,6 @@
+from typing import List, Optional
+
 import onnxruntime as ort
-from typing import Optional, List
 
 
 def get_providers(gpu_id: Optional[int]) -> List[str]:

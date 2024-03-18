@@ -123,5 +123,6 @@ def upload_domains(orfs: List[OrfDict], orfs_uploaded: bool, bs: int = 1000):
                     n.ran_functional_knn = False,
         """
         )
-
     # link domain annotations to domains
+    if orfs_uploaded:
+        batches = batchify(domain_annos_to_submit, bs=bs)

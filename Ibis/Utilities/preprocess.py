@@ -1,6 +1,6 @@
+import math
 from collections import deque
 from itertools import islice
-import math
 from typing import List
 
 
