@@ -1,7 +1,9 @@
-from Ibis import curdir
-from glob import glob
-import requests
 import os
+from glob import glob
+
+import requests
+
+from Ibis import curdir
 
 
 def setup_qdrant_docker():

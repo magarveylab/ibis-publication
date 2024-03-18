@@ -257,3 +257,8 @@ def upload_to_knowledge_graph(
         label_type="BioactivePeptideLabel",
         protein_embs_uploaded=protein_embs_uploaded,
     )
+    # upload domain predictions
+    
+    
+
+    # upload
