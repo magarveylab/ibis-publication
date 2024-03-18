@@ -183,6 +183,13 @@ def get_filelookup(nuc_fasta_filename: str, output_dir: str) -> Dict[str, str]:
         "mol_pred_fp": f"{output_dir}/{name}/molecule_predictions.json",
         "domain_pred_fp": f"{output_dir}/{name}/domain_predictions.json",
         "domain_embedding_fp": f"{output_dir}/{name}/domain_embedding.pkl",
+        "adenylation_pred_fp": f"{output_dir}/{name}/A_predictions.json",
+        "acyltransferase_pred_fp": f"{output_dir}/{name}/AT_predictions.json",
+        "ketosynthase_pred_fp": f"{output_dir}/{name}/KS_predictions.json",
+        "ketoreductase_pred_fp": f"{output_dir}/{name}/KR_predictions.json",
+        "dehydratase_pred_fp": f"{output_dir}/{name}/DH_predictions.json",
+        "enoylreductase_pred_fp": f"{output_dir}/{name}/ER_predictions.json",
+        "thiolation_pred_fp": f"{output_dir}/{name}/T_predictions.json",
     }
     # check if missing files
     for k, v in filelookup.items():
@@ -277,4 +284,46 @@ def upload_to_knowledge_graph(
         domain_pred_fp=filelookup["domain_pred_fp"],
         domain_embedding_fp=filelookup["domain_embedding_fp"],
         domains_uploaded=domains_uploaded,
+    )
+    # upload adenylation predictions
+    adenylation_uploaded = DomainDecoder.upload_domain_decoding_from_fp(
+        knn_fp=filelookup["adenylation_pred_fp"],
+        label_type="SubstrateLabel",
+        domain_embs_uploaded=domain_embs_uploaded,
+    )
+    # upload acyltransferase predictions
+    acyltransferase_uploaded = DomainDecoder.upload_domain_decoding_from_fp(
+        knn_fp=filelookup["acyltransferase_pred_fp"],
+        label_type="SubstrateLabel",
+        domain_embs_uploaded=domain_embs_uploaded,
+    )
+    # upload ketosynthase predictions
+    ketosynthase_uploaded = DomainDecoder.upload_domain_decoding_from_fp(
+        knn_fp=filelookup["ketosynthase_pred_fp"],
+        label_type="DomainFunctionalLabel",
+        domain_embs_uploaded=domain_embs_uploaded,
+    )
+    # upload ketoreductase predictions
+    ketoreductase_uploaded = DomainDecoder.upload_domain_decoding_from_fp(
+        knn_fp=filelookup["ketoreductase_pred_fp"],
+        label_type="DomainFunctionalLabel",
+        domain_embs_uploaded=domain_embs_uploaded,
+    )
+    # upload dehydratase predictions
+    dehydratase_uploaded = DomainDecoder.upload_domain_decoding_from_fp(
+        knn_fp=filelookup["dehydratase_pred_fp"],
+        label_type="DomainFunctionalLabel",
+        domain_embs_uploaded=domain_embs_uploaded,
+    )
+    # upload enoylreductase predictions
+    enoylreductase_uploaded = DomainDecoder.upload_domain_decoding_from_fp(
+        knn_fp=filelookup["enoylreductase_pred_fp"],
+        label_type="DomainFunctionalLabel",
+        domain_embs_uploaded=domain_embs_uploaded,
+    )
+    # upload thiolation predictions
+    thiolation_uploaded = DomainDecoder.upload_domain_decoding_from_fp(
+        knn_fp=filelookup["thiolation_pred_fp"],
+        label_type="DomainSubclassLabel",
+        domain_embs_uploaded=domain_embs_uploaded,
     )

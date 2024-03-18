@@ -16,6 +16,7 @@ from Ibis.DomainDecoder.databases import (
     IbisKetosynthase,
     IbisThiolation,
 )
+from Ibis.DomainDecoder.upload import upload_knn
 from Ibis.Utilities.Qdrant.classification import (
     KNNClassification,
     neighborhood_classification,
@@ -131,3 +132,14 @@ def decode_from_embedding_fps(
                 json.dump(out, f)
         decode_pred_filenames.append(export_fp)
     return decode_pred_filenames
+
+
+def upload_domain_decoding_from_fp(
+    knn_fp: str, label_type: str, domain_embs_uploaded: bool
+) -> bool:
+    if domain_embs_uploaded:
+        return upload_knn(
+            annotations=json.load(open(knn_fp)), label_type=label_type
+        )
+    else:
+        return False
