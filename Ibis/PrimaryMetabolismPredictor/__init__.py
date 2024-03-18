@@ -13,7 +13,7 @@ from Ibis.PrimaryMetabolismPredictor.annotation import (
 from Ibis.PrimaryMetabolismPredictor.preprocess import (
     merge_protein_annotations,
 )
-from Ibis.PrimaryMetabolismPredictor.upload import upload_primary_metabolism
+from Ibis.PrimaryMetabolismPredictor.upload import upload_predicted_pathways
 
 
 def run_on_ko_pred_fp(
@@ -71,8 +71,28 @@ def parallel_run_on_ko_pred_fps(
     return out
 
 
-def upload_primary_metabolism_from_fp(fp: str, genome_id: int):
+def upload_primary_metabolism_from_fp(
+    primary_metabolism_pred_fp: str, genome_id: int
+):
     if isinstance(genome_id, int):
-        upload_primary_metabolism(fp=fp, genome_id=genome_id)
+        preds = []
+        dat = json.load(open(primary_metabolism_pred_fp))
+        for ress in dat.values():
+            for res in ress:
+                spider_pwy_id = res["neo4j_id"]
+                prediction_id = f"{genome_id}_{spider_pwy_id}"
+                candidate_orf_ids = set()
+                for cand_orfs in res["candidate_orfs"].values():
+                    candidate_orf_ids.update(cand_orfs)
+                preds.append(
+                    {
+                        "prediction_id": prediction_id,
+                        "module_completeness_score": res["completeness_score"],
+                        "detected_labels": res["matched_criteria"],
+                        "missing_labels": res["missing_criteria"],
+                        "orf_ids": list(candidate_orf_ids),
+                    }
+                )
+        return upload_predicted_pathways(preds=preds)
     else:
         return False

@@ -181,6 +181,7 @@ def get_filelookup(nuc_fasta_filename: str, output_dir: str) -> Dict[str, str]:
         "gene_family_pred_fp": f"{output_dir}/{name}/gene_family_predictions.json",
         "gene_pred_fp": f"{output_dir}/{name}/gene_predictions.json",
         "mol_pred_fp": f"{output_dir}/{name}/molecule_predictions.json",
+        "domain_pred_fp": f"{output_dir}/{name}/domain_predictions.json",
     }
     # check if missing files
     for k, v in filelookup.items():
@@ -254,5 +255,9 @@ def upload_to_knowledge_graph(
         protein_embs_uploaded=protein_embs_uploaded,
     )
     # upload domain predictions
-
+    domains_uploaded = DomainPredictor.upload_domains_from_fp(
+        domain_pred_fp=filelookup["domain_pred_fp"],
+        prodigal_fp=filelookup["prodigal_fp"],
+        orfs_uploaded=orfs_uploaded,
+    )
     # upload

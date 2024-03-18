@@ -20,7 +20,9 @@ class OrfDict(TypedDict):
     domains: List[DomainDict]
 
 
-def upload_domains(orfs: List[OrfDict], orfs_uploaded: bool, bs: int = 1000):
+def upload_domains(
+    orfs: List[OrfDict], orfs_uploaded: bool, bs: int = 1000
+) -> bool:
     orf_to_domain_rels = []
     domain_to_label_rels = []
     domains_to_submit = []

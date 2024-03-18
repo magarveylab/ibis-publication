@@ -5,6 +5,7 @@ from typing import List
 from tqdm import tqdm
 
 from Ibis.DomainPredictor.pipeline import DomainPredictorPipeline
+from Ibis.DomainPredictor.upload import upload_domains
 
 
 def run_on_protein_sequences(
@@ -56,5 +57,24 @@ def run_on_bgc_fps(
     return domain_pred_filenames
 
 
-def upload_domains_from_fp():
-    pass
+def upload_domains_from_fp(
+    domain_pred_fp: str, prodigal_fp: str, orfs_uploaded: bool
+):
+    # domain lookup
+    domain_lookup = {
+        p["protein_id"]: p["regions"] for p in json.load(open(domain_pred_fp))
+    }
+    # upload domains
+    orfs = []
+    for p in json.load(open(prodigal_fp)):
+        protein_id = p["protein_id"]
+        orfs.append(
+            {
+                "contig_id": p["contig_id"],
+                "protein_id": protein_id,
+                "contig_start": p["contig_start"],
+                "contig_stop": p["contig_stop"],
+                "domains": domain_lookup.get(protein_id, []),
+            }
+        )
+    return upload_domains(orfs=orfs, orfs_uploaded=orfs_uploaded)
