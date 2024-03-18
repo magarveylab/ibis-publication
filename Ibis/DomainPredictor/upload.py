@@ -20,14 +20,10 @@ class OrfDict(TypedDict):
     domains: List[DomainDict]
 
 
-target_domains = ["A", "AT", "KS", "KR", "DH", "ER", "T"]
-
-
 def upload_domains(orfs: List[OrfDict], orfs_uploaded: bool, bs: int = 1000):
     orf_to_domain_rels = []
     domain_to_label_rels = []
     domains_to_submit = []
-    domain_annos_to_submit = []
     for orf in orfs:
         contig_id = orf["contig_id"]
         contig_start = orf["contig_start"]
@@ -54,10 +50,6 @@ def upload_domains(orfs: List[OrfDict], orfs_uploaded: bool, bs: int = 1000):
             orf_to_domain_rels.append(
                 {"orf_id": orf_id, "domain_id": domain_id}
             )
-            if domain_label in target_domains:
-                domain_annos_to_submit.append(
-                    {"domain_id": domain_id, "hash_id": hash_id}
-                )
     # add domains
     batches = batchify(domains_to_submit, bs=bs)
     for batch in tqdm(batches, desc="Uploading domains"):
@@ -103,26 +95,4 @@ def upload_domains(orfs: List[OrfDict], orfs_uploaded: bool, bs: int = 1000):
             MERGE (n)-[r: domain_to_label]->(m)
         """
         )
-    # add domain annotations
-    batches = batchify(domain_annos_to_submit, bs=bs)
-    for batch in tqdm(batches, desc="Uploading domain annotations"):
-        batch_str = stringfy_dicts(batch, keys=["hash_id"])
-        run_cypher(
-            f"""
-            UNWIND {batch_str} as row
-            MERGE (n: DomainAnnotation {{hash_id: row.hash_id}})
-            ON CREATE
-                SET n.date = date(),
-                    n.ran_substrate_knn = False,
-                    n.ran_subclass_knn = False,
-                    n.ran_functional_knn = False,
-            ON MATCH
-                SET n.date = date(),
-                    n.ran_substrate_knn = False,
-                    n.ran_subclass_knn = False,
-                    n.ran_functional_knn = False,
-        """
-        )
-    # link domain annotations to domains
-    if orfs_uploaded:
-        batches = batchify(domain_annos_to_submit, bs=bs)
+    return True
