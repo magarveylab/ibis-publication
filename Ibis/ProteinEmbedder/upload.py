@@ -1,12 +1,14 @@
-from Ibis.Utilities.knowledge_graph import (
-    upload_embeddings,
-    run_cypher,
-    batchify,
-    stringfy_dicts,
-)
-from tqdm import tqdm
-import numpy as np
 from typing import List, TypedDict
+
+import numpy as np
+from tqdm import tqdm
+
+from Ibis.Utilities.knowledge_graph import (
+    batchify,
+    run_cypher,
+    stringfy_dicts,
+    upload_embeddings,
+)
 
 
 class EmbeddingDict(TypedDict):
@@ -34,8 +36,8 @@ def upload_protein_embeddings(
     # connect embeddings to orfs
     if orfs_uploaded:
         # upload rels
-        batches = batchify(rels, bs=bs)
-        for batch in tqdm(batch, desc="Uploading orf to embedding rels"):
+        batches = batchify(orfs, bs=bs)
+        for batch in tqdm(batches, desc="Uploading orf to embedding rels"):
             batch_str = stringfy_dicts(batch, keys=["protein_id"])
             run_cypher(
                 f"""
@@ -52,7 +54,7 @@ def upload_ec1_annotations(
     orfs: List[ECDict], embedding_uploaded: bool, bs: int = 1000
 ):
     batches = batchify(orfs, bs=bs)
-    for batch in tqdm(batch, desc="Uploading ec1 annotations"):
+    for batch in tqdm(batches, desc="Uploading ec1 annotations"):
         batch_str = stringfy_dicts(
             batch, keys=["protein_id", "ec1_label", "ec1_score", "is_enzyme"]
         )

@@ -1,22 +1,24 @@
-from Ibis.Utilities.Qdrant.classification import (
-    ontology_neighborhood_classification,
-    neighborhood_classification,
-    KNNClassification,
-)
+import json
+import os
+import pickle
+from functools import partial
+from typing import Callable, List
+
+from tqdm import tqdm
+
 from Ibis.ProteinDecoder.databases import (
     IbisEC,
-    IbisKO,
-    IbisGeneFamily,
     IbisGene,
+    IbisGeneFamily,
+    IbisKO,
     IbisMolecule,
 )
 from Ibis.ProteinDecoder.upload import upload_knn
-from functools import partial
-from tqdm import tqdm
-import pickle
-import json
-import os
-from typing import List, Callable
+from Ibis.Utilities.Qdrant.classification import (
+    KNNClassification,
+    neighborhood_classification,
+    ontology_neighborhood_classification,
+)
 
 decode_ec = partial(
     KNNClassification,
