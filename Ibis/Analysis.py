@@ -22,16 +22,30 @@ def setup_working_directories(filenames: List[str], output_dir: str):
         os.makedirs(f"{output_dir}/{basename}", exist_ok=True)
 
 
+def get_genome_lookup(
+    filenames: List[str], genome_ids: List[int]
+) -> Dict[str, int]:
+    genome_lookup = {}
+    for fp, genome_id in zip(filenames, genome_ids):
+        genome_lookup[os.path.basename(fp)] = genome_id
+    return genome_lookup
+
+
 def run_ibis_on_genome(
     nuc_fasta_filenames: List[str],
     output_dir: str,
+    genome_ids: List[int] = [],
     gpu_id: int = 0,
     cpu_cores: int = 1,
+    upload_to_knowledge_graph: bool = False,
 ):
     # this function will be used to model airflow pipeline
     # setup working directories
     setup_working_directories(
         filenames=nuc_fasta_filenames, output_dir=output_dir
+    )
+    genome_lookup = get_genome_lookup(
+        filenames=nuc_fasta_filenames, genome_ids=genome_ids
     )
     # prodigal prediction
     prodigal_filenames = Prodigal.parallel_run_on_nuc_fasta_fps(
@@ -39,6 +53,19 @@ def run_ibis_on_genome(
         output_dir=output_dir,
         cpu_cores=cpu_cores,
     )
+    # upload contigs, genomes, orfs
+    if upload_to_knowledge_graph:
+        contigs_uploaded = Prodigal.upload_contigs_from_prodigal_fps(
+            filenames=prodigal_filenames
+        )
+        genomes_uploaded = Prodigal.upload_genomes_from_prodigal_fps(
+            filenames=prodigal_filenames,
+            genome_lookup=genome_lookup,
+            contigs_uploaded=contigs_uploaded,
+        )
+        contigs_uploaded = Prodigal.upload_orfs_from_prodigal_fps(
+            filenames=prodigal_filenames, contigs_uploaded=contigs_uploaded
+        )
     # compute protein embeddings
     protein_embedding_filenames = ProteinEmbedder.run_on_prodigal_fps(
         filenames=prodigal_filenames, output_dir=output_dir, gpu_id=gpu_id

@@ -1,4 +1,5 @@
 from Ibis.Prodigal.datastructs import ProdigalOutput
+from Ibis.Prodigal.upload import upload_contigs, upload_genomes, upload_contigs
 from multiprocessing import Pool
 from functools import partial
 from Bio import SeqIO
@@ -7,7 +8,7 @@ import pyrodigal
 import xxhash
 import json
 import os
-from typing import List, Union
+from typing import List, Dict, Union
 
 
 def run_prodigal(nuc_fasta_fp: str) -> List[ProdigalOutput]:
@@ -55,3 +56,55 @@ def parallel_run_on_nuc_fasta_fps(
     out = [p for p in tqdm(process, total=len(filenames))]
     pool.close()
     return out
+
+
+def upload_contigs_from_prodigal_fps(filenames: List[str]) -> bool:
+    contig_ids = set()
+    for prodigal_fp in tqdm(filenames):
+        contig_ids.updae(
+            [p["contig_id"] for p in json.load(open(prodigal_fp, "r"))]
+        )
+    return upload_contigs(contig_ids=list(contig_ids))
+
+
+def upload_genomes_from_prodigal_fps(
+    filenames: List[str], genome_lookup: Dict[str, int], contigs_uploaded: bool
+) -> bool:
+    genomes = []
+    for prodigal_fp in tqdm(filenames):
+        name = prodigal_fp.split("/")[-2]
+        if name not in genome_lookup:
+            continue
+        contig_ids = set(
+            p["contig_id"] for p in json.load(open(prodigal_fp, "r"))
+        )
+        genomes.append(
+            {
+                "genome_id": genome_lookup[name],
+                "filepath": name,
+                "contig_ids": list(contig_ids),
+            }
+        )
+    if len(genomes) > 0:
+        return upload_genome(
+            genomes=genomes, contigs_uploaded=contigs_uploaded
+        )
+    else:
+        return False
+
+
+def upload_orfs_from_prodigal_fps(
+    filenames: List[str], contigs_uploaded: bool = False
+):
+    orfs = []
+    for prodigal_fp in tqdm(filenames):
+        for p in json.load(open(prodigal_fp, "r")):
+            orfs.append(
+                {
+                    "protein_id": p["protein_id"],
+                    "contig_id": p["contig_id"],
+                    "contig_start": p["contig_start"],
+                    "contig_stop": p["contig_stop"],
+                }
+            )
+    return upload_orfs(orfs=orfs, contigs_uploaded=contigs_uploaded)
