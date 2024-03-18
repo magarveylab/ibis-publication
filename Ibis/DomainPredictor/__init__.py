@@ -1,8 +1,10 @@
-from Ibis.DomainPredictor.pipeline import DomainPredictorPipeline
-from tqdm import tqdm
 import json
 import os
 from typing import List
+
+from tqdm import tqdm
+
+from Ibis.DomainPredictor.pipeline import DomainPredictorPipeline
 
 
 def run_on_protein_sequences(

@@ -1,17 +1,19 @@
+from collections import Counter
+from typing import Dict, List
+
+import networkx as nx
+from tqdm import tqdm
+
 from Ibis.SecondaryMetabolismPredictor.datastructs import (
+    ClusterOutput,
     InternalAnnotatedOrfDictWithMeta,
     MibigAnnotatedOrfDictWithMeta,
-    ClusterOutput,
     OrfInput,
 )
 from Ibis.SecondaryMetabolismPredictor.standardization import (
     get_internal_chemotype_lookup,
     get_mibig_chemotype_standardization,
 )
-from tqdm import tqdm
-import networkx as nx
-from collections import Counter
-from typing import List, Dict
 
 # load standardizations
 internal_chemotype_lookup = get_internal_chemotype_lookup()

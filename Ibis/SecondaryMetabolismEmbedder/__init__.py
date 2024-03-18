@@ -1,15 +1,17 @@
+import json
+import os
+import pickle
+from typing import List, Optional
+
+from tqdm import tqdm
+
 from Ibis.SecondaryMetabolismEmbedder.datastructs import (
-    ClusterInput,
     ClusterEmbeddingOutput,
+    ClusterInput,
 )
 from Ibis.SecondaryMetabolismEmbedder.pipeline import (
     MetabolismEmbedderPipeline,
 )
-from tqdm import tqdm
-import pickle
-import json
-import os
-from typing import List, Optional
 
 
 def embed_clusters(

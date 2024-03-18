@@ -1,19 +1,21 @@
+import json
+from glob import glob
+from typing import Dict, Optional
+
+import numpy as np
+import torch
+from torch_geometric.data import Batch, Data
+
+from Ibis import curdir
 from Ibis.SecondaryMetabolismEmbedder.datastructs import (
-    ClusterInput,
     ClusterEmbeddingOutput,
+    ClusterInput,
 )
 from Ibis.SecondaryMetabolismEmbedder.preprocess import BGCGraph
 from Ibis.Utilities.GraphStructs.HeteroGraph import (
-    get_lookup_from_hetero,
     batch_to_homogeneous,
+    get_lookup_from_hetero,
 )
-from Ibis import curdir
-from torch_geometric.data import Data, Batch
-from glob import glob
-import numpy as np
-import torch
-import json
-from typing import Optional, Dict
 
 vocab_dir = f"{curdir}/SecondaryMetabolismEmbedder/vocab"
 node_vocab = json.load(open(f"{vocab_dir}/node_vocab.json"))

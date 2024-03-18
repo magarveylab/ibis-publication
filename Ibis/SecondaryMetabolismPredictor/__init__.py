@@ -1,24 +1,26 @@
+import json
+import os
+import pickle
+from typing import List, Optional
+
+from tqdm import tqdm
+
 from Ibis.SecondaryMetabolismPredictor.datastructs import (
-    OrfInput,
     ClusterOutput,
+    OrfInput,
+)
+from Ibis.SecondaryMetabolismPredictor.pipeline import (
+    InternalMetabolismPredictorPipeline,
+    MibigMetabolismPredictorPipeline,
+)
+from Ibis.SecondaryMetabolismPredictor.postprocess import (
+    add_orfs_to_bgcs,
+    call_bgcs_by_chemotype,
+    call_bgcs_by_proximity,
 )
 from Ibis.SecondaryMetabolismPredictor.preprocess import (
     get_tensors_from_genome,
 )
-from Ibis.SecondaryMetabolismPredictor.pipeline import (
-    MibigMetabolismPredictorPipeline,
-    InternalMetabolismPredictorPipeline,
-)
-from Ibis.SecondaryMetabolismPredictor.postprocess import (
-    call_bgcs_by_proximity,
-    call_bgcs_by_chemotype,
-    add_orfs_to_bgcs,
-)
-from tqdm import tqdm
-import pickle
-import json
-import os
-from typing import List, Optional
 
 
 def run_on_orfs(

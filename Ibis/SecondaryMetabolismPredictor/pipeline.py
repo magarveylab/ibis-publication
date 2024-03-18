@@ -1,20 +1,22 @@
+from glob import glob
+from typing import List, Optional, Union
+
+import torch
+from torch_geometric.data import Batch, Data
+from tqdm import tqdm
+
+from Ibis import curdir
 from Ibis.SecondaryMetabolismPredictor.datastructs import (
-    OrfInput,
     InternalAnnotatedOrfDict,
     InternalAnnotatedOrfDictWithMeta,
     MibigAnnotatedOrfDict,
     MibigAnnotatedOrfDictWithMeta,
+    OrfInput,
 )
 from Ibis.SecondaryMetabolismPredictor.preprocess import (
     get_tensors_from_genome,
 )
 from Ibis.Utilities.class_dicts import get_class_dict
-from Ibis import curdir
-from torch_geometric.data import Data, Batch
-from tqdm import tqdm
-from glob import glob
-import torch
-from typing import Optional, List, Union
 
 
 def batchify(l, bs=10):

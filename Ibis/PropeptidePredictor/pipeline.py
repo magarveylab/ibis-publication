@@ -1,21 +1,24 @@
+import functools
+from typing import List, Optional
+
+import numpy as np
+from tqdm import tqdm
 from transformers import PreTrainedTokenizerFast
-from Ibis.Utilities.preprocess import slice_proteins, batchify_tokenized_inputs
-from Ibis.Utilities.onnx import get_onnx_base_model, get_onnx_head
-from Ibis.Utilities.tokenizers import get_protbert_tokenizer
-from Ibis.Utilities.class_dicts import get_class_dict
-from Ibis.Utilities.RegionCalling.postprocess import (
-    parallel_pipeline_token_region_calling,
-)
+
+from Ibis import curdir
 from Ibis.PropeptidePredictor.datastructs import (
     ModelInput,
     ModelOutput,
     PipelineIntermediateOutput,
     PipelineOutput,
 )
-from Ibis import curdir
-from tqdm import tqdm
-import numpy as np
-from typing import List, Optional
+from Ibis.Utilities.class_dicts import get_class_dict
+from Ibis.Utilities.onnx import get_onnx_base_model, get_onnx_head
+from Ibis.Utilities.preprocess import batchify_tokenized_inputs, slice_proteins
+from Ibis.Utilities.RegionCalling.postprocess import (
+    parallel_pipeline_token_region_calling,
+)
+from Ibis.Utilities.tokenizers import get_protbert_tokenizer
 
 
 class PropeptidePredictorPipeline:
@@ -105,6 +108,7 @@ class PropeptidePredictorPipeline:
     def postprocess(
         self, model_outputs: ModelOutput
     ) -> PipelineIntermediateOutput:
+        sequence = model_outputs["sequence"]
         logits = model_outputs["propeptide_window_predictions"]
         # average logits
         logits = self.softmax(
@@ -127,7 +131,6 @@ class PropeptidePredictorPipeline:
                 )
         # return output
         return {
-            "domain_id": xxhash.xxh32(sequence).intdigest(),
             "sequence": sequence,
             "residue_classification": residue_classification,
         }

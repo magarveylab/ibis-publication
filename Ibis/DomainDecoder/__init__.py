@@ -1,24 +1,26 @@
-from Ibis.Utilities.Qdrant.classification import (
-    ontology_neighborhood_classification,
-    neighborhood_classification,
-    KNNClassification,
-)
-from Ibis.DomainDecoder.databases import (
-    IbisAdenylation,
-    IbisAcyltransferase,
-    IbisKetosynthase,
-    IbisKetoreductase,
-    IbisDehydratase,
-    IbisEnoylreductase,
-    IbisThiolation,
-)
-from functools import partial
-from tqdm import tqdm
-import xxhash
-import pickle
 import json
 import os
-from typing import List, Callable
+import pickle
+from functools import partial
+from typing import Callable, List
+
+import xxhash
+from tqdm import tqdm
+
+from Ibis.DomainDecoder.databases import (
+    IbisAcyltransferase,
+    IbisAdenylation,
+    IbisDehydratase,
+    IbisEnoylreductase,
+    IbisKetoreductase,
+    IbisKetosynthase,
+    IbisThiolation,
+)
+from Ibis.Utilities.Qdrant.classification import (
+    KNNClassification,
+    neighborhood_classification,
+    ontology_neighborhood_classification,
+)
 
 decode_adenylation = partial(
     KNNClassification,
@@ -72,7 +74,7 @@ decode_dehydratase = partial(
 
 decode_enoylreductase = partial(
     KNNClassification,
-    qdrant_db=IbisDehydratase,
+    qdrant_db=IbisEnoylreductase,
     classification_method=neighborhood_classification,
     top_n=5,
     apply_cutoff_before_homology=False,

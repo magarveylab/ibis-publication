@@ -1,5 +1,6 @@
-import numpy as np
 from typing import List, TypedDict
+
+import numpy as np
 
 
 class DomainInput(TypedDict):

@@ -1,14 +1,16 @@
-from Ibis.ProteinEmbedder.pipeline import ProteinEmbedderPipeline
-from Ibis.ProteinEmbedder.datastructs import PipelineOutput
-from Ibis.ProteinEmbedder.upload import (
-    upload_protein_embeddings,
-    upload_ec1_annotations,
-)
-from tqdm import tqdm
-import pickle
 import json
 import os
+import pickle
 from typing import List
+
+from tqdm import tqdm
+
+from Ibis.ProteinEmbedder.datastructs import PipelineOutput
+from Ibis.ProteinEmbedder.pipeline import ProteinEmbedderPipeline
+from Ibis.ProteinEmbedder.upload import (
+    upload_ec1_annotations,
+    upload_protein_embeddings,
+)
 
 
 def run_on_protein_sequences(

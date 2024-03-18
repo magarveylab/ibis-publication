@@ -1,6 +1,8 @@
-from Ibis import curdir
-import pandas as pd
 from typing import Dict, Set
+
+import pandas as pd
+
+from Ibis import curdir
 
 table_dir = f"{curdir}/SecondaryMetabolismPredictor/tables"
 

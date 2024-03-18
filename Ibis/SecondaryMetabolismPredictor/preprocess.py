@@ -1,11 +1,13 @@
-from Ibis.SecondaryMetabolismPredictor.datastructs import OrfInput
-from torch_geometric.data import Data
+from typing import Dict, List
+
 import more_itertools as mit
 import networkx as nx
 import numpy as np
-from tqdm import tqdm
 import torch
-from typing import List, Dict
+from torch_geometric.data import Data
+from tqdm import tqdm
+
+from Ibis.SecondaryMetabolismPredictor.datastructs import OrfInput
 
 
 def sort_orfs_by_contigs(orfs: List[OrfInput]) -> Dict[int, List[OrfInput]]:

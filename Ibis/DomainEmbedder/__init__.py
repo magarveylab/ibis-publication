@@ -1,10 +1,12 @@
-from Ibis.DomainEmbedder.pipeline import DomainEmbedderPipeline
-from Ibis.DomainEmbedder.datastructs import PipelineOutput
-from tqdm import tqdm
-import pickle
 import json
 import os
+import pickle
 from typing import List
+
+from tqdm import tqdm
+
+from Ibis.DomainEmbedder.datastructs import PipelineOutput
+from Ibis.DomainEmbedder.pipeline import DomainEmbedderPipeline
 
 
 def run_on_protein_sequences(

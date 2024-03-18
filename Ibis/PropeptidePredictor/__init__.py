@@ -1,7 +1,8 @@
-from Ibis.PropeptidePredictor.pipeline import PropeptidePredictorPipeline
 import json
 import os
 from typing import List, Optional
+
+from Ibis.PropeptidePredictor.pipeline import PropeptidePredictorPipeline
 
 
 def run_propeptide_predictor_on_proteins(

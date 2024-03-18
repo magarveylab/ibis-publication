@@ -1,6 +1,7 @@
-from Ibis.PrimaryMetabolismPredictor.datastructs import EnzymeKOData
 import json
 from typing import List
+
+from Ibis.PrimaryMetabolismPredictor.datastructs import EnzymeKOData
 
 
 def merge_protein_annotations(

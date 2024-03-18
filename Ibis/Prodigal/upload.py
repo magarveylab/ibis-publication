@@ -1,6 +1,8 @@
-from Ibis.Utilities.knowledge_graph import run_cypher, batchify, stringfy_dicts
+from typing import List, TypedDict
+
 from tqdm import tqdm
-from typing import TypedDict, List
+
+from Ibis.Utilities.knowledge_graph import batchify, run_cypher, stringfy_dicts
 
 
 class GenomeDict(TypedDict):
@@ -25,7 +27,9 @@ def upload_contigs(contig_ids: List[int], bs: int = 1000) -> bool:
     return True
 
 
-def upload_genomes(genomes: List[GenomeDict], contigs_uploaded: bool, bs:int = 1000) -> bool:
+def upload_genomes(
+    genomes: List[GenomeDict], contigs_uploaded: bool, bs: int = 1000
+) -> bool:
     # upload genomes
     batches = batchify(genomes, bs=bs)
     for batch in batches:
