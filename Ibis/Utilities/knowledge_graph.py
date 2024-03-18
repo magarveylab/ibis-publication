@@ -4,6 +4,7 @@ from typing import List, Optional, Set, TypedDict
 
 from neo4j.exceptions import TransientError
 from neomodel import db
+from tqdm import tqdm
 
 # initialize database
 neo4j_username = os.environ.get("NEO4J_USERNAME")
