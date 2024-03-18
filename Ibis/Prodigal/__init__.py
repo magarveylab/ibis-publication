@@ -1,14 +1,16 @@
-from Ibis.Prodigal.datastructs import ProdigalOutput
-from Ibis.Prodigal.upload import upload_contigs, upload_genomes, upload_contigs, upload_orfs
-from multiprocessing import Pool
-from functools import partial
-from Bio import SeqIO
-from tqdm import tqdm
-import pyrodigal
-import xxhash
 import json
 import os
-from typing import List, Dict, Union
+from functools import partial
+from multiprocessing import Pool
+from typing import Dict, List, Union
+
+import pyrodigal
+import xxhash
+from Bio import SeqIO
+from tqdm import tqdm
+
+from Ibis.Prodigal.datastructs import ProdigalOutput
+from Ibis.Prodigal.upload import upload_contigs, upload_genomes, upload_orfs
 
 
 def run_prodigal(nuc_fasta_fp: str) -> List[ProdigalOutput]:
