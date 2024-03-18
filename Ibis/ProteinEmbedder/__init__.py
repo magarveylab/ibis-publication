@@ -71,9 +71,6 @@ def upload_protein_embeddings_from_fp(
             embedding = embedding_lookup[protein_id]
             to_upload.append(
                 {
-                    "contig_id": contig_id,
-                    "contig_start": contig_start,
-                    "contig_stop": contig_stop,
                     "protein_id": protein_id,
                     "embedding": embedding,
                 }

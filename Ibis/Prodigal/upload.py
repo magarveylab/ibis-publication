@@ -1,4 +1,5 @@
 from Ibis.Utilities.knowledge_graph import run_cypher, batchify, stringfy_dicts
+from tqdm import tqdm
 from typing import TypedDict
 
 

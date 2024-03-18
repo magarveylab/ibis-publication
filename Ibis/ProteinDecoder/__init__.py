@@ -164,3 +164,7 @@ def decode_from_bgc_filenames(
                 json.dump(out, f)
         decode_pred_filenames.append(export_fp)
     return decode_pred_filenames
+
+
+def upload_protein_decode_from_fp():
+    pass

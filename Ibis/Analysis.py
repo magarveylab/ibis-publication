@@ -222,3 +222,4 @@ def upload_to_knowledge_graph(
         primary_metabolism_pred_fp=filelookup["primary_metabolism_pred_fp"],
         orfs_uploaded=orfs_uploaded,
     )
+    #
