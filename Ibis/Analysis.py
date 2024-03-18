@@ -182,6 +182,7 @@ def get_filelookup(nuc_fasta_filename: str, output_dir: str) -> Dict[str, str]:
         "gene_pred_fp": f"{output_dir}/{name}/gene_predictions.json",
         "mol_pred_fp": f"{output_dir}/{name}/molecule_predictions.json",
         "domain_pred_fp": f"{output_dir}/{name}/domain_predictions.json",
+        "domain_embedding_fp": f"{output_dir}/{name}/domain_embedding.pkl",
     }
     # check if missing files
     for k, v in filelookup.items():
@@ -270,4 +271,10 @@ def upload_to_knowledge_graph(
         domain_pred_fp=filelookup["domain_pred_fp"],
         prodigal_fp=filelookup["prodigal_fp"],
         orfs_uploaded=orfs_uploaded,
+    )
+    # upload domain embeddings
+    domain_embs_uploaded = DomainEmbedder.upload_domain_embeddings_from_fp(
+        domain_pred_fp=filelookup["domain_pred_fp"],
+        domain_embedding_fp=filelookup["domain_embedding_fp"],
+        domains_uploaded=domains_uploaded,
     )

@@ -7,7 +7,10 @@ from tqdm import tqdm
 
 from Ibis.DomainEmbedder.datastructs import PipelineOutput
 from Ibis.DomainEmbedder.pipeline import DomainEmbedderPipeline
-from Ibis.DomainEmbedder.upload import upload_domain_embeddings
+from Ibis.DomainEmbedder.upload import (
+    initialize_domain_annotations,
+    upload_domain_embeddings,
+)
 
 
 def run_on_protein_sequences(
@@ -76,7 +79,11 @@ def upload_domain_embeddings_from_fp(
                     }
                 )
     if len(domains) > 0:
-        upload_domain_embeddings(
+        embedding_uploaded = upload_domain_embeddings(
             domains=domains, domains_uploaded=domains_uploaded
+        )
+        initialize_domain_annotations(
+            hash_ids=list(set(d["hash_id"] for d in domains)),
+            embedding_uploaded=embedding_uploaded,
         )
     return True
