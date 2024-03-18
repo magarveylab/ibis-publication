@@ -33,3 +33,16 @@ class AnnotationOutput(TypedDict):
     kegg_module_id: str
     missing_criteria: List[str]
     matched_criteria: List[str]
+
+
+################
+# upload types #
+################
+
+
+class PredictedPathwayDict(TypedDict):
+    prediction_id: str  # {genome_enum_id}_{pathway_id}
+    module_completeness_score: float
+    detected_labels: List[str]
+    missing_labels: List[str]
+    orf_ids: List[str]
