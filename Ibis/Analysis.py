@@ -133,7 +133,7 @@ def run_ibis_on_genomes(
         gpu_id=gpu_id,
     )
     # compute adenylation predictions
-    adenylation_pred_filenames = DomainDecoder.run_on_files(
+    adenylation_preds_created = DomainDecoder.run_on_files(
         filenames=basenames,
         output_dir=output_dir,
         domain_embs_created=domain_embs_created,
@@ -198,7 +198,7 @@ def run_ibis_on_genomes(
         cpu_cores=cpu_cores,
     )
     # compute metabolism embeddings
-    bgc_embedding_filenames = SecondaryMetabolismEmbedder.run_on_files(
+    bgc_embs_created = SecondaryMetabolismEmbedder.run_on_files(
         filenames=basenames,
         output_dir=output_dir,
         prodigal_preds_created=prodigal_preds_created,
