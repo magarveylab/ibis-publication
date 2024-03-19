@@ -5,6 +5,7 @@ from typing import List, Optional
 from tqdm import tqdm
 
 from Ibis.PropeptidePredictor.pipeline import PropeptidePredictorPipeline
+from Ibis.PropeptidePredictor.upload import upload_propeptides
 
 
 def run_propeptide_predictor_on_proteins(
@@ -54,3 +55,25 @@ def run_on_files(
                 json.dump(out, f)
     del pipeline
     return True
+
+
+def upload_propetides_from_files(
+    propeptide_pred_fp: str, orfs_uploaded: bool
+) -> bool:
+    propeptides = []
+    for p in json.load(open(propeptide_pred_fp)):
+        protein_id = p["protein_id"]
+        protein_start = p["start"]
+        protein_stop = p["stop"]
+        trimmed_sequence = p["sequence"][protein_start:protein_stop]
+        propeptides.append(
+            {
+                "protein_id": protein_id,
+                "protein_start": protein_start,
+                "protein_stop": protein_stop,
+                "trimmed_sequence": trimmed_sequence,
+            }
+        )
+    return upload_propeptides(
+        propeptides=propeptides, orfs_uploaded=orfs_uploaded
+    )
