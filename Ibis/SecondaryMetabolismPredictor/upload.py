@@ -15,7 +15,7 @@ class BGCDict(TypedDict):
     mibig_chemotypes: List[str]
 
 
-def upload_bgc(
+def upload_bgcs(
     bgcs: List[BGCDict],
     genome_id: Optional[int],
     orfs_uploaded: bool,
@@ -25,11 +25,12 @@ def upload_bgc(
 ) -> bool:
     source = "internal"
     # add region_ids
-    for r in bgcs:
-        r["region_id"] = (
-            f"{r['contig_id']}_{r['contig_start']}_{r['contig_stop']}"
-        )
-        r["source"] = source
+    for c in bgcs:
+        contig_id = c["contig_id"]
+        contig_start = c["contig_start"]
+        contig_stop = c["contig_stop"]
+        c["region_id"] = f"{contig_id}_{contig_start}_{contig_stop}"
+        c["source"] = source
     # add bgcs
     if len(bgcs) > 0:
         batches = batchify(bgcs, bs=bs)

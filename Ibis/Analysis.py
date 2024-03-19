@@ -236,7 +236,14 @@ def upload_to_knowledge_graph(
         )
     )
     # upload secondary metabolism
-
+    bgc_uploaded = SecondaryMetabolismPredictor.upload_bgcs_from_fp(
+        nuc_fasta_fp=nuc_fasta_filename,
+        bgc_pred_fp=filelookup["bgc_pred_fp"],
+        genome_id=genome_id,
+        orfs_uploaded=orfs_uploaded,
+        contigs_uploaded=contigs_uploaded,
+        genome_uploaded=genomes_uploaded,
+    )
     # upload protein embeddings and ec1 annotations
     protein_embs_uploaded = ProteinEmbedder.upload_protein_embeddings_from_fp(
         prodigal_fp=filelookup["prodigal_fp"],

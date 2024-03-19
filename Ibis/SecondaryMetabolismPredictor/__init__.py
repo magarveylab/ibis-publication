@@ -3,6 +3,8 @@ import os
 import pickle
 from typing import List, Optional
 
+import xxhash
+from Bio import SeqIO
 from tqdm import tqdm
 
 from Ibis.SecondaryMetabolismPredictor.datastructs import (
@@ -21,6 +23,7 @@ from Ibis.SecondaryMetabolismPredictor.postprocess import (
 from Ibis.SecondaryMetabolismPredictor.preprocess import (
     get_tensors_from_genome,
 )
+from Ibis.SecondaryMetabolismPredictor.upload import upload_bgcs
 
 
 def run_on_orfs(
@@ -120,3 +123,35 @@ def run_on_embedding_fps(
     del internal_pipeline
     del mibig_pipeline
     return bgc_pred_filenames
+
+
+def upload_bgcs_from_fp(
+    nuc_fasta_fp: str,
+    bgc_pred_fp: str,
+    genome_id: Optional[int],
+    orfs_uploaded: bool,
+    contigs_uploaded: bool,
+    genome_uploaded: bool,
+) -> bool:
+    # nucleotide sequence lookup
+    seq_lookup = {}
+    for seq in SeqIO.parse(nuc_fasta_fp, "fasta"):
+        seq = str(seq.seq)
+        contig_id = xxhash.xxh32(seq).intdigest()
+        seq_lookup[contig_id] = seq
+    # add hash_id to bgcs
+    bgcs = json.load(open(bgc_pred_fp))
+    if len(bgcs) > 0:
+        for c in bgcs:
+            contig_id = c["contig_id"]
+            contig_start = c["contig_start"]
+            contig_stop = c["contig_stop"]
+            bgc_seq = seq_lookup[contig_id][contig_start:contig_stop]
+            c["hash_id"] = xxhash.xxh32(bgc_seq).intdigest()
+    return upload_bgcs(
+        bgcs=bgcs,
+        genome_id=genome_id,
+        orfs_uploaded=orfs_uploaded,
+        contigs_uploaded=contigs_uploaded,
+        genome_uploaded=genome_uploaded,
+    )
