@@ -336,3 +336,4 @@ def upload_to_knowledge_graph(
         label_type="DomainSubclassLabel",
         domain_embs_uploaded=domain_embs_uploaded,
     )
+    # upload bgc embedding
