@@ -3,6 +3,8 @@ import os
 import pickle
 from typing import List, Optional
 
+import xxhash
+from Bio import SeqIO
 from tqdm import tqdm
 
 from Ibis.SecondaryMetabolismEmbedder.datastructs import (
@@ -12,6 +14,7 @@ from Ibis.SecondaryMetabolismEmbedder.datastructs import (
 from Ibis.SecondaryMetabolismEmbedder.pipeline import (
     MetabolismEmbedderPipeline,
 )
+from Ibis.SecondaryMetabolismEmbedder.upload import upload_bgc_embeddings
 
 
 def embed_clusters(
@@ -41,7 +44,7 @@ def run_on_files(
     pipeline = MetabolismEmbedderPipeline(gpu_id=gpu_id)
     # analysis
     for name in tqdm(filenames):
-        export_fp = f"{output_dir}/{name}/bgc_embeddings.pkl"
+        export_fp = f"{output_dir}/{name}/bgc_embedding.pkl"
         if os.path.exists(export_fp) == False:
             dom_emb_fp = f"{output_dir}/{name}/domain_embedding.pkl"
             # load domain embeddings
@@ -109,4 +112,37 @@ def run_on_files(
             with open(export_fp, "wb") as f:
                 pickle.dump(out, f)
     del pipeline
+    return True
+
+
+def upload_bgc_embeddings_from_files(
+    nuc_fasta_fp: str,
+    bgc_embedding_fp: str,
+    bgcs_uploaded: bool,
+) -> bool:
+    # nucleotide sequence lookup
+    seq_lookup = {}
+    for seq in SeqIO.parse(nuc_fasta_fp, "fasta"):
+        seq = str(seq.seq)
+        contig_id = xxhash.xxh32(seq).intdigest()
+        seq_lookup[contig_id] = seq
+    # embedding_lookup
+    to_upload = []
+    for bgc in pickle.load(open(bgc_embedding_fp, "rb")):
+        contig_id = bgc["contig_id"]
+        contig_start = bgc["contig_start"]
+        contig_stop = bgc["contig_stop"]
+        bgc_seq = seq_lookup[contig_id][contig_start:contig_stop]
+        hash_id = xxhash.xxh32(bgc_seq).intdigest()
+        embedding = bgc["embedding"]
+        to_upload.append(
+            {
+                "contig_id": contig_id,
+                "contig_start": contig_start,
+                "contig_stop": contig_stop,
+                "hash_id": hash_id,
+                "embedding": embedding,
+            }
+        )
+    upload_bgc_embeddings(bgcs=to_upload, bgcs_uploaded=bgcs_uploaded)
     return True

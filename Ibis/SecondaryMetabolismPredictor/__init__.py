@@ -147,13 +147,12 @@ def upload_bgcs_from_files(
         seq_lookup[contig_id] = seq
     # add hash_id to bgcs
     bgcs = json.load(open(bgc_pred_fp))
-    if len(bgcs) > 0:
-        for c in bgcs:
-            contig_id = c["contig_id"]
-            contig_start = c["contig_start"]
-            contig_stop = c["contig_stop"]
-            bgc_seq = seq_lookup[contig_id][contig_start:contig_stop]
-            c["hash_id"] = xxhash.xxh32(bgc_seq).intdigest()
+    for c in bgcs:
+        contig_id = c["contig_id"]
+        contig_start = c["contig_start"]
+        contig_stop = c["contig_stop"]
+        bgc_seq = seq_lookup[contig_id][contig_start:contig_stop]
+        c["hash_id"] = xxhash.xxh32(bgc_seq).intdigest()
     return upload_bgcs(
         bgcs=bgcs,
         genome_id=genome_id,

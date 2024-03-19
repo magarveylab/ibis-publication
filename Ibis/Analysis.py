@@ -231,6 +231,7 @@ def get_filelookup(nuc_fasta_filename: str, output_dir: str) -> Dict[str, str]:
         "dehydratase_pred_fp": f"{output_dir}/{name}/DH_predictions.json",
         "enoylreductase_pred_fp": f"{output_dir}/{name}/ER_predictions.json",
         "thiolation_pred_fp": f"{output_dir}/{name}/T_predictions.json",
+        "bgc_embedding_fp": f"{output_dir}/{name}/bgc_embeddings.pkl",
     }
     # check if missing files
     missing_files = [
@@ -245,7 +246,8 @@ def get_filelookup(nuc_fasta_filename: str, output_dir: str) -> Dict[str, str]:
 def upload_to_knowledge_graph(
     nuc_fasta_filename: str, output_dir: str, genome_id: Optional[int] = None
 ):
-    # file paths
+    # this function will be used to model airflow pipeline
+    # get files
     filelookup = get_filelookup(
         nuc_fasta_filename=nuc_fasta_filename, output_dir=output_dir
     )
@@ -382,3 +384,10 @@ def upload_to_knowledge_graph(
         domain_embs_uploaded=domain_embs_uploaded,
     )
     # upload bgc embedding
+    bgc_embs_uploaded = (
+        SecondaryMetabolismEmbedder.upload_bgc_embeddings_from_files(
+            nuc_fasta_fp=nuc_fasta_filename,
+            bgc_embedding_fp=filelookup["bgc_embedding_fp"],
+            bgcs_uploaded=bgc_uploaded,
+        )
+    )
