@@ -12,33 +12,36 @@ def upload_predicted_pathways(
     genome_uploaded: bool,
     bs: int = 1000,
 ):
-    batches = batchify(preds, bs=bs)
-    for batch in tqdm(batches, bs=bs, desc="Uploading pathway predictions"):
-        batch_str = stringfy_dicts(
-            batch,
-            keys=[
-                "prediction_id",
-                "module_completeness_score",
-                "detected_labels",
-                "missing_labels",
-            ],
-        )
-        run_cypher(
-            f"""
-            UNWIND {batch_str} as row
-            MERGE (p:PredictedPathway {{prediction_id: row.prediction_id}})
-            ON CREATE
-                SET
-                    p.module_completeness_score = row.module_completeness_score,
-                    p.detected_labels = row.detected_labels,
-                    p.missing_labels = row.missing_labels 
-            ON MATCH
-                SET
-                    p.module_completeness_score = row.module_completeness_score,
-                    p.detected_labels = row.detected_labels,
-                    p.missing_labels = row.missing_labels
-            """
-        )
+    if len(preds) > 0:
+        batches = batchify(preds, bs=bs)
+        for batch in tqdm(
+            batches, bs=bs, desc="Uploading pathway predictions"
+        ):
+            batch_str = stringfy_dicts(
+                batch,
+                keys=[
+                    "prediction_id",
+                    "module_completeness_score",
+                    "detected_labels",
+                    "missing_labels",
+                ],
+            )
+            run_cypher(
+                f"""
+                UNWIND {batch_str} as row
+                MERGE (p:PredictedPathway {{prediction_id: row.prediction_id}})
+                ON CREATE
+                    SET
+                        p.module_completeness_score = row.module_completeness_score,
+                        p.detected_labels = row.detected_labels,
+                        p.missing_labels = row.missing_labels 
+                ON MATCH
+                    SET
+                        p.module_completeness_score = row.module_completeness_score,
+                        p.detected_labels = row.detected_labels,
+                        p.missing_labels = row.missing_labels
+                """
+            )
     # reformat relationships between the predicted pathway and other nodes
     genome_ppath_rels = []
     ppath_path_rels = []
@@ -60,7 +63,7 @@ def upload_predicted_pathways(
             ]
         )
     # upload relationships between genome and predicted pathway
-    if genome_uploaded:
+    if genome_uploaded and len(genome_ppath_rels) > 0:
         batches = batchify(genome_ppath_rels, bs=bs)
         for batch in tqdm(
             batches, desc="Uploading genome to predicted pathway rels"
@@ -76,20 +79,23 @@ def upload_predicted_pathways(
             """
             )
     # upload relationships between predicted pathway and pathway
-    batches = batchify(ppath_path_rels, bs=bs)
-    for batch in tqdm(
-        batches, desc="Uploading predicted pathway to pathway rels"
-    ):
-        batch_str = stringfy_dicts(batch, keys=["prediction_id", "pathway_id"])
-        run_cypher(
-            f"""Unwind {batch_str} as row
-            Match (n: PredictedPathway {{prediction_id: row.prediction_id}}),
-                  (m: Pathway {{pathway_id: row.pathway_id}})
-            Merge (n)-[r: pred_pathway_to_pathway]->(m)
-        """
-        )
+    if len(ppath_path_rels) > 0:
+        batches = batchify(ppath_path_rels, bs=bs)
+        for batch in tqdm(
+            batches, desc="Uploading predicted pathway to pathway rels"
+        ):
+            batch_str = stringfy_dicts(
+                batch, keys=["prediction_id", "pathway_id"]
+            )
+            run_cypher(
+                f"""Unwind {batch_str} as row
+                Match (n: PredictedPathway {{prediction_id: row.prediction_id}}),
+                      (m: Pathway {{pathway_id: row.pathway_id}})
+                Merge (n)-[r: pred_pathway_to_pathway]->(m)
+            """
+            )
     # upload relationships between predicted pathway and orfs
-    if orfs_uploaded:
+    if orfs_uploaded and len(ppath_orf_rels) > 0:
         batches = batchify(ppath_orf_rels, bs=bs)
         for batch in tqdm(
             batches, desc="Uploading predicted pathway to orf rels"

@@ -113,7 +113,6 @@ def upload_bgc(
                 MERGE (n)-[:metab_to_mibig_chemotype]->(m)
             """
             )
-
     # connect bgcs to orfs
     if orfs_uploaded:
         rels = [
@@ -148,7 +147,7 @@ def upload_bgc(
                     f"""
                     UNWIND {batch_str} as row
                     MATCH (n: Genome {{genome_id: row.genome_id}}),
-                        (m: MetabolomicRegion {{region_id: row.region_id}})
+                          (m: MetabolomicRegion {{region_id: row.region_id}})
                     MERGE (n)-[:genome_to_metab]->(m)
                 """
                 )
