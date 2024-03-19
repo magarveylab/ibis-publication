@@ -106,7 +106,7 @@ def run_on_files(
     if domain_embs_created == False:
         raise ValueError("Domain embeddings not created")
     for name in tqdm(filenames):
-        embedding_fp = f"{output_dir}/{name}/domain_embeddings.pkl"
+        embedding_fp = f"{output_dir}/{name}/domain_embedding.pkl"
         export_fp = f"{output_dir}/{name}/{target_domain}_predictions.json"
         if os.path.exists(export_fp) == False:
             # find domains to analyze

@@ -52,7 +52,7 @@ def run_on_single_file(nuc_fasta_fp: str, output_dir: str = None) -> bool:
 def parallel_run_on_files(
     filenames: List[str], output_dir: str, cpu_cores: int = 1
 ) -> bool:
-    funct = partial(filenames, output_dir=output_dir)
+    funct = partial(run_on_single_file, output_dir=output_dir)
     pool = Pool(cpu_cores)
     process = pool.imap_unordered(funct, filenames)
     out = [p for p in tqdm(process, total=len(filenames))]
