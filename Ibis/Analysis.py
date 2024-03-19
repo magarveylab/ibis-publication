@@ -235,6 +235,8 @@ def upload_to_knowledge_graph(
             genome_uploaded=genomes_uploaded,
         )
     )
+    # upload secondary metabolism
+
     # upload protein embeddings and ec1 annotations
     protein_embs_uploaded = ProteinEmbedder.upload_protein_embeddings_from_fp(
         prodigal_fp=filelookup["prodigal_fp"],
