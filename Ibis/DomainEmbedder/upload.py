@@ -63,12 +63,12 @@ def initialize_domain_annotations(
         run_cypher(
             f"""
             UNWIND {batch} as row
-            MERGE (n: DomainAnnotation {{hash_id: row.hash_id}})
+            MERGE (n: DomainAnnotation {{hash_id: row}})
             ON CREATE
                 SET n.date = date(),
                     n.ran_substrate_knn = False,
                     n.ran_subclass_knn = False,
-                    n.ran_functional_knn = False,
+                    n.ran_functional_knn = False
         """
         )
     if embedding_uploaded:
@@ -79,8 +79,8 @@ def initialize_domain_annotations(
             run_cypher(
                 f"""
                     UNWIND {batch} as row
-                    MATCH (n: DomainEmbedding {{hash_id: row.hash_id}}),
-                          (m: DomainAnnotation {{hash_id: row.hash_id}})
+                    MATCH (n: DomainEmbedding {{hash_id: row}}),
+                          (m: DomainAnnotation {{hash_id: row}})
                     MERGE (n)-[r: domain_embedding_to_annotation]->(m)
             """
             )

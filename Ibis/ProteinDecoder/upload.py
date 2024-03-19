@@ -48,7 +48,7 @@ def upload_knn(
             MERGE (n: OrfAnnotation {{hash_id: row.hash_id}})
             ON MATCH
                 SET n.date = date(),
-                    n.{process} = True,
+                    n.{process} = True
         """
         )
     # add knn relationships

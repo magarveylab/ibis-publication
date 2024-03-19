@@ -139,8 +139,7 @@ def upload_domain_decoding_from_files(
     knn_fp: str, label_type: str, domain_embs_uploaded: bool
 ) -> bool:
     if domain_embs_uploaded:
-        return upload_knn(
-            annotations=json.load(open(knn_fp)), label_type=label_type
-        )
+        data = [i for i in json.load(open(knn_fp)) if i["label"] != None]
+        return upload_knn(annotations=data, label_type=label_type)
     else:
         return False

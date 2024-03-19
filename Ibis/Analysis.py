@@ -302,31 +302,31 @@ def upload_to_knowledge_graph(
     )
     # upload ec predictions
     ec_uploaded = ProteinDecoder.upload_protein_decoding_from_files(
-        ec_pred_fp=filelookup["ec_pred_fp"],
+        knn_fp=filelookup["ec_pred_fp"],
         label_type="EC4Label",
         protein_embs_uploaded=protein_embs_uploaded,
     )
     # upload ko predictions
     ko_uploaded = ProteinDecoder.upload_protein_decoding_from_files(
-        ko_pred_fp=filelookup["ko_pred_fp"],
+        knn_fp=filelookup["ko_pred_fp"],
         label_type="KeggOrthologLabel",
         protein_embs_uploaded=protein_embs_uploaded,
     )
     # upload gene family predictions
     gene_family_uploaded = ProteinDecoder.upload_protein_decoding_from_files(
-        gene_family_pred_fp=filelookup["gene_family_pred_fp"],
+        knn_fp=filelookup["gene_family_pred_fp"],
         label_type="GeneFamilyLabel",
         protein_embs_uploaded=protein_embs_uploaded,
     )
     # upload gene predictions
     gene_uploaded = ProteinDecoder.upload_protein_decoding_from_files(
-        gene_pred_fp=filelookup["gene_pred_fp"],
+        knn_fp=filelookup["gene_pred_fp"],
         label_type="GeneLabel",
         protein_embs_uploaded=protein_embs_uploaded,
     )
     # upload molecule predictions
     mol_uploaded = ProteinDecoder.upload_protein_decoding_from_files(
-        mol_pred_fp=filelookup["mol_pred_fp"],
+        knn_fp=filelookup["mol_pred_fp"],
         label_type="BioactivePeptideLabel",
         protein_embs_uploaded=protein_embs_uploaded,
     )

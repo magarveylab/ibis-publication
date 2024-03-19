@@ -181,8 +181,9 @@ def upload_protein_decoding_from_files(
     knn_fp: str, label_type: str, protein_embs_uploaded: bool
 ) -> bool:
     if protein_embs_uploaded:
+        data = [i for i in json.load(open(knn_fp)) if i["label"] != None]
         return upload_knn(
-            annotations=json.load(open(knn_fp)), label_type=label_type
+            annotations=data, label_type=label_type
         )
     else:
         return False

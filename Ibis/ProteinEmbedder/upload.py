@@ -68,7 +68,7 @@ def upload_ec1_annotations(
         run_cypher(
             f"""
             UNWIND {batch_str} as row
-            MERGE (n: OrfAnnotation {{hash_id: row.hash_id}})
+            MERGE (n: OrfAnnotation {{hash_id: row.protein_id}})
             ON CREATE
                 SET n.date = date(),
                     n.is_enzyme = row.is_enzyme,
@@ -77,7 +77,7 @@ def upload_ec1_annotations(
                     n.ran_ec4_knn = False,
                     n.ran_gene_family_knn = False,
                     n.ran_bioactive_peptide_knn = False,
-                    n.ran_ko_knn = False,
+                    n.ran_ko_knn = False
             ON MATCH
                 SET n.date = date(),
                     n.is_enzyme = row.is_enzyme,
@@ -86,7 +86,7 @@ def upload_ec1_annotations(
                     n.ran_ec4_knn = False,
                     n.ran_gene_family_knn = False,
                     n.ran_bioactive_peptide_knn = False,
-                    n.ran_ko_knn = False,
+                    n.ran_ko_knn = False
         """
         )
     if embedding_uploaded:
@@ -94,12 +94,12 @@ def upload_ec1_annotations(
             batches,
             desc="Adding relationships between Orf embedding and annotation",
         ):
-            batch_str = stringfy_dicts(batch, keys=["hash_id"])
+            batch_str = stringfy_dicts(batch, keys=["protein_id"])
             run_cypher(
                 f"""
                     UNWIND {batch_str} as row
-                    MATCH (n: OrfEmbedding {{hash_id: row.hash_id}}),
-                          (m: OrfAnnotation {{hash_id: row.hash_id}})
+                    MATCH (n: OrfEmbedding {{hash_id: row.protein_id}}),
+                          (m: OrfAnnotation {{hash_id: row.protein_id}})
                     MERGE (n)-[r: orf_embedding_to_annotation]->(m)
             """
             )

@@ -49,7 +49,7 @@ def upload_knn(
             MERGE (n: DomainAnnotation {{hash_id: row.hash_id}})
             ON MATCH
                 SET n.date = date(),
-                    n.{process} = True,
+                    n.{process} = True
         """
         )
     # add knn relationships

@@ -37,7 +37,6 @@ def upload_domains(
             protein_stop = domain["protein_stop"]
             domain_id = f"{protein_id}_{protein_start}_{protein_stop}"
             domain_label = domain["label"]
-            hash_id = domain["domain_id"]
             domains_to_submit.append(
                 {
                     "domain_id": domain_id,
