@@ -17,10 +17,13 @@ def run_propeptide_predictor_on_proteins(
 def run_on_files(
     filenames: List[str],
     output_dir: str,
+    prodigal_preds_created: bool,
     mol_preds_created: bool,
     gpu_id: Optional[int] = None,
     cpu_cores: int = 1,
 ) -> bool:
+    if prodigal_preds_created == False:
+        raise ValueError("Prodigal predictions not created")
     if mol_preds_created == False:
         raise ValueError("Molecule predictions not created")
     # load pipeline

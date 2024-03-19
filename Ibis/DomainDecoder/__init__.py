@@ -96,7 +96,7 @@ decode_thiolation = partial(
 )
 
 
-def decode_from_files(
+def run_on_files(
     filenames: List[str],
     output_dir: str,
     domain_embs_created: bool,

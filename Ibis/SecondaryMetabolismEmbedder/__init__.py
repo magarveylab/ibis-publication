@@ -28,7 +28,14 @@ def embed_clusters(
 
 
 def run_on_files(
-    filenames: List[str], output_dir: str, gpu_id: Optional[int] = None
+    filenames: List[str],
+    output_dir: str,
+    prodigal_preds_created: bool,
+    protein_embs_created: bool,
+    domain_preds_created: bool,
+    domain_embs_created: bool,
+    bgc_preds_created: bool,
+    gpu_id: Optional[int] = None,
 ) -> bool:
     # load pipeline
     pipeline = MetabolismEmbedderPipeline(gpu_id=gpu_id)

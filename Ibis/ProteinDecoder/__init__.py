@@ -75,7 +75,7 @@ decode_gene = partial(
 )
 
 
-def decode_from_files(
+def run_on_files(
     filenames: List[str],
     output_dir: str,
     protein_embs_created: bool,
@@ -114,28 +114,36 @@ def decode_from_files(
     return True
 
 
-def decode_from_bgc_filenames(
+def trimmed_run_on_files(
     filenames: List[str],
     output_dir: str,
+    prodigal_preds_created: bool,
+    protein_embs_created: bool,
+    bgc_preds_created: bool,
     decode_fn: Callable,
     decode_name: str,
-) -> List[str]:
+) -> bool:
+    if prodigal_preds_created == False:
+        raise ValueError("Prodigal predictions not created")
+    if protein_embs_created == False:
+        raise ValueError("Protein embeddings not created")
+    if bgc_preds_created == False:
+        raise ValueError("BGC predictions not created")
     # run on only proteins in bgc
-    decode_pred_filenames = []
-    for bgc_fp in tqdm(filenames):
-        name = os.path.basename(os.path.dirname(bgc_fp))
+    for name in tqdm(filenames):
         export_fp = f"{output_dir}/{name}/{decode_name}_predictions.json"
         if os.path.exists(export_fp) == False:
+            embedding_fp = f"{output_dir}/{name}/protein_embedding.pkl"
+            prodigal_fp = f"{output_dir}/{name}/prodigal.json"
+            bgc_fp = f"{output_dir}/{name}/bgc_predictions.json"
             # load embeddings
             hash_embedding_lookup = {}
-            embedding_fp = f"{output_dir}/{name}/protein_embedding.pkl"
             for p in pickle.load(open(embedding_fp, "rb")):
                 protein_id = p["protein_id"]
                 embedding = p["embedding"]
                 hash_embedding_lookup[protein_id] = embedding
             # connect embeddings to orfs
             orf_embedding_lookup = {}
-            prodigal_fp = f"{output_dir}/{name}/prodigal.json"
             for p in json.load(open(prodigal_fp)):
                 contig_id = p["contig_id"]
                 contig_start = p["contig_start"]
@@ -166,11 +174,10 @@ def decode_from_bgc_filenames(
             out = decode_fn(data_queries)
             with open(export_fp, "w") as f:
                 json.dump(out, f)
-        decode_pred_filenames.append(export_fp)
-    return decode_pred_filenames
+    return True
 
 
-def upload_protein_decoding_from_fp(
+def upload_protein_decoding_from_files(
     knn_fp: str, label_type: str, protein_embs_uploaded: bool
 ) -> bool:
     if protein_embs_uploaded:
