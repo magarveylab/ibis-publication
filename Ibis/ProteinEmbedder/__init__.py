@@ -20,28 +20,31 @@ def run_on_protein_sequences(
     return pipeline.run(sequences)
 
 
-def run_on_prodigal_fps(
-    filenames: List[str], output_dir: str, gpu_id: int = 0
-) -> List[str]:
-    protein_embedding_filenames = []
+def run_on_files(
+    filenames: List[str],
+    output_dir: str,
+    prodigal_preds_created: bool,
+    gpu_id: int = 0,
+) -> bool:
+    if prodigal_preds_created == False:
+        raise ValueError("Prodigal predictions not created")
     # load pipeline
     pipeline = ProteinEmbedderPipeline(gpu_id=gpu_id)
     # analysis
-    for prodigal_fp in tqdm(filenames):
-        name = os.path.basename(os.path.dirname(prodigal_fp))
+    for name in tqdm(filenames):
         export_filename = f"{output_dir}/{name}/protein_embedding.pkl"
         if os.path.exists(export_filename) == False:
+            prodigal_fp = f"{output_dir}/{name}/prodigal.json"
             sequences = [p["sequence"] for p in json.load(open(prodigal_fp))]
             out = pipeline.run(sequences)
             with open(export_filename, "wb") as f:
                 pickle.dump(out, f)
-        protein_embedding_filenames.append(export_filename)
     # delete pipeline
     del pipeline
-    return protein_embedding_filenames
+    return True
 
 
-def upload_protein_embeddings_from_fp(
+def upload_protein_embeddings_from_files(
     prodigal_fp: str,
     protein_embedding_fp: str,
     bgc_pred_fp: str,

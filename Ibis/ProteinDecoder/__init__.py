@@ -75,18 +75,20 @@ decode_gene = partial(
 )
 
 
-def decode_from_embedding_fps(
+def decode_from_files(
     filenames: List[str],
     output_dir: str,
+    protein_embs_created: bool,
     decode_fn: Callable,
     decode_name: str,
-) -> List[str]:
+) -> bool:
+    if protein_embs_created == False:
+        raise ValueError("Protein embeddings not created")
     # run on all proteins
-    decode_pred_filenames = []
-    for embedding_fp in tqdm(filenames):
-        name = os.path.basename(os.path.dirname(embedding_fp))
+    for name in tqdm(filenames):
         export_fp = f"{output_dir}/{name}/{decode_name}_predictions.json"
         if os.path.exists(export_fp) == False:
+            embedding_fp = f"{output_dir}/{name}/protein_embedding.pkl"
             data_queries = []
             if decode_name == "ec":
                 for p in pickle.load(open(embedding_fp, "rb")):
@@ -109,8 +111,7 @@ def decode_from_embedding_fps(
             out = decode_fn(data_queries)
             with open(export_fp, "w") as f:
                 json.dump(out, f)
-        decode_pred_filenames.append(export_fp)
-    return decode_pred_filenames
+    return True
 
 
 def decode_from_bgc_filenames(

@@ -15,10 +15,15 @@ from Ibis import (
 )
 
 
-def setup_working_directories(filenames: List[str], output_dir: str):
+def setup_working_directories(
+    filenames: List[str], output_dir: str
+) -> List[str]:
+    basenames = []
     for fp in filenames:
-        basename = os.path.basename(fp)
-        os.makedirs(f"{output_dir}/{basename}", exist_ok=True)
+        name = os.path.basename(fp)
+        os.makedirs(f"{output_dir}/{name}", exist_ok=True)
+        basenames.append(name)
+    return basenames
 
 
 def run_ibis_on_genome(
@@ -29,7 +34,7 @@ def run_ibis_on_genome(
 ):
     # this function will be used to model airflow pipeline
     # setup working directories
-    setup_working_directories(
+    basenames = setup_working_directories(
         filenames=nuc_fasta_filenames, output_dir=output_dir
     )
     # prodigal prediction
@@ -192,9 +197,11 @@ def get_filelookup(nuc_fasta_filename: str, output_dir: str) -> Dict[str, str]:
         "thiolation_pred_fp": f"{output_dir}/{name}/T_predictions.json",
     }
     # check if missing files
-    for k, v in filelookup.items():
-        if os.path.exists(v) == False:
-            return None
+    missing_files = [
+        k for k, v in filelookup.items() if os.path.exists(v) == False
+    ]
+    if len(missing_files) > 0:
+        raise ValueError(f"Missing files: {missing_files}")
     else:
         return filelookup
 
@@ -206,8 +213,6 @@ def upload_to_knowledge_graph(
     filelookup = get_filelookup(
         nuc_fasta_filename=nuc_fasta_filename, output_dir=output_dir
     )
-    if filelookup is None:
-        raise ValueError("Missing files")
     # upload contigs
     contigs_uploaded = Prodigal.upload_contigs_from_fp(
         prodigal_fp=filelookup["prodigal_fp"]

@@ -2,6 +2,8 @@ import json
 import os
 from typing import List, Optional
 
+from tqdm import tqdm
+
 from Ibis.PropeptidePredictor.pipeline import PropeptidePredictorPipeline
 
 
@@ -12,21 +14,23 @@ def run_propeptide_predictor_on_proteins(
     return propeptide_predictor.run(protein_sequences)
 
 
-def run_on_mol_pred_fps(
+def run_on_files(
     filenames: List[str],
     output_dir: str,
+    mol_preds_created: bool,
     gpu_id: Optional[int] = None,
     cpu_cores: int = 1,
-):
-    propeptide_pred_filenames = []
+) -> bool:
+    if mol_preds_created == False:
+        raise ValueError("Molecule predictions not created")
     # load pipeline
     pipeline = PropeptidePredictorPipeline(gpu_id=gpu_id, cpu_cores=cpu_cores)
     # analysis
-    for mol_pred_fp in filenames:
-        name = os.path.basename(os.path.dirname(mol_pred_fp))
+    for name in tqdm(filenames):
         export_fp = f"{output_dir}/{name}/propeptide_predictions.json"
         if os.path.exists(export_fp) == False:
             proteins_to_run = set()
+            mol_pred_fp = f"{output_dir}/{name}/molecule_predictions.json"
             for p in json.load(open(mol_pred_fp)):
                 if (
                     p["homology"] is not None
@@ -45,6 +49,5 @@ def run_on_mol_pred_fps(
                 out = []
             with open(export_fp, "w") as f:
                 json.dump(out, f)
-        propeptide_pred_filenames.append(export_fp)
     del pipeline
-    return propeptide_pred_filenames
+    return True

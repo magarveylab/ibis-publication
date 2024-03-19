@@ -78,19 +78,26 @@ def run_on_orfs(
     return chemotype_based_bgcs
 
 
-def run_on_embedding_fps(
-    filenames: List[str], output_dir: str, gpu_id: int = 0
-):
-    bgc_pred_filenames = []
+def run_on_files(
+    filenames: List[str],
+    output_dir: str,
+    prodigal_preds_created: bool,
+    protein_embs_created: bool,
+    gpu_id: int = 0,
+) -> bool:
+    if prodigal_preds_created == False:
+        raise ValueError("Prodigal predictions not created")
+    if protein_embs_created == False:
+        raise ValueError("Protein embeddings not created")
     # load pipeline
     internal_pipeline = InternalMetabolismPredictorPipeline(gpu_id=gpu_id)
     mibig_pipeline = MibigMetabolismPredictorPipeline(gpu_id=gpu_id)
     # analysis
-    for embedding_fp in tqdm(filenames):
-        name = os.path.basename(os.path.dirname(embedding_fp))
-        prodigal_fp = f"{output_dir}/{name}/prodigal.json"
+    for name in tqdm(filenames):
         export_fp = f"{output_dir}/{name}/bgc_predictions.json"
         if os.path.exists(export_fp) == False:
+            prodigal_fp = f"{output_dir}/{name}/prodigal.json"
+            embedding_fp = f"{output_dir}/{name}/protein_embedding.pkl"
             # create embedding lookup
             embedding_lookup = {}
             for protein in pickle.load(open(embedding_fp, "rb")):
@@ -118,14 +125,13 @@ def run_on_embedding_fps(
             )
             with open(export_fp, "w") as f:
                 json.dump(out, f)
-        bgc_pred_filenames.append(export_fp)
     # delete pipeline
     del internal_pipeline
     del mibig_pipeline
-    return bgc_pred_filenames
+    return True
 
 
-def upload_bgcs_from_fp(
+def upload_bgcs_from_files(
     nuc_fasta_fp: str,
     bgc_pred_fp: str,
     genome_id: Optional[int],

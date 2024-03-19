@@ -27,17 +27,16 @@ def embed_clusters(
     return out
 
 
-def run_on_domain_embedding_fps(
+def run_on_files(
     filenames: List[str], output_dir: str, gpu_id: Optional[int] = None
-):
-    bgc_emb_filenames = []
+) -> bool:
     # load pipeline
     pipeline = MetabolismEmbedderPipeline(gpu_id=gpu_id)
     # analysis
-    for dom_emb_fp in tqdm(filenames):
-        name = os.path.basename(os.path.dirname(dom_emb_fp))
+    for name in tqdm(filenames):
         export_fp = f"{output_dir}/{name}/bgc_embeddings.pkl"
         if os.path.exists(export_fp) == False:
+            dom_emb_fp = f"{output_dir}/{name}/domain_embedding.pkl"
             # load domain embeddings
             dom_emb_lookup = {}
             for d in pickle.load(open(dom_emb_fp, "rb")):
@@ -102,6 +101,5 @@ def run_on_domain_embedding_fps(
             out = [pipeline(c) for c in tqdm(cluster_inputs)]
             with open(export_fp, "wb") as f:
                 pickle.dump(out, f)
-        bgc_emb_filenames.append(export_fp)
     del pipeline
-    return bgc_emb_filenames
+    return True

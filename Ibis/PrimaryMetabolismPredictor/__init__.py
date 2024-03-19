@@ -16,22 +16,21 @@ from Ibis.PrimaryMetabolismPredictor.preprocess import (
 from Ibis.PrimaryMetabolismPredictor.upload import upload_predicted_pathways
 
 
-def run_on_ko_pred_fp(
-    ko_pred_fp: str,
+def run_on_single_file(
+    filename: str,
     output_dir: str,
     ec_homology_cutoff: float = 0.6,
     ko_homology_cutoff: float = 0.2,
     module_score: float = 0.7,
     allow_inf_ec: bool = True,
-):
-    filename = os.path.basename(os.path.dirname(ko_pred_fp))
+) -> bool:
     export_fp = os.path.join(
         output_dir, filename, "primary_metabolism_predictions.json"
     )
-    prodigal_fp = os.path.join(output_dir, filename, "prodigal.json")
-    ec_pred_fp = os.path.join(output_dir, filename, "ec_predictions.json")
-    embed_fp = os.path.join(output_dir, filename, "protein_embedding.pkl")
     if os.path.exists(export_fp) == False:
+        prodigal_fp = os.path.join(output_dir, filename, "prodigal.json")
+        ec_pred_fp = os.path.join(output_dir, filename, "ec_predictions.json")
+        ko_pred_fp = os.path.join(output_dir, filename, "ko_predictions.json")
         # do things.
         annots = merge_protein_annotations(
             prodigal_fp=prodigal_fp,
@@ -51,27 +50,35 @@ def run_on_ko_pred_fp(
             module_completeness_threshold=module_score,
         )
         ko_results = ko_annotator.run_annotation(genome_orfs=annots)
-        json.dump(
-            {"ko_results": ko_results, "ec_results": ec_results},
-            open(export_fp, "w"),
-        )
-    return export_fp
+        out = {"ko_results": ko_results, "ec_results": ec_results}
+        with open(export_fp, "w") as json_data:
+            json.dump(out, json_data)
+    return True
 
 
-def parallel_run_on_ko_pred_fps(
+def parallel_run_on_files(
     filenames: List[str],
     output_dir: str,
+    prodigal_preds_created: bool,
+    ec_preds_created: bool,
+    ko_preds_created: bool,
     cpu_cores: int = 1,
-):
-    funct = partial(run_on_ko_pred_fp, output_dir=output_dir)
+) -> bool:
+    if prodigal_preds_created == False:
+        raise ValueError("Prodigal predictions not created")
+    if ec_preds_created == False:
+        raise ValueError("EC predictions not created")
+    if ko_preds_created == False:
+        raise ValueError("KO predictions not created")
+    funct = partial(run_on_single_file, output_dir=output_dir)
     pool = Pool(cpu_cores)
     process = pool.imap_unordered(funct, filenames)
     out = [p for p in tqdm(process, total=len(filenames))]
     pool.close()
-    return out
+    return True
 
 
-def upload_primary_metabolism_from_fp(
+def upload_primary_metabolism_from_files(
     primary_metabolism_pred_fp: str,
     genome_id: int,
     orfs_uploaded: bool,

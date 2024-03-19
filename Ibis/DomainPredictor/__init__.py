@@ -15,15 +15,22 @@ def run_on_protein_sequences(
     return pipeline.run(sequences)
 
 
-def run_on_bgc_fps(
-    filenames: List[str], output_dir: str, gpu_id: int, cpu_cores: int = 1
-):
-    domain_pred_filenames = []
+def run_on_files(
+    filenames: List[str],
+    output_dir: str,
+    prodigal_preds_created: bool,
+    bgc_preds_created: bool,
+    gpu_id: int,
+    cpu_cores: int = 1,
+) -> bool:
+    if prodigal_preds_created == False:
+        raise ValueError("Prodigal predictions not created")
+    if bgc_preds_created == False:
+        raise ValueError("BGC predictions not created")
     # load pipeline
     pipeline = DomainPredictorPipeline(gpu_id=gpu_id, cpu_cores=cpu_cores)
     # analysis
-    for bgc_fp in tqdm(filenames):
-        name = os.path.basename(os.path.dirname(bgc_fp))
+    for name in tqdm(filenames):
         export_fp = f"{output_dir}/{name}/domain_predictions.json"
         if os.path.exists(export_fp) == False:
             # load sequence lookup
@@ -36,6 +43,7 @@ def run_on_bgc_fps(
                 orf_id = f"{contig_id}_{contig_start}_{contig_stop}"
                 sequence_lookup[orf_id] = protein["sequence"]
             # find orfs from modular systems
+            bgc_fp = f"{output_dir}/{name}/bgc_predictions.json"
             sequences_to_run = set()
             for cluster in json.load(open(bgc_fp)):
                 internal_chemotypes = cluster["internal_chemotypes"]
@@ -52,12 +60,11 @@ def run_on_bgc_fps(
                 out = []
             with open(export_fp, "w") as f:
                 json.dump(out, f)
-        domain_pred_filenames.append(export_fp)
     del pipeline
-    return domain_pred_filenames
+    return True
 
 
-def upload_domains_from_fp(
+def upload_domains_from_files(
     domain_pred_fp: str, prodigal_fp: str, orfs_uploaded: bool
 ):
     # domain lookup

@@ -39,33 +39,33 @@ def run_prodigal(nuc_fasta_fp: str) -> List[ProdigalOutput]:
     return proteins
 
 
-def run_on_nuc_fasta_fp(nuc_fasta_fp: str, output_dir: str = None):
+def run_on_single_file(nuc_fasta_fp: str, output_dir: str = None) -> bool:
     basename = os.path.basename(nuc_fasta_fp)
     output_fp = f"{output_dir}/{basename}/prodigal.json"
     if os.path.exists(output_fp) == False:
         proteins = run_prodigal(nuc_fasta_fp)
         with open(output_fp, "w") as f:
             json.dump(proteins, f)
-    return output_fp
+    return True
 
 
-def parallel_run_on_nuc_fasta_fps(
+def parallel_run_on_files(
     filenames: List[str], output_dir: str, cpu_cores: int = 1
-):
-    funct = partial(run_on_nuc_fasta_fp, output_dir=output_dir)
+) -> bool:
+    funct = partial(filenames, output_dir=output_dir)
     pool = Pool(cpu_cores)
     process = pool.imap_unordered(funct, filenames)
     out = [p for p in tqdm(process, total=len(filenames))]
     pool.close()
-    return out
+    return True
 
 
-def upload_contigs_from_fp(prodigal_fp: str) -> bool:
+def upload_contigs_from_files(prodigal_fp: str) -> bool:
     contig_ids = set(p["contig_id"] for p in json.load(open(prodigal_fp, "r")))
     return upload_contigs(contig_ids=list(contig_ids))
 
 
-def upload_genome_from_fp(
+def upload_genome_from_files(
     nuc_fasta_fp: str,
     prodigal_fp: str,
     genome_id: int,
@@ -87,7 +87,7 @@ def upload_genome_from_fp(
         return False
 
 
-def upload_orfs_from_fp(prodigal_fp: str, contigs_uploaded: bool = False):
+def upload_orfs_from_files(prodigal_fp: str, contigs_uploaded: bool = False):
     orfs = []
     for p in json.load(open(prodigal_fp, "r")):
         orfs.append(

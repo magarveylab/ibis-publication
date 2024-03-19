@@ -96,15 +96,17 @@ decode_thiolation = partial(
 )
 
 
-def decode_from_embedding_fps(
+def decode_from_files(
     filenames: List[str],
     output_dir: str,
+    domain_embs_created: bool,
     decode_fn: Callable,
     target_domain: str,
-):
-    decode_pred_filenames = []
-    for embedding_fp in tqdm(filenames):
-        name = os.path.basename(os.path.dirname(embedding_fp))
+) -> bool:
+    if domain_embs_created == False:
+        raise ValueError("Domain embeddings not created")
+    for name in tqdm(filenames):
+        embedding_fp = f"{output_dir}/{name}/domain_embeddings.pkl"
         export_fp = f"{output_dir}/{name}/{target_domain}_predictions.json"
         if os.path.exists(export_fp) == False:
             # find domains to analyze
@@ -130,11 +132,10 @@ def decode_from_embedding_fps(
                 out = decode_fn(data_queries)
             with open(export_fp, "w") as f:
                 json.dump(out, f)
-        decode_pred_filenames.append(export_fp)
-    return decode_pred_filenames
+    return True
 
 
-def upload_domain_decoding_from_fp(
+def upload_domain_decoding_from_files(
     knn_fp: str, label_type: str, domain_embs_uploaded: bool
 ) -> bool:
     if domain_embs_uploaded:

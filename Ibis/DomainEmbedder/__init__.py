@@ -21,16 +21,20 @@ def run_on_protein_sequences(
     return pipeline.run(sequences)
 
 
-def run_on_domain_pred_fps(
-    filenames: List[str], output_dir: str, gpu_id: int = 0
-):
+def run_on_files(
+    filenames: List[str],
+    output_dir: str,
+    domain_preds_created: bool,
+    gpu_id: int = 0,
+) -> bool:
+    if domain_preds_created == False:
+        raise ValueError("Domain predictions not created")
     target_domains = ["A", "AT", "KS", "KR", "DH", "ER", "T"]
-    domain_embedding_filenames = []
     # load pipeline
     pipeline = DomainEmbedderPipeline(gpu_id=gpu_id)
     # analysis
-    for domain_pred_fp in tqdm(filenames):
-        name = os.path.basename(os.path.dirname(domain_pred_fp))
+    for name in tqdm(filenames):
+        domain_pred_fp = f"{output_dir}/{name}/domain_predictions.json"
         export_filename = f"{output_dir}/{name}/domain_embedding.pkl"
         if os.path.exists(export_filename) == False:
             sequences = set()
@@ -45,13 +49,12 @@ def run_on_domain_pred_fps(
             out = pipeline.run(list(sequences))
             with open(export_filename, "wb") as f:
                 pickle.dump(out, f)
-        domain_embedding_filenames.append(export_filename)
     # delete pipeline
     del pipeline
-    return domain_embedding_filenames
+    return True
 
 
-def upload_domain_embeddings_from_fp(
+def upload_domain_embeddings_from_files(
     domain_pred_fp: str,
     domain_embedding_fp: str,
     domains_uploaded: bool,
