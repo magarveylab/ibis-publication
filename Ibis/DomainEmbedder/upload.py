@@ -55,31 +55,33 @@ def upload_domain_embeddings(
 
 def initialize_domain_annotations(
     hash_ids: List[int], embedding_uploaded: bool, bs: int = 1000
-):
-    if len(hash_ids) > 0:
-        batches = batchify(hash_ids, bs=bs)
-        for batch in tqdm(batches, desc="Initialize domain annotations"):
+) -> bool:
+    if len(hash_ids) == 0:
+        return False
+    batches = batchify(hash_ids, bs=bs)
+    for batch in tqdm(batches, desc="Initialize domain annotations"):
+        run_cypher(
+            f"""
+            UNWIND {batch} as row
+            MERGE (n: DomainAnnotation {{hash_id: row.hash_id}})
+            ON CREATE
+                SET n.date = date(),
+                    n.ran_substrate_knn = False,
+                    n.ran_subclass_knn = False,
+                    n.ran_functional_knn = False,
+        """
+        )
+    if embedding_uploaded:
+        for batch in tqdm(
+            batches,
+            desc="Adding relationships between domain embedding and annotations",
+        ):
             run_cypher(
                 f"""
-                UNWIND {batch} as row
-                MERGE (n: DomainAnnotation {{hash_id: row.hash_id}})
-                ON CREATE
-                    SET n.date = date(),
-                        n.ran_substrate_knn = False,
-                        n.ran_subclass_knn = False,
-                        n.ran_functional_knn = False,
-            """
-            )
-        if embedding_uploaded:
-            for batch in tqdm(
-                batches, desc="Connect domain to annotation rels"
-            ):
-                run_cypher(
-                    f"""
                     UNWIND {batch} as row
                     MATCH (n: DomainEmbedding {{hash_id: row.hash_id}}),
                           (m: DomainAnnotation {{hash_id: row.hash_id}})
                     MERGE (n)-[r: domain_embedding_to_annotation]->(m)
-                """
-                )
+            """
+            )
     return True

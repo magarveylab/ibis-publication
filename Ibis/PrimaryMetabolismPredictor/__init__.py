@@ -84,29 +84,28 @@ def upload_primary_metabolism_from_files(
     orfs_uploaded: bool,
     genome_uploaded: bool,
 ):
-    if isinstance(genome_id, int):
-        preds = []
-        dat = json.load(open(primary_metabolism_pred_fp))
-        for ress in dat.values():
-            for res in ress:
-                spider_pwy_id = res["neo4j_id"]
-                prediction_id = f"{genome_id}_{spider_pwy_id}"
-                candidate_orf_ids = set()
-                for cand_orfs in res["candidate_orfs"].values():
-                    candidate_orf_ids.update(cand_orfs)
-                preds.append(
-                    {
-                        "prediction_id": prediction_id,
-                        "module_completeness_score": res["completeness_score"],
-                        "detected_labels": res["matched_criteria"],
-                        "missing_labels": res["missing_criteria"],
-                        "orf_ids": list(candidate_orf_ids),
-                    }
-                )
-        return upload_predicted_pathways(
-            preds=preds,
-            orfs_uploaded=orfs_uploaded,
-            genome_uploaded=genome_uploaded,
-        )
-    else:
+    if isinstance(genome_id, int) == False:
         return False
+    preds = []
+    dat = json.load(open(primary_metabolism_pred_fp))
+    for ress in dat.values():
+        for res in ress:
+            spider_pwy_id = res["neo4j_id"]
+            prediction_id = f"{genome_id}_{spider_pwy_id}"
+            candidate_orf_ids = set()
+            for cand_orfs in res["candidate_orfs"].values():
+                candidate_orf_ids.update(cand_orfs)
+            preds.append(
+                {
+                    "prediction_id": prediction_id,
+                    "module_completeness_score": res["completeness_score"],
+                    "detected_labels": res["matched_criteria"],
+                    "missing_labels": res["missing_criteria"],
+                    "orf_ids": list(candidate_orf_ids),
+                }
+            )
+    return upload_predicted_pathways(
+        preds=preds,
+        orfs_uploaded=orfs_uploaded,
+        genome_uploaded=genome_uploaded,
+    )

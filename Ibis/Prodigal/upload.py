@@ -64,49 +64,57 @@ def upload_genomes(
 
 
 def upload_orfs(
-    orfs: List[OrfDict], contigs_uploaded: bool = False, bs: int = 1000
+    orfs: List[OrfDict],
+    contigs_uploaded: bool = False,
+    bs: int = 1000,
+    source: str = "pyrodigal-2.0.4",
 ) -> bool:
-    source = "pyrodigal-2.0.4"
-    if len(orfs) > 0:
-        batches = batchify(orfs, bs=bs)
-        for batch in tqdm(batches, desc="Uploading orfs"):
-            # add orf ids
-            for orf in batch:
-                contig_id = orf["contig_id"]
-                contig_start = orf["contig_start"]
-                contig_stop = orf["contig_stop"]
-                orf_id = f"{contig_id}_{contig_start}_{contig_stop}"
-                batch["orf_id"] = orf_id
-                batch["source"] = source
-            batch_str = stringfy_dicts(
-                batch,
-                keys=[
-                    "orf_id",
-                    "protein_id",
-                    "contig_start",
-                    "contig_stop",
-                    "source",
-                ],
-            )
+    if len(orfs) == 0:
+        return False
+    # add orf ids
+    for orf in orfs:
+        contig_id = orf["contig_id"]
+        contig_start = orf["contig_start"]
+        contig_stop = orf["contig_stop"]
+        orf_id = f"{contig_id}_{contig_start}_{contig_stop}"
+        orf["orf_id"] = orf_id
+        orf["source"] = source
+    # upload orfs
+    batches = batchify(orfs, bs=bs)
+    for batch in tqdm(batches, desc="Uploading orfs"):
+        batch_str = stringfy_dicts(
+            batch,
+            keys=[
+                "orf_id",
+                "protein_id",
+                "contig_start",
+                "contig_stop",
+                "source",
+            ],
+        )
+        run_cypher(
+            f"""
+            UNWIND {batch_str} as row
+            MERGE (n: Orf {{orf_id: row.orf_id}})
+            ON CREATE
+                SET n.hash_id = row.protein_id,
+                    n.contig_start = row.contig_start,
+                    n.contig_stop = row.contig_stop,
+                    n.source = row.source
+        """
+        )
+    # add relationships between orfs and contigs
+    if contigs_uploaded:
+        for batch in tqdm(
+            batches, desc="Adding relationships between orfs and contigs"
+        ):
+            batch_str = stringfy_dicts(batch, keys=["orf_id", "contig_id"])
             run_cypher(
                 f"""
                 UNWIND {batch_str} as row
-                MERGE (n: Orf {{orf_id: row.orf_id}})
-                ON CREATE
-                    SET n.hash_id = row.protein_id,
-                        n.contig_start = row.contig_start,
-                        n.contig_stop = row.contig_stop,
-                        n.source = row.source
+                MATCH (n: Contig {{hash_id: row.contig_id}}),
+                    (m: Orf {{orf_id: row.orf_id}})
+                MERGE (n)-[r: contig_to_orf]->(m)
             """
             )
-            if contigs_uploaded:
-                batch_str = stringfy_dicts(batch, keys=["orf_id", "contig_id"])
-                run_cypher(
-                    f"""
-                    UNWIND {batch_str} as row
-                    MATCH (n: Contig {{hash_id: row.contig_id}}),
-                          (m: Orf {{orf_id: row.orf_id}})
-                    MERGE (n)-[r: contig_to_orf]->(m)
-                """
-                )
     return True

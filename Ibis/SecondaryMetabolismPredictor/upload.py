@@ -22,8 +22,10 @@ def upload_bgcs(
     contigs_uploaded: bool,
     genome_uploaded: bool,
     bs: int = 1000,
+    source: str = "internal",
 ) -> bool:
-    source = "internal"
+    if len(bgcs) == 0:
+        return False
     # add region_ids
     for c in bgcs:
         contig_id = c["contig_id"]
@@ -32,30 +34,29 @@ def upload_bgcs(
         c["region_id"] = f"{contig_id}_{contig_start}_{contig_stop}"
         c["source"] = source
     # add bgcs
-    if len(bgcs) > 0:
-        batches = batchify(bgcs, bs=bs)
-        for batch in tqdm(batches, desc="Uploading BGCs"):
-            batch_str = stringfy_dicts(
-                batch,
-                keys=[
-                    "region_id",
-                    "hash_id",
-                    "contig_start",
-                    "contig_stop",
-                    "source",
-                ],
-            )
-            run_cypher(
-                f"""
-                UNWIND {batch_str} as row
-                MERGE (n: MetabolomicRegion {{region_id: row.region_id}})
-                ON CREATE
-                    SET n.hash_id = row.hash_id,
-                        n.contig_start = row.contig_start,
-                        n.contig_stop = row.contig_stop,
-                        n.source = row.source
-            """
-            )
+    batches = batchify(bgcs, bs=bs)
+    for batch in tqdm(batches, desc="Uploading BGCs"):
+        batch_str = stringfy_dicts(
+            batch,
+            keys=[
+                "region_id",
+                "hash_id",
+                "contig_start",
+                "contig_stop",
+                "source",
+            ],
+        )
+        run_cypher(
+            f"""
+            UNWIND {batch_str} as row
+            MERGE (n: MetabolomicRegion {{region_id: row.region_id}})
+            ON CREATE
+                SET n.hash_id = row.hash_id,
+                    n.contig_start = row.contig_start,
+                    n.contig_stop = row.contig_stop,
+                    n.source = row.source
+        """
+        )
     # connect contigs to bgcs
     if contigs_uploaded:
         rels = [
@@ -64,7 +65,9 @@ def upload_bgcs(
         ]
         if len(rels) > 0:
             batches = batchify(rels, bs=bs)
-            for batch in tqdm(batches, desc="Connecting Contigs to BGCs"):
+            for batch in tqdm(
+                batches, desc="Adding relationships between contigs and BGCs"
+            ):
                 batch_str = stringfy_dicts(
                     batch, keys=["region_id", "contig_id"]
                 )
@@ -85,7 +88,8 @@ def upload_bgcs(
     if len(rels) > 0:
         batches = batchify(rels, bs=bs)
         for batch in tqdm(
-            batches, desc="Connecting BGCs to Internal Chemotypes"
+            batches,
+            desc="Adding relationships between BGCs and internal chemotypes",
         ):
             batch_str = stringfy_dicts(batch, keys=["region_id", "label"])
             run_cypher(
@@ -104,7 +108,10 @@ def upload_bgcs(
     ]
     if len(rels) > 0:
         batches = batchify(rels, bs=bs)
-        for batch in tqdm(batches, desc="Connecting BGCs to MIBiG Chemotypes"):
+        for batch in tqdm(
+            batches,
+            desc="Adding relationships between BGCs and MIBiG Chemotypes",
+        ):
             batch_str = stringfy_dicts(batch, keys=["region_id", "label"])
             run_cypher(
                 f"""
@@ -123,7 +130,9 @@ def upload_bgcs(
         ]
         if len(rels) > 0:
             batches = batchify(rels, bs=bs)
-            for batch in tqdm(batches, desc="Connecting BGCs to ORFs"):
+            for batch in tqdm(
+                batches, desc="Adding relationships between BGCs and orfs"
+            ):
                 batch_str = stringfy_dicts(batch, keys=["region_id", "orf_id"])
                 run_cypher(
                     f"""
@@ -140,7 +149,9 @@ def upload_bgcs(
         ]
         if len(rels) > 0:
             batches = batchify(rels, bs=bs)
-            for batch in tqdm(batches, desc="Connecting BGCs to Genomes"):
+            for batch in tqdm(
+                batches, desc="Adding relationships between genomes and BGCs"
+            ):
                 batch_str = stringfy_dicts(
                     batch, keys=["region_id", "genome_id"]
                 )
@@ -152,3 +163,4 @@ def upload_bgcs(
                     MERGE (n)-[:genome_to_metab]->(m)
                 """
                 )
+    return True

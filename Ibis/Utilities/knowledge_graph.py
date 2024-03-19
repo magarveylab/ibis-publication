@@ -39,7 +39,7 @@ def batchify(l: list, bs: int = 1000):
 
 def stringfy_dicts(l: List[dict], keys: List[str]):
     # filter dictionary keys
-    l = [{k: l[k] for k in keys} for i in l]
+    l = [{k: i[k] for k in keys} for i in l]
     # string format
     l = str(l)
     for k in keys:

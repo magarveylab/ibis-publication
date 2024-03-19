@@ -77,7 +77,9 @@ def upload_domains(
     # add orf to domain rels
     if orfs_uploaded and len(orf_to_domain_rels) > 0:
         batches = batchify(orf_to_domain_rels, bs=bs)
-        for batch in tqdm(batches, desc="Uploading orf to domain rels"):
+        for batch in tqdm(
+            batches, desc="Adding relationships between orfs and domains"
+        ):
             batch_str = stringfy_dicts(batch, keys=["orf_id", "domain_id"])
             run_cypher(
                 f"""
@@ -90,13 +92,15 @@ def upload_domains(
     # add domain to label rels
     if len(domain_to_label_rels) > 0:
         batches = batchify(domain_to_label_rels, bs=bs)
-        for batch in tqdm(batches, desc="Uploading domain to label rels"):
+        for batch in tqdm(
+            batches, desc="Adding relationships between domains and labels"
+        ):
             batch_str = stringfy_dicts(batch, keys=["domain_id", "label"])
             run_cypher(
                 f"""
                 UNWIND {batch_str} as row
                 MATCH (n: Domain {{domain_id: row.domain_id}}),
-                    (m: DomainLabel {{label: row.label}})
+                      (m: DomainLabel {{label: row.label}})
                 MERGE (n)-[r: domain_to_label]->(m)
             """
             )

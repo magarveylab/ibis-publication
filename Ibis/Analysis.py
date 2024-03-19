@@ -232,7 +232,7 @@ def get_filelookup(nuc_fasta_filename: str, output_dir: str) -> Dict[str, str]:
         "enoylreductase_pred_fp": f"{output_dir}/{name}/ER_predictions.json",
         "thiolation_pred_fp": f"{output_dir}/{name}/T_predictions.json",
         "propeptide_pred_fp": f"{output_dir}/{name}/propeptide_predictions.json",
-        "bgc_embedding_fp": f"{output_dir}/{name}/bgc_embeddings.pkl",
+        "bgc_embedding_fp": f"{output_dir}/{name}/bgc_embedding.pkl",
     }
     # check if missing files
     missing_files = [

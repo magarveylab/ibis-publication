@@ -35,33 +35,36 @@ def upload_knn(
         raise ValueError(f"Invalid Label Type: {label_type}")
     rel = knn_meta_lookup[label_type]["rel"]
     process = knn_meta_lookup[label_type]["process"]
-    if len(annotations) > 0:
-        batches = batchify(annotations, bs=bs)
-        for batch in tqdm(batches, desc=f"Uploading {label_type} knn rels"):
-            batch_str = stringfy_dicts(batch, keys=["hash_id"])
-            # update orf annotation
-            run_cypher(
-                f"""
-                UNWIND {batch_str} as row
-                MERGE (n: OrfAnnotation {{hash_id: row.hash_id}})
-                ON MATCH
-                    SET n.date = date(),
-                        n.{process} = True,
-            """
-            )
-            # add knn relationships
-            batch_str = stringfy_dicts(
-                batch,
-                keys=[
-                    "hash_id",
-                    "label",
-                    "reference_id",
-                    "similarity",
-                    "homology",
-                ],
-            )
-            run_cypher(
-                f"""
+    if len(annotations) == 0:
+        return False
+    # upload rels
+    batches = batchify(annotations, bs=bs)
+    for batch in tqdm(batches, desc=f"Initializing {label_type} knn rels"):
+        batch_str = stringfy_dicts(batch, keys=["hash_id"])
+        # update orf annotation
+        run_cypher(
+            f"""
+            UNWIND {batch_str} as row
+            MERGE (n: OrfAnnotation {{hash_id: row.hash_id}})
+            ON MATCH
+                SET n.date = date(),
+                    n.{process} = True,
+        """
+        )
+    # add knn relationships
+    for batch in tqdm(batches, desc=f"Adding {label_type} knn rels"):
+        batch_str = stringfy_dicts(
+            batch,
+            keys=[
+                "hash_id",
+                "label",
+                "reference_id",
+                "similarity",
+                "homology",
+            ],
+        )
+        run_cypher(
+            f"""
                 UNWIND {batch_str} as row
                 MATCH (n: OrfAnnotation {{hash_id: row.hash_id}}),
                     (m: {label_type} {{label: row.label}})
@@ -77,6 +80,6 @@ def upload_knn(
                         r.homology = row.homology,
                         r.reference_id = row.reference_id,
                         r.date = date()
-            """
-            )
+        """
+        )
     return True
