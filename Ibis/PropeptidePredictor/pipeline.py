@@ -2,6 +2,7 @@ import functools
 from typing import List, Optional
 
 import numpy as np
+import xxhash
 from tqdm import tqdm
 from transformers import PreTrainedTokenizerFast
 
@@ -54,7 +55,7 @@ class PropeptidePredictorPipeline:
         for p in out:
             prop_regions = [r for r in p["regions"] if r["label"] == "prop"]
             if len(prop_regions) > 0:
-                prop = max(prop_regions, key=lambda x: x["end"] - x["start"])
+                prop = max(prop_regions, key=lambda x: x["stop"] - x["start"])
             else:
                 prop = {}
             cleaned_out.append(
@@ -62,11 +63,11 @@ class PropeptidePredictorPipeline:
                     "protein_id": p["protein_id"],
                     "sequence": p["sequence"],
                     "start": prop.get("start"),
-                    "end": prop.get("end"),
+                    "stop": prop.get("stop"),
                     "score": prop.get("score"),
                 }
             )
-        return out
+        return cleaned_out
 
     def preprocess(self, sequence: str) -> ModelInput:
         windows = slice_proteins(sequence)
@@ -88,7 +89,7 @@ class PropeptidePredictorPipeline:
         batch_last_hidden_state = []
         for inp in batch_tokenized_inputs:
             lhs = self.model.run(["last_hidden_state"], dict(inp))
-            batch_last_hidden_state.append(lhs)
+            batch_last_hidden_state.append(lhs[0])
         # propeptide residue annotation
         batch_predictions = []
         for inp in batch_last_hidden_state:
@@ -131,6 +132,7 @@ class PropeptidePredictorPipeline:
                 )
         # return output
         return {
+            "protein_id": xxhash.xxh32(sequence).intdigest(),
             "sequence": sequence,
             "residue_classification": residue_classification,
         }
@@ -144,3 +146,7 @@ class PropeptidePredictorPipeline:
         )
         out_arr = np.concatenate([a, b[overlapping_length:]], axis=0)
         return out_arr
+
+    @staticmethod
+    def softmax(x):
+        return np.exp(x) / np.exp(x).sum(-1, keepdims=True)

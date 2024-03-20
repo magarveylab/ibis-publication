@@ -64,6 +64,8 @@ def upload_propetides_from_files(
     for p in json.load(open(propeptide_pred_fp)):
         protein_id = p["protein_id"]
         protein_start = p["start"]
+        if protein_start == None:
+            continue
         protein_stop = p["stop"]
         trimmed_sequence = p["sequence"][protein_start:protein_stop]
         propeptides.append(
