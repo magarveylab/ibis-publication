@@ -28,4 +28,4 @@ def get_mibig_chemotype_standardization(
     table_fp: str = f"{table_dir}/mibig_chemotype_standardized.csv",
 ) -> Dict[str, str]:
     df = pd.read_csv(table_fp)
-    return dict(zip(df.standardized_label, df.label))
+    return dict(zip(df.label, df.standardized_label))
