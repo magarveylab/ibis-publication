@@ -1,16 +1,18 @@
+import os
+import time
+from typing import Any, Dict, List, Literal, Union
+
+import numpy as np
+from qdrant_client import QdrantClient
+from qdrant_client.http import models
+from qdrant_client.http.models import CollectionStatus, SearchRequest
+from tqdm import tqdm
+
 from Ibis.Utilities.Qdrant.datastructs import DataQuery, SearchResponse
 from Ibis.Utilities.Qdrant.parameters import (
     default_dist_metric,
     default_search_params,
 )
-import os
-import time
-import numpy as np
-from tqdm import tqdm
-from qdrant_client import QdrantClient
-from qdrant_client.http import models
-from qdrant_client.http.models import CollectionStatus, SearchRequest
-from typing import Any, Dict, List, Literal, Union
 
 
 # helper functions
@@ -22,7 +24,7 @@ def batchify(l: list, bs: int = 1000):
 client = QdrantClient(
     host=os.environ.get("QDRANT_HOST"),
     port=os.environ.get("QDRANT_PORT"),
-    timeout=30,
+    timeout=60,
 )
 
 

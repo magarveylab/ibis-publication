@@ -1,11 +1,12 @@
-from Ibis.Utilities.Qdrant.datastructs import (
-    DistHitResponse,
-    KnnOutput,
-    DataQuery,
-)
-from Ibis.Utilities.Qdrant.base import QdrantBase
 from collections import Counter
 from typing import Callable, Dict, List
+
+from Ibis.Utilities.Qdrant.base import QdrantBase
+from Ibis.Utilities.Qdrant.datastructs import (
+    DataQuery,
+    DistHitResponse,
+    KnnOutput,
+)
 
 
 def dist2sim(d: float) -> float:
@@ -143,7 +144,7 @@ def KNNClassification(
     homology_cutoff: float = 1.0,
     apply_homology_cutoff: bool = False,
     apply_cutoff_after_homology: bool = False,
-    batch_size: int = 100,
+    batch_size: int = 500,
 ) -> List[KnnOutput]:
     # Initialize Qdrant Database
     db = qdrant_db()
