@@ -46,7 +46,7 @@ def run_on_files(
                 sequences = set()
                 prodigal_fp = f"{output_dir}/{name}/prodigal.json"
                 for p in json.load(open(prodigal_fp)):
-                    if p["hash_id"] in proteins_to_run:
+                    if p["protein_id"] in proteins_to_run:
                         sequences.add(p["sequence"])
                 out = pipeline.run(list(sequences))
             else:
