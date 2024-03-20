@@ -24,3 +24,10 @@ def wait_for_gpu(gpus: List[int]) -> int:
         time.sleep(180)
         free_gpus = get_free_gpus() & gpus
     return list(free_gpus)[0]
+
+
+def split(a: list, n: int):
+    k, m = divmod(len(a), n)
+    return (
+        a[i * k + min(i, m) : (i + 1) * k + min(i + 1, m)] for i in range(n)
+    )
