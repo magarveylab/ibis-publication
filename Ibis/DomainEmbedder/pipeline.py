@@ -59,7 +59,7 @@ class DomainEmbedderPipeline:
         batch_pooler_output = []
         for inp in batch_tokenized_inputs:
             po = self.model.run(["pooler_output"], dict(inp))
-            batch_pooler_output.append(po)
+            batch_pooler_output.append(po[0])
         pooler_output = np.concatenate(batch_pooler_output)
         # return output
         return {
@@ -78,7 +78,7 @@ class DomainEmbedderPipeline:
         cls_embeddings = model_outputs["cls_window_embeddings"]
         avg_cls_embedding = np.mean(
             np.take(cls_embeddings, indices, axis=0), axis=0
-        )[0]
+        )
         # return output
         return {
             "domain_id": xxhash.xxh32(sequence).intdigest(),
