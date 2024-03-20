@@ -1,5 +1,6 @@
 import subprocess as sp
 import time
+from typing import List
 
 
 def get_free_gpus(min_memory: int = 100):
@@ -14,9 +15,12 @@ def get_free_gpus(min_memory: int = 100):
     )
 
 
-def wait_for_gpu(gpu_id: int):
-    while gpu_id not in get_free_gpus():
+def wait_for_gpu(gpus: List[int]) -> int:
+    gpus = set(gpus)
+    free_gpus = get_free_gpus() & gpus
+    while len(free_gpus) == 0:
         # wait for 3 minutes
         print("Waiting for free gpu ...")
         time.sleep(180)
-    return True
+        free_gpus = get_free_gpus() & gpus
+    return list(free_gpus)[0]

@@ -162,7 +162,7 @@ def trimmed_run_on_files(
                     internal_chemotypes = cluster["internal_chemotypes"]
                     if (
                         "Bacteriocin" in internal_chemotypes
-                        and "Ripp" in internal_chemotypes
+                        or "Ripp" in internal_chemotypes
                     ):
                         for orf_id in cluster["orfs"]:
                             data_queries.append(orf_embedding_lookup[orf_id])
@@ -182,8 +182,6 @@ def upload_protein_decoding_from_files(
 ) -> bool:
     if protein_embs_uploaded:
         data = [i for i in json.load(open(knn_fp)) if i["label"] != None]
-        return upload_knn(
-            annotations=data, label_type=label_type
-        )
+        return upload_knn(annotations=data, label_type=label_type)
     else:
         return False
