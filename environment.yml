@@ -1,10 +1,9 @@
 name: ibispub
 channels:
-  - anaconda
   - pyg
   - pytorch
   - nvidia
-  - bioconda
+  - anaconda
   - defaults
 dependencies:
   - _libgcc_mutex=0.1=main
@@ -26,6 +25,7 @@ dependencies:
   - cudatoolkit=11.8.0=h6a678d5_0
   - cudnn=8.9.2.26=cuda11_0
   - ffmpeg=4.3=hf484d3e_0
+  - filelock=3.9.0=py39h06a4308_0
   - freetype=2.12.1=h4a9f257_0
   - future=0.18.3=py39h06a4308_0
   - gmp=6.2.1=h295c915_3
@@ -75,7 +75,6 @@ dependencies:
   - nettle=3.7.3=hbbd107a_1
   - ninja=1.10.2=h06a4308_5
   - ninja-base=1.10.2=hd09550d_5
-  - numpy-base=1.24.3=py39h31eccc5_0
   - openh264=2.1.1=h4ff587b_0
   - openjpeg=2.4.0=h3ad879b_0
   - openssl=3.0.13=h7f8727e_0
@@ -107,7 +106,6 @@ dependencies:
   - torchaudio=2.2.1=py39_cu118
   - torchtriton=2.2.0=py39
   - torchvision=0.15.2=cuda118py39h196c800_0
-  - typing_extensions=4.9.0=py39h06a4308_1
   - wheel=0.41.2=py39h06a4308_0
   - xz=5.4.6=h5eee18b_0
   - yaml=0.2.5=h7b6447c_0
@@ -160,7 +158,6 @@ dependencies:
       - email-validator==1.3.1
       - exceptiongroup==1.2.0
       - fastembed==0.2.2
-      - filelock==3.9.0
       - flask==2.2.5
       - flask-appbuilder==4.3.11
       - flask-babel==2.0.0
@@ -229,7 +226,6 @@ dependencies:
       - nvidia-nccl-cu11==2.19.3
       - nvidia-nvtx-cu11==11.8.86
       - onnx==1.15.0
-      - onnxruntime==1.17.1
       - onnxruntime-gpu==1.12.0
       - opentelemetry-api==1.23.0
       - opentelemetry-exporter-otlp==1.23.0
@@ -287,7 +283,6 @@ dependencies:
       - tornado==6.4
       - tqdm==4.66.2
       - transformers==4.38.2
-      - triton==2.2.0
       - typing-extensions==4.10.0
       - tzdata==2024.1
       - uc-micro-py==1.0.3
@@ -302,4 +297,4 @@ dependencies:
       - xxhash==3.2.0
       - yarl==1.9.4
       - zipp==3.17.0
-prefix: /home/gunam/.conda/envs/ibispub
+prefix: /home/airflow/storage/miniconda3/envs/ibispub
