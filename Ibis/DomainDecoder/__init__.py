@@ -129,7 +129,6 @@ def run_on_files(
             if len(data_queries) == 0:
                 out = []
             else:
-                print(data_queries)
                 out = decode_fn(data_queries)
             with open(export_fp, "w") as f:
                 json.dump(out, f)
