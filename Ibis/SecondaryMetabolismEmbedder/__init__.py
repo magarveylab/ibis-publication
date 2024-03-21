@@ -87,14 +87,8 @@ def run_on_files(
                 domain_lookup[protein_id] = []
                 for r in p["regions"]:
                     domain_id = r["domain_id"]
-                    domain_lookup[protein_id].append(
-                        {
-                            "protein_start": r["start"],
-                            "protein_stop": r["stop"],
-                            "label": r["label"],
-                            "embedding": dom_emb_lookup.get(domain_id),
-                        }
-                    )
+                    r["embedding"] = dom_emb_lookup.get(domain_id)
+                    domain_lookup[protein_id].append(r)
             # load orf data
             prodigal_fp = f"{output_dir}/{name}/prodigal.json"
             orf_lookup = {}

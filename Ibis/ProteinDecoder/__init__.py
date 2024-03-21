@@ -140,7 +140,9 @@ def trimmed_run_on_files(
     if bgc_preds_created == False:
         raise ValueError("BGC predictions not created")
     # run on only proteins in bgc
-    for name in tqdm(filenames):
+    for name in tqdm(
+        filenames, leave=False, desc=f"Running {decode_name} Decoder"
+    ):
         export_fp = f"{output_dir}/{name}/{decode_name}_predictions.json"
         if os.path.exists(export_fp) == False:
             embedding_fp = f"{output_dir}/{name}/protein_embedding.pkl"

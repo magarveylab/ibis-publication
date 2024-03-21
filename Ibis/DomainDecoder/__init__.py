@@ -122,13 +122,9 @@ def run_on_files(
             domains_to_run = set()
             domain_pred_fp = f"{output_dir}/{name}/domain_predictions.json"
             for prot in json.load(open(domain_pred_fp)):
-                prot_seq = prot["sequence"]
                 for region in prot["regions"]:
                     if region["label"] == target_domain:
-                        start, stop = region["start"], region["stop"]
-                        domain_seq = prot_seq[start:stop]
-                        domain_id = xxhash.xxh32(domain_seq).intdigest()
-                        domains_to_run.add(domain_id)
+                        domains_to_run.add(region["domain_id"])
             # analysis
             data_queries = [
                 {"query_id": p["domain_id"], "embedding": p["embedding"]}

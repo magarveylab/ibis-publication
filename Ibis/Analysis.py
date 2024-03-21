@@ -160,6 +160,7 @@ def run_ibis_on_genomes(
     domain_embs_created = DomainEmbedder.run_on_files(
         filenames=basenames,
         output_dir=output_dir,
+        prodigal_preds_created=prodigal_preds_created,
         domain_preds_created=domain_preds_created,
         gpu_id=gpu_id,
     )
