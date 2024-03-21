@@ -104,7 +104,6 @@ class ProteinEmbedderPipeline:
         # return output
         return {
             "protein_id": xxhash.xxh32(sequence).intdigest(),
-            "sequence": sequence,
             "embedding": avg_cls_embedding,
             "ec1": label,
             "ec1_score": score,

@@ -42,5 +42,4 @@ class TokenRegionOutput(TypedDict):
 
 class PipelineOutput(TypedDict):
     protein_id: int
-    sequence: str
     regions: List[TokenRegionOutput]

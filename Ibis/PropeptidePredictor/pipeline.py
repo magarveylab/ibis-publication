@@ -56,17 +56,20 @@ class PropeptidePredictorPipeline:
             prop_regions = [r for r in p["regions"] if r["label"] == "prop"]
             if len(prop_regions) > 0:
                 prop = max(prop_regions, key=lambda x: x["stop"] - x["start"])
-            else:
-                prop = {}
-            cleaned_out.append(
-                {
-                    "protein_id": p["protein_id"],
-                    "sequence": p["sequence"],
-                    "start": prop.get("start"),
-                    "stop": prop.get("stop"),
-                    "score": prop.get("score"),
-                }
-            )
+                seq = p["sequence"]
+                start, stop = p["start"], p["stop"]
+                propeptide_seq = seq[start:stop]
+                propeptide_id = xxhash.xxh32(propeptide_seq).intdigest()
+                cleaned_out.append(
+                    {
+                        "protein_id": p["protein_id"],
+                        "propeptide_id": propeptide_id,
+                        "propeptide_seq": propeptide_seq,
+                        "start": start,
+                        "stop": stop,
+                        "score": prop["score"],
+                    }
+                )
         return cleaned_out
 
     def preprocess(self, sequence: str) -> ModelInput:

@@ -82,6 +82,5 @@ class DomainEmbedderPipeline:
         # return output
         return {
             "domain_id": xxhash.xxh32(sequence).intdigest(),
-            "sequence": sequence,
             "embedding": avg_cls_embedding,
         }

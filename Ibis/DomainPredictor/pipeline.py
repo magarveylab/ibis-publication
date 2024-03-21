@@ -57,6 +57,7 @@ class DomainPredictorPipeline:
             for r in p["regions"]:
                 start, stop = r["start"], r["stop"]
                 r["domain_id"] = xxhash.xxh32(seq[start:stop]).intdigest()
+            del p["sequence"]
         return out
 
     def preprocess(self, sequence: str) -> ModelInput:
