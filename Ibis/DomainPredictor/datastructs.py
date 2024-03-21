@@ -35,8 +35,8 @@ class PipelineIntermediateOutput(TypedDict):
 class TokenRegionOutput(TypedDict):
     domain_id: int
     label: str
-    start: int
-    stop: int
+    protein_start: int
+    protein_stop: int
     score: float
 
 

@@ -34,8 +34,7 @@ class PipelineIntermediateOutput(TypedDict):
 
 class PipelineOutput(TypedDict):
     protein_id: int
-    propeptide_id: int
-    propeptide_seq: str
-    start: int
-    stop: int
+    trimmed_sequence: str
+    protein_start: int
+    protein_stop: int
     score: float

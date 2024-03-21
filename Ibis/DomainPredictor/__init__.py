@@ -72,17 +72,7 @@ def upload_domains_from_files(
         # domain lookup
         domain_lookup = {}
         for p in json.load(open(domain_pred_fp)):
-            protein_id = p["protein_id"]
-            domains = [
-                {
-                    "protein_start": d["start"],
-                    "protein_stop": d["stop"],
-                    "label": d["label"],
-                    "score": d["score"],
-                }
-                for d in p["regions"]
-            ]
-            domain_lookup[protein_id] = domains
+            domain_lookup[p["protein_id"]] = p["regions"]
         # upload domains
         orfs = []
         for p in json.load(open(prodigal_fp)):

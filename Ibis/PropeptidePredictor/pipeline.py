@@ -51,26 +51,16 @@ class PropeptidePredictorPipeline:
         out = parallel_pipeline_token_region_calling(
             pipeline_outputs=out, cpu_cores=self.cpu_cores
         )
-        cleaned_out = []
+        final = []
         for p in out:
             prop_regions = [r for r in p["regions"] if r["label"] == "prop"]
             if len(prop_regions) > 0:
                 prop = max(prop_regions, key=lambda x: x["stop"] - x["start"])
-                seq = p["sequence"]
-                start, stop = p["start"], p["stop"]
-                propeptide_seq = seq[start:stop]
-                propeptide_id = xxhash.xxh32(propeptide_seq).intdigest()
-                cleaned_out.append(
-                    {
-                        "protein_id": p["protein_id"],
-                        "propeptide_id": propeptide_id,
-                        "propeptide_seq": propeptide_seq,
-                        "start": start,
-                        "stop": stop,
-                        "score": prop["score"],
-                    }
-                )
-        return cleaned_out
+                prop["trimmed_sequence"] = p["sequence"][
+                    prop["protein_start"] : prop["protein_stop"]
+                ]
+                final.append(prop)
+        return final
 
     def preprocess(self, sequence: str) -> ModelInput:
         windows = slice_proteins(sequence)

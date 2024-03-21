@@ -1,4 +1,4 @@
-from typing import TypedDict, List
+from typing import List, TypedDict
 
 
 class TokenOutput(TypedDict):
@@ -9,8 +9,8 @@ class TokenOutput(TypedDict):
 
 class TokenRegionOutput(TypedDict):
     label: str
-    start: int
-    stop: int
+    protein_start: int
+    protein_stop: int
     score: float
 
 

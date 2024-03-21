@@ -1,15 +1,17 @@
-from Ibis.Utilities.RegionCalling.datastructs import (
-    TokenOutput,
-    TokenRegionOutput,
-    PipelineIntermediateOutput,
-    PipelineOutput,
-)
-from multiprocessing import Pool
 from collections import Counter
+from multiprocessing import Pool
+from typing import List, Optional, Set
+
 import networkx as nx
 import numpy as np
 from tqdm import tqdm
-from typing import List, Set, Optional
+
+from Ibis.Utilities.RegionCalling.datastructs import (
+    PipelineIntermediateOutput,
+    PipelineOutput,
+    TokenOutput,
+    TokenRegionOutput,
+)
 
 
 class TokenGraph:
@@ -151,10 +153,14 @@ def token_region_calling(
         ]
         support = len(score_list)
         score = round(float(np.mean(score_list)), 2)
-        length = stop - start
         # cache
         out.append(
-            {"label": label, "start": start, "stop": stop, "score": score}
+            {
+                "label": label,
+                "protein_start": start,
+                "protein_stop": stop,
+                "score": score,
+            }
         )
     return sorted(out, key=lambda x: x["start"])
 
