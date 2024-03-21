@@ -30,7 +30,9 @@ def embed_clusters(
     if pipeline == None:
         pipeline = MetabolismEmbedderPipeline(gpu_id=gpu_id)
     # embed
-    out = [pipeline(c) for c in tqdm(clusters, desc="Embedding bgcs")]
+    out = [
+        pipeline(c) for c in tqdm(clusters, leave=False, desc="Embedding bgcs")
+    ]
     return out
 
 
@@ -62,7 +64,9 @@ def run_on_files(
     # load pipeline
     pipeline = MetabolismEmbedderPipeline(gpu_id=gpu_id)
     # analysis
-    for name in tqdm(filenames):
+    for name in tqdm(
+        filenames, leave=False, desc="Running MetabolismEmbedder"
+    ):
         export_fp = f"{output_dir}/{name}/bgc_embedding.pkl"
         if os.path.exists(export_fp) == False:
             dom_emb_fp = f"{output_dir}/{name}/domain_embedding.pkl"

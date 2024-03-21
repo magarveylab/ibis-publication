@@ -83,6 +83,7 @@ def run_ibis_on_genomes(
         filenames=basenames,
         output_dir=output_dir,
         prodigal_preds_created=prodigal_preds_created,
+        protein_embs_created=protein_embs_created,
         cpu_cores=cpu_cores,
     )
     internal_orf_annos_prepared = (

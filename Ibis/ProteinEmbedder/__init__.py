@@ -40,7 +40,7 @@ def run_on_files(
     # load pipeline
     pipeline = ProteinEmbedderPipeline(gpu_id=gpu_id)
     # analysis
-    for name in tqdm(filenames):
+    for name in tqdm(filenames, leave=False, desc="Running Protein Embedder"):
         export_filename = f"{output_dir}/{name}/protein_embedding.pkl"
         if os.path.exists(export_filename) == False:
             prodigal_fp = f"{output_dir}/{name}/prodigal.json"

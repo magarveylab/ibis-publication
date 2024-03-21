@@ -29,7 +29,7 @@ def get_orf_graphs_from_genome(
     contig_to_orfs = sort_orfs_by_contigs(orfs)
     # draw edges between orfs that meet distance threshold
     for contig_id, contig_orfs in tqdm(
-        contig_to_orfs.items(), desc="Preparing Orf Graphs"
+        contig_to_orfs.items(), leave=False, desc="Preparing Orf Graphs"
     ):
         # build graph per graph
         G = nx.Graph()
@@ -106,12 +106,14 @@ def get_tensors_from_genome(
 ) -> List[Data]:
     out = []
     graphs = get_orf_graphs_from_genome(orfs, tolerance=tolerance)
-    for contig_id, G in tqdm(graphs.items(), desc="Preparing Tensors"):
+    for contig_id, G in tqdm(
+        graphs.items(), leave=False, desc="Preparing Tensors"
+    ):
         # sort orfs by nucleotide position
         nodes = sorted(G.nodes, key=lambda n: G.nodes[n]["contig_start"])
         # window graph
         windows = windowify(nodes, size=window_size, step=window_step)
-        for w_nodes in tqdm(windows, leave=True):
+        for w_nodes in windows:
             # render subgraph
             subG = G.subgraph(w_nodes)
             # render tensor

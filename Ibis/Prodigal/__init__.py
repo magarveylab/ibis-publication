@@ -64,7 +64,12 @@ def parallel_run_on_files(
     funct = partial(run_on_single_file, output_dir=output_dir)
     pool = Pool(cpu_cores)
     process = pool.imap_unordered(funct, filenames)
-    out = [p for p in tqdm(process, total=len(filenames))]
+    out = [
+        p
+        for p in tqdm(
+            process, total=len(filenames), leave=False, desc="Running Prodigal"
+        )
+    ]
     pool.close()
     return True
 

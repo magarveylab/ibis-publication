@@ -47,7 +47,10 @@ class PropeptidePredictorPipeline:
         return self.postprocess(model_outputs)
 
     def run(self, sequences: List[str]) -> List[PipelineOutput]:
-        out = [self(s) for s in tqdm(sequences)]
+        out = [
+            self(s)
+            for s in tqdm(sequences, leave=False, desc="PropeptidePredictor")
+        ]
         out = parallel_pipeline_token_region_calling(
             pipeline_outputs=out, cpu_cores=self.cpu_cores
         )

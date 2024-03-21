@@ -39,7 +39,7 @@ def run_on_files(
     # load pipeline
     pipeline = DomainPredictorPipeline(gpu_id=gpu_id, cpu_cores=cpu_cores)
     # analysis
-    for name in tqdm(filenames):
+    for name in tqdm(filenames, leave=False, desc="Running DomainPredictor"):
         export_fp = f"{output_dir}/{name}/domain_predictions.json"
         if os.path.exists(export_fp) == False:
             # load sequence lookup

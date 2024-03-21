@@ -47,7 +47,7 @@ class DomainPredictorPipeline:
         return self.postprocess(model_outputs)
 
     def run(self, sequences: List[str]) -> PipelineOutput:
-        out = [self(s) for s in tqdm(sequences)]
+        out = [self(s) for s in tqdm(sequences, leave=False)]
         out = parallel_pipeline_token_region_calling(
             pipeline_outputs=out, cpu_cores=self.cpu_cores
         )
@@ -55,7 +55,7 @@ class DomainPredictorPipeline:
         for p in out:
             seq = p["sequence"]
             for r in p["regions"]:
-                start, stop = r["start"], r["stop"]
+                start, stop = r["protein_start"], r["protein_stop"]
                 r["domain_id"] = xxhash.xxh32(seq[start:stop]).intdigest()
             del p["sequence"]
         return out

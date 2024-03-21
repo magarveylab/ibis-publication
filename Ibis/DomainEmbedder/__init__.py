@@ -33,6 +33,7 @@ def run_on_protein_sequences(
 def run_on_files(
     filenames: List[str],
     output_dir: str,
+    prodigal_preds_created: bool,
     domain_preds_created: bool,
     gpu_id: int = 0,
 ) -> bool:
@@ -42,18 +43,28 @@ def run_on_files(
     # load pipeline
     pipeline = DomainEmbedderPipeline(gpu_id=gpu_id)
     # analysis
-    for name in tqdm(filenames):
+    for name in tqdm(filenames, leave=False, desc="Running Domain Embedder"):
         domain_pred_fp = f"{output_dir}/{name}/domain_predictions.json"
+        prodigal_pred_fp = f"{output_dir}/{name}/prodigal.json"
         export_filename = f"{output_dir}/{name}/domain_embedding.pkl"
         if os.path.exists(export_filename) == False:
+            # load protein sequences
+            seq_lookup = {
+                p["protein_id"]: p["sequence"]
+                for p in json.load(open(prodigal_pred_fp))
+            }
+            # trime domain sequences
             sequences = set()
             for protein in json.load(open(domain_pred_fp)):
-                prot_sequence = protein["sequence"]
+                protein_id = protein["protein_id"]
                 for domain in protein["regions"]:
                     domain_label = domain["label"]
                     if domain_label in target_domains:
-                        start, stop = domain["start"], domain["stop"]
-                        domain_sequence = prot_sequence[start:stop]
+                        start, stop = (
+                            domain["protein_start"],
+                            domain["protein_stop"],
+                        )
+                        domain_sequence = seq_lookup[protein_id][start:stop]
                         sequences.add(domain_sequence)
             out = pipeline.run(list(sequences))
             with open(export_filename, "wb") as f:

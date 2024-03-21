@@ -35,7 +35,7 @@ def upload_bgcs(
         c["source"] = source
     # add bgcs
     batches = batchify(bgcs, bs=bs)
-    for batch in tqdm(batches, desc="Uploading BGCs"):
+    for batch in tqdm(batches, desc="Uploading BGCs", leave=False):
         batch_str = stringfy_dicts(
             batch,
             keys=[
@@ -66,7 +66,9 @@ def upload_bgcs(
         if len(rels) > 0:
             batches = batchify(rels, bs=bs)
             for batch in tqdm(
-                batches, desc="Adding relationships between contigs and BGCs"
+                batches,
+                desc="Adding relationships between contigs and BGCs",
+                leave=False,
             ):
                 batch_str = stringfy_dicts(
                     batch, keys=["region_id", "contig_id"]
@@ -90,6 +92,7 @@ def upload_bgcs(
         for batch in tqdm(
             batches,
             desc="Adding relationships between BGCs and internal chemotypes",
+            leave=False,
         ):
             batch_str = stringfy_dicts(batch, keys=["region_id", "label"])
             run_cypher(
@@ -111,6 +114,7 @@ def upload_bgcs(
         for batch in tqdm(
             batches,
             desc="Adding relationships between BGCs and MIBiG Chemotypes",
+            leave=False,
         ):
             batch_str = stringfy_dicts(batch, keys=["region_id", "label"])
             run_cypher(
@@ -131,7 +135,9 @@ def upload_bgcs(
         if len(rels) > 0:
             batches = batchify(rels, bs=bs)
             for batch in tqdm(
-                batches, desc="Adding relationships between BGCs and orfs"
+                batches,
+                desc="Adding relationships between BGCs and orfs",
+                leave=False,
             ):
                 batch_str = stringfy_dicts(batch, keys=["region_id", "orf_id"])
                 run_cypher(
@@ -150,7 +156,9 @@ def upload_bgcs(
         if len(rels) > 0:
             batches = batchify(rels, bs=bs)
             for batch in tqdm(
-                batches, desc="Adding relationships between genomes and BGCs"
+                batches,
+                desc="Adding relationships between genomes and BGCs",
+                leave=False,
             ):
                 batch_str = stringfy_dicts(
                     batch, keys=["region_id", "genome_id"]

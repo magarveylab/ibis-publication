@@ -56,6 +56,7 @@ def call_bgcs_by_proximity(
         enumerate(all_orfs),
         total=len(all_orfs),
         desc="Assign unannotated orfs to closest metabolism",
+        leave=False,
     ):
         o1_id = o1["orf_id"]
         if o1_id not in unknown_metabolism_orf_ids:
@@ -129,7 +130,7 @@ def call_bgcs_by_chemotype(
     # filter orfs annotated with secondary metabolism
     G = nx.Graph()
     annotated_orfs = []
-    for o in tqdm(all_orfs):
+    for o in tqdm(all_orfs, leave=False):
         if o["secondary"]["label"] == "core":
             orf_id = o["orf_id"]
             # mibig chemotypes
@@ -175,6 +176,7 @@ def call_bgcs_by_chemotype(
         enumerate(annotated_orfs),
         total=len(annotated_orfs),
         desc="Draw connections between same metabolism and spatially close orfs",
+        leave=False,
     ):
         o1 = G.nodes[o1_id]
         for o2_id in annotated_orfs[idx + 1 :]:

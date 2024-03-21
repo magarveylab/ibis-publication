@@ -84,7 +84,9 @@ class MibigMetabolismPredictorPipeline:
     def _forward(self, data_list: List[Data]) -> Batch:
         out = []
         batches = batchify(data_list)
-        for data in tqdm(batches, desc="Running model on data batches"):
+        for data in tqdm(
+            batches, desc="Running model on data batches", leave=False
+        ):
             data = Batch.from_data_list(data)
             if isinstance(self.gpu_id, int):
                 data = data.to(f"cuda:{self.gpu_id}")
@@ -109,7 +111,10 @@ class MibigMetabolismPredictorPipeline:
         length = data.x.shape[0]
         # parse through all the predictions
         for idx in tqdm(
-            range(length), total=length, desc="Reorganizing Predictions"
+            range(length),
+            total=length,
+            desc="Reorganizing Predictions",
+            leave=False,
         ):
             orf_id = int(data.ids[idx][0])
             if orf_id == -1:
@@ -178,7 +183,9 @@ class InternalMetabolismPredictorPipeline:
     def _forward(self, data_list: List[Data]) -> Batch:
         out = []
         batches = batchify(data_list)
-        for data in tqdm(batches, desc="Running model on data batches"):
+        for data in tqdm(
+            batches, desc="Running model on data batches", leave=False
+        ):
             data = Batch.from_data_list(data)
             if isinstance(self.gpu_id, int):
                 data = data.to(f"cuda:{self.gpu_id}")
@@ -205,7 +212,10 @@ class InternalMetabolismPredictorPipeline:
         length = data.x.shape[0]
         # parse through all the predictions
         for idx in tqdm(
-            range(length), total=length, desc="Reorganizing Predictions"
+            range(length),
+            total=length,
+            desc="Reorganizing Predictions",
+            leave=False,
         ):
             orf_id = int(data.ids[idx][0])
             if orf_id == -1:

@@ -37,7 +37,7 @@ class DomainEmbedderPipeline:
         return self.postprocess(model_outputs)
 
     def run(self, sequences: List[str]):
-        return [self(s) for s in tqdm(sequences)]
+        return [self(s) for s in tqdm(sequences, leave=False)]
 
     def preprocess(self, sequence: str) -> ModelInput:
         windows = slice_proteins(sequence)

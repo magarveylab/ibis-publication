@@ -39,7 +39,9 @@ def run_on_files(
     # load pipeline
     pipeline = PropeptidePredictorPipeline(gpu_id=gpu_id, cpu_cores=cpu_cores)
     # analysis
-    for name in tqdm(filenames):
+    for name in tqdm(
+        filenames, leave=False, desc="Running PropeptidePredictor"
+    ):
         export_fp = f"{output_dir}/{name}/propeptide_predictions.json"
         if os.path.exists(export_fp) == False:
             proteins_to_run = set()

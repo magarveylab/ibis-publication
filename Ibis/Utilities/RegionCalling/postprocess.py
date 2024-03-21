@@ -162,7 +162,7 @@ def token_region_calling(
                 "score": score,
             }
         )
-    return sorted(out, key=lambda x: x["start"])
+    return sorted(out, key=lambda x: x["protein_start"])
 
 
 def pipeline_token_region_calling(
@@ -188,6 +188,14 @@ def parallel_pipeline_token_region_calling(
     process = pool.imap_unordered(
         pipeline_token_region_calling, pipeline_outputs
     )
-    out = [p for p in tqdm(process, total=len(pipeline_outputs))]
+    out = [
+        p
+        for p in tqdm(
+            process,
+            total=len(pipeline_outputs),
+            leave=False,
+            desc="Token Region Calling",
+        )
+    ]
     pool.close()
     return out

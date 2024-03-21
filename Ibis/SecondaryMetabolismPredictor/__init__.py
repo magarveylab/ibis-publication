@@ -93,7 +93,7 @@ def prepare_orfs_for_pipeline_from_single_file(
     name: str,
     output_dir: str,
 ) -> bool:
-    final_fp = f"{output_dir}/{name}/bgc_predictions.pkl"
+    final_fp = f"{output_dir}/{name}/bgc_predictions.json"
     if os.path.exists(final_fp):
         return True
     export_dir = f"{output_dir}/{name}/bgc_predictions_tmp"
@@ -146,7 +146,15 @@ def parallel_prepare_orfs_for_pipeline_from_files(
     )
     pool = Pool(cpu_cores)
     process = pool.imap_unordered(funct, filenames)
-    out = [p for p in tqdm(process, total=len(filenames))]
+    out = [
+        p
+        for p in tqdm(
+            process,
+            total=len(filenames),
+            leave=False,
+            desc="Preparing orfs for secondary metabolism detection",
+        )
+    ]
     pool.close()
     return True
 
@@ -157,8 +165,10 @@ def run_internal_metabolism_pipeline_on_files(
     if orfs_prepared == False:
         raise ValueError("Orfs not prepared for cluster caller")
     internal_pipeline = InternalMetabolismPredictorPipeline(gpu_id=gpu_id)
-    for name in tqdm(filenames):
-        final_fp = f"{output_dir}/{name}/bgc_predictions.pkl"
+    for name in tqdm(
+        filenames, leave=False, desc="Annotate orfs with internal metabolism"
+    ):
+        final_fp = f"{output_dir}/{name}/bgc_predictions.json"
         if os.path.exists(final_fp):
             continue
         export_dir = f"{output_dir}/{name}/bgc_predictions_tmp"
@@ -176,7 +186,7 @@ def run_internal_metabolism_pipeline_on_files(
 def call_bgcs_by_proximity_from_single_file(
     name: str, output_dir: str, min_threshold: int = 10000
 ) -> bool:
-    final_fp = f"{output_dir}/{name}/bgc_predictions.pkl"
+    final_fp = f"{output_dir}/{name}/bgc_predictions.json"
     if os.path.exists(final_fp):
         return True
     export_dir = f"{output_dir}/{name}/bgc_predictions_tmp"
@@ -206,7 +216,15 @@ def parallel_call_bgcs_by_proximity_from_files(
     )
     pool = Pool(cpu_cores)
     process = pool.imap_unordered(funct, filenames)
-    out = [p for p in tqdm(process, total=len(filenames))]
+    out = [
+        p
+        for p in tqdm(
+            process,
+            total=len(filenames),
+            leave=False,
+            desc="Calling bgcs by proximity",
+        )
+    ]
     pool.close()
     return True
 
@@ -223,8 +241,10 @@ def run_mibig_metabolism_pipeline_on_files(
     if proximity_based_bgcs_prepared == False:
         raise ValueError("Proximity based bgcs not prepared")
     mibig_pipeline = MibigMetabolismPredictorPipeline(gpu_id=gpu_id)
-    for name in tqdm(filenames):
-        final_fp = f"{output_dir}/{name}/bgc_predictions.pkl"
+    for name in tqdm(
+        filenames, leave=False, desc="Annotate orfs with mibig metabolism"
+    ):
+        final_fp = f"{output_dir}/{name}/bgc_predictions.json"
         if os.path.exists(final_fp):
             continue
         export_dir = f"{output_dir}/{name}/bgc_predictions_tmp"
@@ -258,7 +278,7 @@ def run_mibig_metabolism_pipeline_on_files(
 def call_bgcs_by_chemotype_from_single_file(
     name: str, output_dir: str, min_threshold: int = 10000
 ) -> bool:
-    final_fp = f"{output_dir}/{name}/bgc_predictions.pkl"
+    final_fp = f"{output_dir}/{name}/bgc_predictions.json"
     export_dir = f"{output_dir}/{name}/bgc_predictions_tmp"
     if os.path.exists(final_fp) == False:
         # data inputs
@@ -314,7 +334,15 @@ def parallel_call_bgcs_by_chemotype_from_files(
     )
     pool = Pool(cpu_cores)
     process = pool.imap_unordered(funct, filenames)
-    out = [p for p in tqdm(process, total=len(filenames))]
+    out = [
+        p
+        for p in tqdm(
+            process,
+            total=len(filenames),
+            leave=False,
+            desc="Calling bgcs by chemotype",
+        )
+    ]
     pool.close()
     return True
 
