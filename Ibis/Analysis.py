@@ -304,36 +304,42 @@ def upload_to_knowledge_graph(
             primary_metabolism_pred_fp=filelookup[
                 "primary_metabolism_pred_fp"
             ],
+            log_dir=filelookup["log_dir"],
             orfs_uploaded=orfs_uploaded,
         )
     )
     # upload ec predictions
     ec_uploaded = ProteinDecoder.upload_protein_decoding_from_files(
         knn_fp=filelookup["ec_pred_fp"],
+        log_dir=filelookup["log_dir"],
         label_type="EC4Label",
         protein_embs_uploaded=protein_embs_uploaded,
     )
     # upload ko predictions
     ko_uploaded = ProteinDecoder.upload_protein_decoding_from_files(
         knn_fp=filelookup["ko_pred_fp"],
+        log_dir=filelookup["log_dir"],
         label_type="KeggOrthologLabel",
         protein_embs_uploaded=protein_embs_uploaded,
     )
     # upload gene family predictions
     gene_family_uploaded = ProteinDecoder.upload_protein_decoding_from_files(
         knn_fp=filelookup["gene_family_pred_fp"],
+        log_dir=filelookup["log_dir"],
         label_type="GeneFamilyLabel",
         protein_embs_uploaded=protein_embs_uploaded,
     )
     # upload gene predictions
     gene_uploaded = ProteinDecoder.upload_protein_decoding_from_files(
         knn_fp=filelookup["gene_pred_fp"],
+        log_dir=filelookup["log_dir"],
         label_type="GeneLabel",
         protein_embs_uploaded=protein_embs_uploaded,
     )
     # upload molecule predictions
     mol_uploaded = ProteinDecoder.upload_protein_decoding_from_files(
         knn_fp=filelookup["mol_pred_fp"],
+        log_dir=filelookup["log_dir"],
         label_type="BioactivePeptideLabel",
         protein_embs_uploaded=protein_embs_uploaded,
     )
@@ -341,59 +347,69 @@ def upload_to_knowledge_graph(
     domains_uploaded = DomainPredictor.upload_domains_from_files(
         domain_pred_fp=filelookup["domain_pred_fp"],
         prodigal_fp=filelookup["prodigal_fp"],
+        log_dir=filelookup["log_dir"],
         orfs_uploaded=orfs_uploaded,
     )
     # upload domain embeddings
     domain_embs_uploaded = DomainEmbedder.upload_domain_embeddings_from_files(
         domain_pred_fp=filelookup["domain_pred_fp"],
         domain_embedding_fp=filelookup["domain_embedding_fp"],
+        log_dir=filelookup["log_dir"],
         domains_uploaded=domains_uploaded,
     )
     # upload adenylation predictions
     adenylation_uploaded = DomainDecoder.upload_domain_decoding_from_files(
         knn_fp=filelookup["adenylation_pred_fp"],
+        log_dir=filelookup["log_dir"],
         label_type="SubstrateLabel",
         domain_embs_uploaded=domain_embs_uploaded,
     )
     # upload acyltransferase predictions
     acyltransferase_uploaded = DomainDecoder.upload_domain_decoding_from_files(
         knn_fp=filelookup["acyltransferase_pred_fp"],
+        log_dir=filelookup["log_dir"],
         label_type="SubstrateLabel",
         domain_embs_uploaded=domain_embs_uploaded,
     )
     # upload ketosynthase predictions
     ketosynthase_uploaded = DomainDecoder.upload_domain_decoding_from_files(
         knn_fp=filelookup["ketosynthase_pred_fp"],
+        log_dir=filelookup["log_dir"],
         label_type="DomainFunctionalLabel",
         domain_embs_uploaded=domain_embs_uploaded,
     )
     # upload ketoreductase predictions
     ketoreductase_uploaded = DomainDecoder.upload_domain_decoding_from_files(
         knn_fp=filelookup["ketoreductase_pred_fp"],
+        log_dir=filelookup["log_dir"],
         label_type="DomainFunctionalLabel",
         domain_embs_uploaded=domain_embs_uploaded,
     )
     # upload dehydratase predictions
     dehydratase_uploaded = DomainDecoder.upload_domain_decoding_from_files(
         knn_fp=filelookup["dehydratase_pred_fp"],
+        log_dir=filelookup["log_dir"],
         label_type="DomainFunctionalLabel",
         domain_embs_uploaded=domain_embs_uploaded,
     )
     # upload enoylreductase predictions
     enoylreductase_uploaded = DomainDecoder.upload_domain_decoding_from_files(
         knn_fp=filelookup["enoylreductase_pred_fp"],
+        log_dir=filelookup["log_dir"],
         label_type="DomainFunctionalLabel",
         domain_embs_uploaded=domain_embs_uploaded,
     )
     # upload thiolation predictions
     thiolation_uploaded = DomainDecoder.upload_domain_decoding_from_files(
         knn_fp=filelookup["thiolation_pred_fp"],
+        log_dir=filelookup["log_dir"],
         label_type="DomainSubclassLabel",
         domain_embs_uploaded=domain_embs_uploaded,
     )
     # upload propeptide predictions
     propeptides_uploaded = PropeptidePredictor.upload_propetides_from_files(
         propeptide_pred_fp=filelookup["propeptide_pred_fp"],
+        log_dir=filelookup["log_dir"],
         orfs_uploaded=orfs_uploaded,
     )
     # upload bgc embedding
@@ -401,6 +417,7 @@ def upload_to_knowledge_graph(
         SecondaryMetabolismEmbedder.upload_bgc_embeddings_from_files(
             nuc_fasta_fp=nuc_fasta_filename,
             bgc_embedding_fp=filelookup["bgc_embedding_fp"],
+            log_dir=filelookup["log_dir"],
             bgcs_uploaded=bgc_uploaded,
         )
     )

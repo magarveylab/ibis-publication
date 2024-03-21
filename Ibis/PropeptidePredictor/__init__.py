@@ -58,24 +58,28 @@ def run_on_files(
 
 
 def upload_propetides_from_files(
-    propeptide_pred_fp: str, orfs_uploaded: bool
+    propeptide_pred_fp: str, log_dir: str, orfs_uploaded: bool
 ) -> bool:
-    propeptides = []
-    for p in json.load(open(propeptide_pred_fp)):
-        protein_id = p["protein_id"]
-        protein_start = p["start"]
-        if protein_start == None:
-            continue
-        protein_stop = p["stop"]
-        trimmed_sequence = p["sequence"][protein_start:protein_stop]
-        propeptides.append(
-            {
-                "protein_id": protein_id,
-                "protein_start": protein_start,
-                "protein_stop": protein_stop,
-                "trimmed_sequence": trimmed_sequence,
-            }
+    log_fp = f"{log_dir}/propeptide_uploaded.json"
+    if os.path.exists(log_fp) == False:
+        propeptides = []
+        for p in json.load(open(propeptide_pred_fp)):
+            protein_id = p["protein_id"]
+            protein_start = p["start"]
+            if protein_start == None:
+                continue
+            protein_stop = p["stop"]
+            trimmed_sequence = p["sequence"][protein_start:protein_stop]
+            propeptides.append(
+                {
+                    "protein_id": protein_id,
+                    "protein_start": protein_start,
+                    "protein_stop": protein_stop,
+                    "trimmed_sequence": trimmed_sequence,
+                }
+            )
+        upload_propeptides(
+            propeptides=propeptides, orfs_uploaded=orfs_uploaded
         )
-    return upload_propeptides(
-        propeptides=propeptides, orfs_uploaded=orfs_uploaded
-    )
+        json.dump({"uploaded": True}, open(log_fp, "w"))
+    return True

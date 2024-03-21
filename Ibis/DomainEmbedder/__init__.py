@@ -57,36 +57,40 @@ def run_on_files(
 def upload_domain_embeddings_from_files(
     domain_pred_fp: str,
     domain_embedding_fp: str,
+    log_dir: str,
     domains_uploaded: bool,
 ):
-    # domain embedding lookup
-    embedding_lookup = {
-        d["domain_id"]: d["embedding"]
-        for d in pickle.load(open(domain_embedding_fp, "rb"))
-    }
-    # upload domains
-    domains = []
-    for p in json.load(open(domain_pred_fp)):
-        protein_id = p["protein_id"]
-        for d in p["regions"]:
-            hash_id = d["domain_id"]
-            if hash_id in embedding_lookup:
-                embedding = embedding_lookup[hash_id]
-                domains.append(
-                    {
-                        "protein_id": protein_id,
-                        "protein_start": d["start"],
-                        "protein_stop": d["stop"],
-                        "hash_id": hash_id,
-                        "embedding": embedding,
-                    }
-                )
-    if len(domains) > 0:
-        embedding_uploaded = upload_domain_embeddings(
-            domains=domains, domains_uploaded=domains_uploaded
-        )
-        initialize_domain_annotations(
-            hash_ids=list(set(d["hash_id"] for d in domains)),
-            embedding_uploaded=embedding_uploaded,
-        )
+    log_fp = f"{log_dir}/domain_embeddings_uploaded.json"
+    if os.path.exists(log_fp) == False:
+        # domain embedding lookup
+        embedding_lookup = {
+            d["domain_id"]: d["embedding"]
+            for d in pickle.load(open(domain_embedding_fp, "rb"))
+        }
+        # upload domains
+        domains = []
+        for p in json.load(open(domain_pred_fp)):
+            protein_id = p["protein_id"]
+            for d in p["regions"]:
+                hash_id = d["domain_id"]
+                if hash_id in embedding_lookup:
+                    embedding = embedding_lookup[hash_id]
+                    domains.append(
+                        {
+                            "protein_id": protein_id,
+                            "protein_start": d["start"],
+                            "protein_stop": d["stop"],
+                            "hash_id": hash_id,
+                            "embedding": embedding,
+                        }
+                    )
+        if len(domains) > 0:
+            embedding_uploaded = upload_domain_embeddings(
+                domains=domains, domains_uploaded=domains_uploaded
+            )
+            initialize_domain_annotations(
+                hash_ids=list(set(d["hash_id"] for d in domains)),
+                embedding_uploaded=embedding_uploaded,
+            )
+        json.dump({"upload": True}, open(log_fp, "w"))
     return True

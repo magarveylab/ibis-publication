@@ -178,10 +178,14 @@ def trimmed_run_on_files(
 
 
 def upload_protein_decoding_from_files(
-    knn_fp: str, label_type: str, protein_embs_uploaded: bool
+    knn_fp: str, log_dir: str, label_type: str, protein_embs_uploaded: bool
 ) -> bool:
     if protein_embs_uploaded:
-        data = [i for i in json.load(open(knn_fp)) if i["label"] != None]
-        return upload_knn(annotations=data, label_type=label_type)
+        log_fp = f"{log_dir}/{label_type}_uploaded.json"
+        if os.path.exists(log_fp) == False:
+            data = [i for i in json.load(open(knn_fp)) if i["label"] != None]
+            upload_knn(annotations=data, label_type=label_type)
+            json.dump({"upload": True}, open(log_fp, "w"))
+        return True
     else:
         return False

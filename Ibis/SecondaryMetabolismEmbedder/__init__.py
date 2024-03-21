@@ -118,31 +118,35 @@ def run_on_files(
 def upload_bgc_embeddings_from_files(
     nuc_fasta_fp: str,
     bgc_embedding_fp: str,
+    log_dir: str,
     bgcs_uploaded: bool,
 ) -> bool:
-    # nucleotide sequence lookup
-    seq_lookup = {}
-    for seq in SeqIO.parse(nuc_fasta_fp, "fasta"):
-        seq = str(seq.seq)
-        contig_id = xxhash.xxh32(seq).intdigest()
-        seq_lookup[contig_id] = seq
-    # embedding_lookup
-    to_upload = []
-    for bgc in pickle.load(open(bgc_embedding_fp, "rb")):
-        contig_id = bgc["contig_id"]
-        contig_start = bgc["contig_start"]
-        contig_stop = bgc["contig_stop"]
-        bgc_seq = seq_lookup[contig_id][contig_start:contig_stop]
-        hash_id = xxhash.xxh32(bgc_seq).intdigest()
-        embedding = bgc["embedding"]
-        to_upload.append(
-            {
-                "contig_id": contig_id,
-                "contig_start": contig_start,
-                "contig_stop": contig_stop,
-                "hash_id": hash_id,
-                "embedding": embedding,
-            }
-        )
-    upload_bgc_embeddings(bgcs=to_upload, bgcs_uploaded=bgcs_uploaded)
+    log_fp = f"{log_dir}/bgc_embeddings_uploaded.json"
+    if os.path.exists(log_fp) == False:
+        # nucleotide sequence lookup
+        seq_lookup = {}
+        for seq in SeqIO.parse(nuc_fasta_fp, "fasta"):
+            seq = str(seq.seq)
+            contig_id = xxhash.xxh32(seq).intdigest()
+            seq_lookup[contig_id] = seq
+        # embedding_lookup
+        to_upload = []
+        for bgc in pickle.load(open(bgc_embedding_fp, "rb")):
+            contig_id = bgc["contig_id"]
+            contig_start = bgc["contig_start"]
+            contig_stop = bgc["contig_stop"]
+            bgc_seq = seq_lookup[contig_id][contig_start:contig_stop]
+            hash_id = xxhash.xxh32(bgc_seq).intdigest()
+            embedding = bgc["embedding"]
+            to_upload.append(
+                {
+                    "contig_id": contig_id,
+                    "contig_start": contig_start,
+                    "contig_stop": contig_stop,
+                    "hash_id": hash_id,
+                    "embedding": embedding,
+                }
+            )
+        upload_bgc_embeddings(bgcs=to_upload, bgcs_uploaded=bgcs_uploaded)
+        json.dump({"uploaded": True}, open(log_fp, "w"))
     return True

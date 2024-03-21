@@ -65,33 +65,37 @@ def run_on_files(
 
 
 def upload_domains_from_files(
-    domain_pred_fp: str, prodigal_fp: str, orfs_uploaded: bool
+    domain_pred_fp: str, prodigal_fp: str, log_dir: str, orfs_uploaded: bool
 ):
-    # domain lookup
-    domain_lookup = {}
-    for p in json.load(open(domain_pred_fp)):
-        protein_id = p["protein_id"]
-        domains = [
-            {
-                "protein_start": d["start"],
-                "protein_stop": d["stop"],
-                "label": d["label"],
-                "score": d["score"],
-            }
-            for d in p["regions"]
-        ]
-        domain_lookup[protein_id] = domains
-    # upload domains
-    orfs = []
-    for p in json.load(open(prodigal_fp)):
-        protein_id = p["protein_id"]
-        orfs.append(
-            {
-                "contig_id": p["contig_id"],
-                "protein_id": protein_id,
-                "contig_start": p["contig_start"],
-                "contig_stop": p["contig_stop"],
-                "domains": domain_lookup.get(protein_id, []),
-            }
-        )
-    return upload_domains(orfs=orfs, orfs_uploaded=orfs_uploaded)
+    log_fp = f"{log_dir}/domain_uploaded.json"
+    if os.path.exists(log_fp) == False:
+        # domain lookup
+        domain_lookup = {}
+        for p in json.load(open(domain_pred_fp)):
+            protein_id = p["protein_id"]
+            domains = [
+                {
+                    "protein_start": d["start"],
+                    "protein_stop": d["stop"],
+                    "label": d["label"],
+                    "score": d["score"],
+                }
+                for d in p["regions"]
+            ]
+            domain_lookup[protein_id] = domains
+        # upload domains
+        orfs = []
+        for p in json.load(open(prodigal_fp)):
+            protein_id = p["protein_id"]
+            orfs.append(
+                {
+                    "contig_id": p["contig_id"],
+                    "protein_id": protein_id,
+                    "contig_start": p["contig_start"],
+                    "contig_stop": p["contig_stop"],
+                    "domains": domain_lookup.get(protein_id, []),
+                }
+            )
+        upload_domains(orfs=orfs, orfs_uploaded=orfs_uploaded)
+        json.dump({"upload": True}, open(log_fp, "w"))
+    return True
