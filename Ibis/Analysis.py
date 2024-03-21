@@ -213,6 +213,7 @@ def run_ibis_on_genomes(
 def get_filelookup(nuc_fasta_filename: str, output_dir: str) -> Dict[str, str]:
     name = os.path.basename(nuc_fasta_filename)
     filelookup = {
+        "log_dir": f"{output_dir}/{name}/logs",
         "prodigal_fp": f"{output_dir}/{name}/prodigal.json",
         "protein_embedding_fp": f"{output_dir}/{name}/protein_embedding.pkl",
         "bgc_pred_fp": f"{output_dir}/{name}/bgc_predictions.json",
@@ -234,6 +235,7 @@ def get_filelookup(nuc_fasta_filename: str, output_dir: str) -> Dict[str, str]:
         "propeptide_pred_fp": f"{output_dir}/{name}/propeptide_predictions.json",
         "bgc_embedding_fp": f"{output_dir}/{name}/bgc_embedding.pkl",
     }
+    os.makedirs(filelookup["log_dir"], exist_ok=True)
     # check if missing files
     missing_files = [
         k for k, v in filelookup.items() if os.path.exists(v) == False
@@ -254,11 +256,13 @@ def upload_to_knowledge_graph(
     )
     # upload contigs
     contigs_uploaded = Prodigal.upload_contigs_from_files(
-        prodigal_fp=filelookup["prodigal_fp"]
+        prodigal_fp=filelookup["prodigal_fp"],
+        log_dir=filelookup["log_dir"],
     )
     # upload genomes
     genomes_uploaded = Prodigal.upload_genome_from_files(
         prodigal_fp=filelookup["prodigal_fp"],
+        log_dir=filelookup["log_dir"],
         nuc_fasta_fp=nuc_fasta_filename,
         genome_id=genome_id,
         contigs_uploaded=contigs_uploaded,
@@ -266,6 +270,7 @@ def upload_to_knowledge_graph(
     # upload orfs
     orfs_uploaded = Prodigal.upload_orfs_from_files(
         prodigal_fp=filelookup["prodigal_fp"],
+        log_dir=filelookup["log_dir"],
         contigs_uploaded=contigs_uploaded,
     )
     # upload primary metabolism

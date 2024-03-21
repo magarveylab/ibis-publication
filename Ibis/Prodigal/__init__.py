@@ -60,42 +60,57 @@ def parallel_run_on_files(
     return True
 
 
-def upload_contigs_from_files(prodigal_fp: str) -> bool:
-    contig_ids = set(p["contig_id"] for p in json.load(open(prodigal_fp, "r")))
-    return upload_contigs(contig_ids=list(contig_ids))
+def upload_contigs_from_files(prodigal_fp: str, log_dir: str) -> bool:
+    log_fp = f"{log_dir}/contigs_uploaded.json"
+    if os.path.exists(log_fp) == False:
+        contig_ids = set(
+            p["contig_id"] for p in json.load(open(prodigal_fp, "r"))
+        )
+        upload_contigs(contig_ids=list(contig_ids))
+        json.dump({"upload": True}, open(log_fp, "w"))
+    return True
 
 
 def upload_genome_from_files(
     nuc_fasta_fp: str,
     prodigal_fp: str,
+    log_dir: str,
     genome_id: int,
     contigs_uploaded: bool,
 ) -> bool:
     if isinstance(genome_id, int):
-        contig_ids = set(
-            p["contig_id"] for p in json.load(open(prodigal_fp, "r"))
-        )
-        genome = {
-            "genome_id": genome_id,
-            "filepath": nuc_fasta_fp,
-            "contig_ids": list(contig_ids),
-        }
-        return upload_genomes(
-            genomes=[genome], contigs_uploaded=contigs_uploaded
-        )
+        log_fp = f"{log_dir}/genomes_uploaded.json"
+        if os.path.exists(log_fp) == False:
+            contig_ids = set(
+                p["contig_id"] for p in json.load(open(prodigal_fp, "r"))
+            )
+            genome = {
+                "genome_id": genome_id,
+                "filepath": nuc_fasta_fp,
+                "contig_ids": list(contig_ids),
+            }
+            upload_genomes(genomes=[genome], contigs_uploaded=contigs_uploaded)
+            json.dump({"upload": True}, open(log_fp, "w"))
+        return True
     else:
         return False
 
 
-def upload_orfs_from_files(prodigal_fp: str, contigs_uploaded: bool = False):
-    orfs = []
-    for p in json.load(open(prodigal_fp, "r")):
-        orfs.append(
-            {
-                "protein_id": p["protein_id"],
-                "contig_id": p["contig_id"],
-                "contig_start": p["contig_start"],
-                "contig_stop": p["contig_stop"],
-            }
-        )
-    return upload_orfs(orfs=orfs, contigs_uploaded=contigs_uploaded)
+def upload_orfs_from_files(
+    prodigal_fp: str, log_dir: str, contigs_uploaded: bool = False
+):
+    log_fp = f"{log_dir}/orfs_uploaded.json"
+    if os.path.exists(log_fp) == False:
+        orfs = []
+        for p in json.load(open(prodigal_fp, "r")):
+            orfs.append(
+                {
+                    "protein_id": p["protein_id"],
+                    "contig_id": p["contig_id"],
+                    "contig_start": p["contig_start"],
+                    "contig_stop": p["contig_stop"],
+                }
+            )
+        upload_orfs(orfs=orfs, contigs_uploaded=contigs_uploaded)
+        json.dump({"upload": True}, open(log_fp, "w"))
+    return True
