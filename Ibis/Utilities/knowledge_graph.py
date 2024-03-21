@@ -68,7 +68,7 @@ def get_existing_hash_ids(node_type: str, ids: List[int]) -> Set[int]:
 
 class EmbeddingDict(TypedDict):
     hash_id: int
-    embedding: List[int]
+    embedding: List[float]
 
 
 def upload_embeddings(

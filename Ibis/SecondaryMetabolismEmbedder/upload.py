@@ -30,6 +30,7 @@ def upload_bgc_embeddings(
         contig_start = c["contig_start"]
         contig_stop = c["contig_stop"]
         c["region_id"] = f"{contig_id}_{contig_start}_{contig_stop}"
+        c["embedding"] = c["embedding"].tolist()
     # upload embeddings
     upload_embeddings(
         node_type="MetabolomicRegionEmbedding",

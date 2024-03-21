@@ -60,7 +60,7 @@ def upload_propeptides(
             run_cypher(
                 f"""
                 UNWIND {batch_str} as row
-                MATCH (o: Orf {{hash_id: row.protein_id}})
+                MATCH (o: Orf {{hash_id: row.protein_id}}),
                       (p: Propeptide {{propeptide_id: row.propeptide_id}})
                 MERGE (o)-[:orf_to_propeptide]->(p)
             """
