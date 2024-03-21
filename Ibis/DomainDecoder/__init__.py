@@ -23,6 +23,11 @@ from Ibis.Utilities.Qdrant.classification import (
     ontology_neighborhood_classification,
 )
 
+########################################################################
+# General functions
+########################################################################
+
+
 decode_adenylation = partial(
     KNNClassification,
     qdrant_db=IbisAdenylation,
@@ -95,6 +100,10 @@ decode_thiolation = partial(
     apply_cutoff_after_homology=True,
 )
 
+########################################################################
+# Airflow inference functions
+########################################################################
+
 
 def run_on_files(
     filenames: List[str],
@@ -133,6 +142,11 @@ def run_on_files(
             with open(export_fp, "w") as f:
                 json.dump(out, f)
     return True
+
+
+########################################################################
+# Airflow upload functions
+########################################################################
 
 
 def upload_domain_decoding_from_files(

@@ -20,6 +20,10 @@ from Ibis.Utilities.Qdrant.classification import (
     ontology_neighborhood_classification,
 )
 
+########################################################################
+# General functions
+########################################################################
+
 decode_ec = partial(
     KNNClassification,
     qdrant_db=IbisEC,
@@ -73,6 +77,10 @@ decode_gene = partial(
     apply_homology_cutoff=False,
     apply_cutoff_after_homology=False,
 )
+
+########################################################################
+# Airflow inference functions
+########################################################################
 
 
 def run_on_files(
@@ -175,6 +183,11 @@ def trimmed_run_on_files(
             with open(export_fp, "w") as f:
                 json.dump(out, f)
     return True
+
+
+########################################################################
+# Airflow upload functions
+########################################################################
 
 
 def upload_protein_decoding_from_files(

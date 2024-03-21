@@ -12,12 +12,21 @@ from Ibis.ProteinEmbedder.upload import (
     upload_protein_embeddings,
 )
 
+########################################################################
+# General functions
+########################################################################
+
 
 def run_on_protein_sequences(
     sequences: List[str], gpu_id: int = 0
 ) -> List[PipelineOutput]:
     pipeline = ProteinEmbedderPipeline(gpu_id=gpu_id)
     return pipeline.run(sequences)
+
+
+########################################################################
+# Airflow inference functions
+########################################################################
 
 
 def run_on_files(
@@ -42,6 +51,11 @@ def run_on_files(
     # delete pipeline
     del pipeline
     return True
+
+
+########################################################################
+# Airflow upload functions
+########################################################################
 
 
 def upload_protein_embeddings_from_files(

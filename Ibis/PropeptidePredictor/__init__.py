@@ -7,12 +7,21 @@ from tqdm import tqdm
 from Ibis.PropeptidePredictor.pipeline import PropeptidePredictorPipeline
 from Ibis.PropeptidePredictor.upload import upload_propeptides
 
+########################################################################
+# General functions
+########################################################################
+
 
 def run_propeptide_predictor_on_proteins(
     protein_sequences: List[str], gpu_id: Optional[int] = None
 ):
     propeptide_predictor = PropeptidePredictorPipeline(gpu_id=gpu_id)
     return propeptide_predictor.run(protein_sequences)
+
+
+########################################################################
+# Airflow inference functions
+########################################################################
 
 
 def run_on_files(
@@ -55,6 +64,11 @@ def run_on_files(
                 json.dump(out, f)
     del pipeline
     return True
+
+
+########################################################################
+# Airflow upload functions
+########################################################################
 
 
 def upload_propetides_from_files(

@@ -15,6 +15,10 @@ from Ibis.PrimaryMetabolismPredictor.preprocess import (
 )
 from Ibis.PrimaryMetabolismPredictor.upload import upload_predicted_pathways
 
+########################################################################
+# Airflow inference functions
+########################################################################
+
 
 def run_on_single_file(
     filename: str,
@@ -54,6 +58,11 @@ def run_on_single_file(
         with open(export_fp, "w") as json_data:
             json.dump(out, json_data)
     return True
+
+
+########################################################################
+# Airflow upload functions
+########################################################################
 
 
 def parallel_run_on_files(

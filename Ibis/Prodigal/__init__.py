@@ -12,6 +12,10 @@ from tqdm import tqdm
 from Ibis.Prodigal.datastructs import ProdigalOutput
 from Ibis.Prodigal.upload import upload_contigs, upload_genomes, upload_orfs
 
+########################################################################
+# General functions
+########################################################################
+
 
 def run_prodigal(nuc_fasta_fp: str) -> List[ProdigalOutput]:
     proteins = []
@@ -39,6 +43,11 @@ def run_prodigal(nuc_fasta_fp: str) -> List[ProdigalOutput]:
     return proteins
 
 
+########################################################################
+# Airflow inference functions
+########################################################################
+
+
 def run_on_single_file(nuc_fasta_fp: str, output_dir: str = None) -> bool:
     basename = os.path.basename(nuc_fasta_fp)
     output_fp = f"{output_dir}/{basename}/prodigal.json"
@@ -58,6 +67,11 @@ def parallel_run_on_files(
     out = [p for p in tqdm(process, total=len(filenames))]
     pool.close()
     return True
+
+
+########################################################################
+# Airflow upload functions
+########################################################################
 
 
 def upload_contigs_from_files(prodigal_fp: str, log_dir: str) -> bool:

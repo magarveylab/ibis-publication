@@ -16,6 +16,10 @@ from Ibis.SecondaryMetabolismEmbedder.pipeline import (
 )
 from Ibis.SecondaryMetabolismEmbedder.upload import upload_bgc_embeddings
 
+########################################################################
+# General functions
+########################################################################
+
 
 def embed_clusters(
     clusters: List[ClusterInput],
@@ -30,6 +34,11 @@ def embed_clusters(
     return out
 
 
+########################################################################
+# Airflow inference functions
+########################################################################
+
+
 def run_on_files(
     filenames: List[str],
     output_dir: str,
@@ -40,6 +49,16 @@ def run_on_files(
     bgc_preds_created: bool,
     gpu_id: Optional[int] = None,
 ) -> bool:
+    if prodigal_preds_created == False:
+        raise ValueError("Prodigal predictions not created")
+    if protein_embs_created == False:
+        raise ValueError("Protein embeddings not created")
+    if domain_preds_created == False:
+        raise ValueError("Domain predictions not created")
+    if domain_embs_created == False:
+        raise ValueError("Domain embeddings not created")
+    if bgc_preds_created == False:
+        raise ValueError("BGC predictions not created")
     # load pipeline
     pipeline = MetabolismEmbedderPipeline(gpu_id=gpu_id)
     # analysis
@@ -113,6 +132,11 @@ def run_on_files(
                 pickle.dump(out, f)
     del pipeline
     return True
+
+
+########################################################################
+# Airflow upload functions
+########################################################################
 
 
 def upload_bgc_embeddings_from_files(

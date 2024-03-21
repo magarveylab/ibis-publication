@@ -7,12 +7,21 @@ from tqdm import tqdm
 from Ibis.DomainPredictor.pipeline import DomainPredictorPipeline
 from Ibis.DomainPredictor.upload import upload_domains
 
+########################################################################
+# General functions
+########################################################################
+
 
 def run_on_protein_sequences(
     sequences: List[str], gpu_id: int = 0, cpu_cores: int = 1
 ):
     pipeline = DomainPredictorPipeline(gpu_id=gpu_id, cpu_cores=cpu_cores)
     return pipeline.run(sequences)
+
+
+########################################################################
+# Airflow inference functions
+########################################################################
 
 
 def run_on_files(
@@ -62,6 +71,11 @@ def run_on_files(
                 json.dump(out, f)
     del pipeline
     return True
+
+
+########################################################################
+# Airflow upload functions
+########################################################################
 
 
 def upload_domains_from_files(

@@ -12,6 +12,10 @@ from Ibis.DomainEmbedder.upload import (
     upload_domain_embeddings,
 )
 
+########################################################################
+# General functions
+########################################################################
+
 
 def run_on_protein_sequences(
     sequences: List[str], gpu_id: int = 0
@@ -19,6 +23,11 @@ def run_on_protein_sequences(
     # load pipeline
     pipeline = DomainEmbedderPipeline(gpu_id=gpu_id)
     return pipeline.run(sequences)
+
+
+########################################################################
+# Airflow inference functions
+########################################################################
 
 
 def run_on_files(
@@ -52,6 +61,11 @@ def run_on_files(
     # delete pipeline
     del pipeline
     return True
+
+
+########################################################################
+# Airflow upload functions
+########################################################################
 
 
 def upload_domain_embeddings_from_files(
