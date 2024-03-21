@@ -40,7 +40,9 @@ def upload_domain_embeddings(
     # connect embeddings to domains
     if domains_uploaded and len(domains) > 0:
         batches = batchify(domains, bs=bs)
-        for batch in tqdm(batches, desc="Uploading domain to embedding rels"):
+        for batch in tqdm(
+            batches, desc="Uploading domain to embedding rels", leave=False
+        ):
             batch_str = stringfy_dicts(batch, keys=["domain_id", "hash_id"])
             run_cypher(
                 f"""
@@ -59,7 +61,9 @@ def initialize_domain_annotations(
     if len(hash_ids) == 0:
         return False
     batches = batchify(hash_ids, bs=bs)
-    for batch in tqdm(batches, desc="Initialize domain annotations"):
+    for batch in tqdm(
+        batches, desc="Initialize domain annotations", leave=False
+    ):
         run_cypher(
             f"""
             UNWIND {batch} as row
@@ -75,6 +79,7 @@ def initialize_domain_annotations(
         for batch in tqdm(
             batches,
             desc="Adding relationships between domain embedding and annotations",
+            leave=False,
         ):
             run_cypher(
                 f"""

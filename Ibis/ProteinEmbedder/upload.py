@@ -40,7 +40,9 @@ def upload_protein_embeddings(
         # upload rels
         batches = batchify(orfs, bs=bs)
         for batch in tqdm(
-            batches, desc="Adding relationships between orfs and embeddings"
+            batches,
+            desc="Adding relationships between orfs and embeddings",
+            leave=False,
         ):
             batch_str = stringfy_dicts(batch, keys=["protein_id"])
             run_cypher(
@@ -60,7 +62,7 @@ def upload_ec1_annotations(
     if len(orfs) == 0:
         return False
     batches = batchify(orfs, bs=bs)
-    for batch in tqdm(batches, desc="Uploading ec1 annotations"):
+    for batch in tqdm(batches, desc="Uploading ec1 annotations", leave=False):
         batch_str = stringfy_dicts(
             batch,
             keys=["protein_id", "ec1_label", "ec1_score", "is_enzyme"],
@@ -93,6 +95,7 @@ def upload_ec1_annotations(
         for batch in tqdm(
             batches,
             desc="Adding relationships between Orf embedding and annotation",
+            leave=False,
         ):
             batch_str = stringfy_dicts(batch, keys=["protein_id"])
             run_cypher(

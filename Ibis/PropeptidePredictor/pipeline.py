@@ -58,7 +58,10 @@ class PropeptidePredictorPipeline:
         for p in out:
             prop_regions = [r for r in p["regions"] if r["label"] == "prop"]
             if len(prop_regions) > 0:
-                prop = max(prop_regions, key=lambda x: x["stop"] - x["start"])
+                prop = max(
+                    prop_regions,
+                    key=lambda x: x["protein_stop"] - x["protein_start"],
+                )
                 prop["trimmed_sequence"] = p["sequence"][
                     prop["protein_start"] : prop["protein_stop"]
                 ]

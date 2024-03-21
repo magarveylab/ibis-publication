@@ -25,7 +25,9 @@ def upload_propeptides(
         p["propeptide_id"] = f"{protein_id}_{protein_start}_{protein_stop}"
     # upload propeptides
     batches = batchify(propeptides, bs=bs)
-    for batch in tqdm(batches, desc="Uploading propeptides"):
+    for batch in tqdm(
+        batches, desc="Uploading propeptides", leave=False, leave=False
+    ):
         # add propeptide
         batch_str = stringfy_dicts(
             batch,
@@ -47,7 +49,9 @@ def upload_propeptides(
         )
     if orfs_uploaded:
         for batch in tqdm(
-            batches, desc="Adding relationships between orfs and propeptides"
+            batches,
+            desc="Adding relationships between orfs and propeptides",
+            leave=False,
         ):
             # connect to orf
             batch_str = stringfy_dicts(

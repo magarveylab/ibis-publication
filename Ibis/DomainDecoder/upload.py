@@ -40,7 +40,9 @@ def upload_knn(
         return False
 
     batches = batchify(annotations, bs=bs)
-    for batch in tqdm(batches, desc=f"Uploading {label_type} knn rels"):
+    for batch in tqdm(
+        batches, desc=f"Uploading {label_type} knn rels", leave=False
+    ):
         batch_str = stringfy_dicts(batch, keys=["hash_id"])
         # update orf annotation
         run_cypher(

@@ -15,7 +15,10 @@ def upload_predicted_pathways(
     if len(preds) > 0:
         batches = batchify(preds, bs=bs)
         for batch in tqdm(
-            batches, bs=bs, desc="Uploading pathway predictions"
+            batches,
+            bs=bs,
+            desc="Uploading pathway predictions",
+            leave=False,
         ):
             batch_str = stringfy_dicts(
                 batch,
@@ -68,6 +71,7 @@ def upload_predicted_pathways(
         for batch in tqdm(
             batches,
             desc="Adding relationships between genomes and predicted pathways",
+            leave=False,
         ):
             batch_str = stringfy_dicts(
                 batch, keys=["genome_id", "prediction_id"]
@@ -85,6 +89,7 @@ def upload_predicted_pathways(
         for batch in tqdm(
             batches,
             desc="Adding relationships between predicted pathways and pathway labels",
+            leave=False,
         ):
             batch_str = stringfy_dicts(
                 batch, keys=["prediction_id", "pathway_id"]
@@ -102,6 +107,7 @@ def upload_predicted_pathways(
         for batch in tqdm(
             batches,
             desc="Adding relationships between predicted pathways and orfs",
+            leave=False,
         ):
             batch_str = stringfy_dicts(batch, keys=["prediction_id", "orf_id"])
             run_cypher(

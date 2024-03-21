@@ -20,7 +20,7 @@ class OrfDict(TypedDict):
 
 def upload_contigs(contig_ids: List[int], bs: int = 1000) -> bool:
     batches = batchify(contig_ids, bs=bs)
-    for batch in tqdm(batches, desc="Uploading contigs"):
+    for batch in tqdm(batches, desc="Uploading contigs", leave=False):
         run_cypher(
             f"UNWIND {contig_ids} as row MERGE (n: Contig {{hash_id: row}})"
         )
@@ -81,7 +81,7 @@ def upload_orfs(
         orf["source"] = source
     # upload orfs
     batches = batchify(orfs, bs=bs)
-    for batch in tqdm(batches, desc="Uploading orfs"):
+    for batch in tqdm(batches, desc="Uploading orfs", leave=False):
         batch_str = stringfy_dicts(
             batch,
             keys=[
@@ -106,7 +106,9 @@ def upload_orfs(
     # add relationships between orfs and contigs
     if contigs_uploaded:
         for batch in tqdm(
-            batches, desc="Adding relationships between orfs and contigs"
+            batches,
+            desc="Adding relationships between orfs and contigs",
+            leave=False,
         ):
             batch_str = stringfy_dicts(batch, keys=["orf_id", "contig_id"])
             run_cypher(

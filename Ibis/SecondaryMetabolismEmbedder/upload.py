@@ -40,7 +40,9 @@ def upload_bgc_embeddings(
     if bgcs_uploaded:
         batches = batchify(bgcs, bs=bs)
         for batch in tqdm(
-            batches, desc="Adding relationships between bgcs and embeddings"
+            batches,
+            desc="Adding relationships between bgcs and embeddings",
+            leave=False,
         ):
             batch_str = stringfy_dicts(batch, keys=["hash_id", "region_id"])
             run_cypher(

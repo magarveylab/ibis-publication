@@ -54,7 +54,7 @@ def upload_domains(
     # add domains
     if len(domains_to_submit) > 0:
         batches = batchify(domains_to_submit, bs=bs)
-        for batch in tqdm(batches, desc="Uploading domains"):
+        for batch in tqdm(batches, desc="Uploading domains", leave=False):
             batch_str = stringfy_dicts(
                 batch,
                 keys=["domain_id", "protein_start", "protein_stop", "score"],
@@ -77,7 +77,9 @@ def upload_domains(
     if orfs_uploaded and len(orf_to_domain_rels) > 0:
         batches = batchify(orf_to_domain_rels, bs=bs)
         for batch in tqdm(
-            batches, desc="Adding relationships between orfs and domains"
+            batches,
+            desc="Adding relationships between orfs and domains",
+            leave=False,
         ):
             batch_str = stringfy_dicts(batch, keys=["orf_id", "domain_id"])
             run_cypher(
@@ -92,7 +94,9 @@ def upload_domains(
     if len(domain_to_label_rels) > 0:
         batches = batchify(domain_to_label_rels, bs=bs)
         for batch in tqdm(
-            batches, desc="Adding relationships between domains and labels"
+            batches,
+            desc="Adding relationships between domains and labels",
+            leave=False,
         ):
             batch_str = stringfy_dicts(batch, keys=["domain_id", "label"])
             run_cypher(
