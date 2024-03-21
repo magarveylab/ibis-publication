@@ -279,6 +279,7 @@ def upload_to_knowledge_graph(
             primary_metabolism_pred_fp=filelookup[
                 "primary_metabolism_pred_fp"
             ],
+            log_dir=filelookup["log_dir"],
             genome_id=genome_id,
             orfs_uploaded=orfs_uploaded,
             genome_uploaded=genomes_uploaded,
@@ -288,6 +289,7 @@ def upload_to_knowledge_graph(
     bgc_uploaded = SecondaryMetabolismPredictor.upload_bgcs_from_files(
         nuc_fasta_fp=nuc_fasta_filename,
         bgc_pred_fp=filelookup["bgc_pred_fp"],
+        log_dir=filelookup["log_dir"],
         genome_id=genome_id,
         orfs_uploaded=orfs_uploaded,
         contigs_uploaded=contigs_uploaded,

@@ -134,29 +134,34 @@ def run_on_files(
 def upload_bgcs_from_files(
     nuc_fasta_fp: str,
     bgc_pred_fp: str,
+    log_dir: str,
     genome_id: Optional[int],
     orfs_uploaded: bool,
     contigs_uploaded: bool,
     genome_uploaded: bool,
 ) -> bool:
-    # nucleotide sequence lookup
-    seq_lookup = {}
-    for seq in SeqIO.parse(nuc_fasta_fp, "fasta"):
-        seq = str(seq.seq)
-        contig_id = xxhash.xxh32(seq).intdigest()
-        seq_lookup[contig_id] = seq
-    # add hash_id to bgcs
-    bgcs = json.load(open(bgc_pred_fp))
-    for c in bgcs:
-        contig_id = c["contig_id"]
-        contig_start = c["contig_start"]
-        contig_stop = c["contig_stop"]
-        bgc_seq = seq_lookup[contig_id][contig_start:contig_stop]
-        c["hash_id"] = xxhash.xxh32(bgc_seq).intdigest()
-    return upload_bgcs(
-        bgcs=bgcs,
-        genome_id=genome_id,
-        orfs_uploaded=orfs_uploaded,
-        contigs_uploaded=contigs_uploaded,
-        genome_uploaded=genome_uploaded,
-    )
+    log_fp = f"{log_dir}/bgcs_uploaded.json"
+    if os.path.exists(log_fp) == False:
+        # nucleotide sequence lookup
+        seq_lookup = {}
+        for seq in SeqIO.parse(nuc_fasta_fp, "fasta"):
+            seq = str(seq.seq)
+            contig_id = xxhash.xxh32(seq).intdigest()
+            seq_lookup[contig_id] = seq
+        # add hash_id to bgcs
+        bgcs = json.load(open(bgc_pred_fp))
+        for c in bgcs:
+            contig_id = c["contig_id"]
+            contig_start = c["contig_start"]
+            contig_stop = c["contig_stop"]
+            bgc_seq = seq_lookup[contig_id][contig_start:contig_stop]
+            c["hash_id"] = xxhash.xxh32(bgc_seq).intdigest()
+        upload_bgcs(
+            bgcs=bgcs,
+            genome_id=genome_id,
+            orfs_uploaded=orfs_uploaded,
+            contigs_uploaded=contigs_uploaded,
+            genome_uploaded=genome_uploaded,
+        )
+        json.dump({"upload": True}, open(log_fp, "w"))
+    return True
