@@ -44,7 +44,7 @@ def upload_genomes(
             )
             if contigs_uploaded:
                 rels = [
-                    {"genome_id": g, "contig_id": c}
+                    {"genome_id": g["genome_id"], "contig_id": c}
                     for g in batch
                     for c in g["contig_ids"]
                 ]

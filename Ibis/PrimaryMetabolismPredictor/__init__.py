@@ -110,6 +110,8 @@ def upload_primary_metabolism_from_files(
                 preds.append(
                     {
                         "prediction_id": prediction_id,
+                        "genome_id": genome_id,
+                        "pathway_id": spider_pwy_id,
                         "module_completeness_score": res["completeness_score"],
                         "detected_labels": res["matched_criteria"],
                         "missing_labels": res["missing_criteria"],

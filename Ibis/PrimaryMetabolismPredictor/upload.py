@@ -16,7 +16,6 @@ def upload_predicted_pathways(
         batches = batchify(preds, bs=bs)
         for batch in tqdm(
             batches,
-            bs=bs,
             desc="Uploading pathway predictions",
             leave=False,
         ):

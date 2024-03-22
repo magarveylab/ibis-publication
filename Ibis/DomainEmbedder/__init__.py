@@ -103,8 +103,8 @@ def upload_domain_embeddings_from_files(
                     domains.append(
                         {
                             "protein_id": protein_id,
-                            "protein_start": d["start"],
-                            "protein_stop": d["stop"],
+                            "protein_start": d["protein_start"],
+                            "protein_stop": d["protein_stop"],
                             "hash_id": hash_id,
                             "embedding": embedding,
                         }
