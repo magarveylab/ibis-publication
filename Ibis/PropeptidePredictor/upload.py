@@ -34,6 +34,7 @@ def upload_propeptides(
                 "protein_start",
                 "protein_stop",
                 "trimmed_sequence",
+                "score",
             ],
         )
         run_cypher(
@@ -43,6 +44,7 @@ def upload_propeptides(
                 SET p.protein_start = row.protein_start,
                     p.protein_stop = row.protein_stop,
                     p.trimmed_sequence = row.trimmed_sequence
+                    p.score = row.score
             """
         )
     if orfs_uploaded:
