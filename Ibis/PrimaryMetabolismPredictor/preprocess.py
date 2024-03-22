@@ -28,12 +28,11 @@ def merge_protein_annotations(
         orf_id = f"{contig_id}_{contig_start}_{contig_stop}"
         # pull decoded labels
         ec = ec_lookup.get(hash_id)
-        if ec is not None:
-            if ec["label"] is not None:
-                ec_num = ec["label"]
-                ec_homol = ec["homology"]
-        ko = ko_lookup[hash_id]
-        if ko["label"] is not None:
+        if ec is not None and ec["label"] is not None:
+            ec_num = ec["label"]
+            ec_homol = ec["homology"]
+        ko = ko_lookup.get(hash_id)
+        if ko is not None and ko["label"] is not None:
             ko_num = ko["label"]
             ko_homol = ko["homology"]
             ko_sim = ko["similarity"]
