@@ -43,7 +43,7 @@ def upload_propeptides(
                 MERGE (p: Propeptide {{propeptide_id: row.propeptide_id}})
                 SET p.protein_start = row.protein_start,
                     p.protein_stop = row.protein_stop,
-                    p.trimmed_sequence = row.trimmed_sequence
+                    p.trimmed_sequence = row.trimmed_sequence,
                     p.score = row.score
             """
         )
