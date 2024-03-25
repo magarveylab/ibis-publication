@@ -5,9 +5,10 @@ import time
 from typing import List
 
 import requests
+from dotenv import find_dotenv, get_key
 
-airflow_base_url = os.environ.get("AIRFLOW_BASE_URL")
-airflow_auth_token = os.environ.get("AIRFLOW_AUTH_TOKEN")
+airflow_base_url = get_key(find_dotenv(), "AIRFLOW_BASE_URL")
+airflow_auth_token = get_key(find_dotenv(), "AIRFLOW_AUTH_TOKEN")
 
 
 def get_free_gpus(min_memory: int = 100):

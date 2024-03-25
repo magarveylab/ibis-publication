@@ -3,6 +3,7 @@ import time
 from typing import Any, Dict, List, Literal, Union
 
 import numpy as np
+from dotenv import find_dotenv, get_key
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
 from qdrant_client.http.models import CollectionStatus, SearchRequest
@@ -22,8 +23,8 @@ def batchify(l: list, bs: int = 1000):
 
 # connection to client
 client = QdrantClient(
-    host=os.environ.get("QDRANT_HOST"),
-    port=os.environ.get("QDRANT_PORT"),
+    host=get_key(find_dotenv(), "QDRANT_HOST"),
+    port=get_key(find_dotenv(), "QDRANT_PORT"),
     timeout=180,
 )
 

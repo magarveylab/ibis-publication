@@ -2,13 +2,14 @@ import os
 from glob import glob
 
 import requests
+from dotenv import find_dotenv, get_key
 
 from Ibis import curdir
 
 
 def setup_qdrant_docker():
-    host = os.environ.get("QDRANT_HOST")
-    port = os.environ.get("QDRANT_PORT")
+    host = get_key(find_dotenv(), "QDRANT_HOST")
+    port = get_key(find_dotenv(), "QDRANT_PORT")
     node_url = f"http://{host}:{port}"
     local_snapshot_paths = glob(f"{curdir}/QdrantSnapshots/*")
     for snapshot_path in local_snapshot_paths:
