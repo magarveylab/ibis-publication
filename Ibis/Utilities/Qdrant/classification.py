@@ -144,7 +144,7 @@ def KNNClassification(
     homology_cutoff: float = 1.0,
     apply_homology_cutoff: bool = False,
     apply_cutoff_after_homology: bool = False,
-    batch_size: int = 500,
+    batch_size: int = 100,
 ) -> List[KnnOutput]:
     # Initialize Qdrant Database
     db = qdrant_db()

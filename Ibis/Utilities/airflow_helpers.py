@@ -31,3 +31,7 @@ def split(a: list, n: int):
     return (
         a[i * k + min(i, m) : (i + 1) * k + min(i + 1, m)] for i in range(n)
     )
+
+
+def batchify(a: list, bs=10):
+    return [a[x : x + bs] for x in range(0, len(a), bs)]

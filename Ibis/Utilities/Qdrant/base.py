@@ -24,7 +24,7 @@ def batchify(l: list, bs: int = 1000):
 client = QdrantClient(
     host=os.environ.get("QDRANT_HOST"),
     port=os.environ.get("QDRANT_PORT"),
-    timeout=60,
+    timeout=180,
 )
 
 
