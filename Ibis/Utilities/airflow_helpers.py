@@ -1,6 +1,13 @@
+import json
+import os
 import subprocess as sp
 import time
 from typing import List
+
+import requests
+
+airflow_base_url = os.environ.get("AIRFLOW_BASE_URL")
+airflow_auth_token = os.environ.get("AIRFLOW_AUTH_TOKEN")
 
 
 def get_free_gpus(min_memory: int = 100):
@@ -35,3 +42,23 @@ def split(a: list, n: int):
 
 def batchify(a: list, bs=10):
     return [a[x : x + bs] for x in range(0, len(a), bs)]
+
+
+def submit_genomes_to_airflow(
+    nuc_fasta_fps: List[str],
+    gpus: List[int] = [0],
+    cpu_cores: int = 4,
+):
+    headers = {
+        "authorization": f"Basic {airflow_auth_token}",
+        "content-type": "application/json",
+    }
+    url = f"{airflow_base_url}/ibis_submission/dagRuns"
+    data = {
+        "conf": {
+            "nuc_fasta_filenames": nuc_fasta_fps,
+            "gpus": gpus,
+            "cpu_cores": cpu_cores,
+        }
+    }
+    r = requests.post(url, headers=headers, data=json.dumps(data))
