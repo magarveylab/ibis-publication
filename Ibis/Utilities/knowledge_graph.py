@@ -2,15 +2,16 @@ import os
 import time
 from typing import List, Optional, Set, TypedDict
 
+from dotenv import find_dotenv, get_key
 from neo4j.exceptions import TransientError
 from neomodel import db
 from tqdm import tqdm
 
 # initialize database
-neo4j_username = os.environ.get("NEO4J_USERNAME")
-neo4j_password = os.environ.get("NEO4J_PASSWORD")
-neo4j_host = os.environ.get("NEO4J_HOST")
-neo4j_port = os.environ.get("NEO4J_PORT")
+neo4j_username = get_key(find_dotenv(), "NEO4J_USERNAME")
+neo4j_password = get_key(find_dotenv(), "NEO4J_PASSWORD")
+neo4j_host = get_key(find_dotenv(), "NEO4J_HOST")
+neo4j_port = get_key(find_dotenv(), "NEO4J_PORT")
 neo4j_url = (
     f"bolt://{neo4j_username}:{neo4j_password}@{neo4j_host}:{neo4j_port}"
 )
