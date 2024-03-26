@@ -62,9 +62,11 @@ class PropeptidePredictorPipeline:
                     prop_regions,
                     key=lambda x: x["protein_stop"] - x["protein_start"],
                 )
+                prop["protein_id"] = p["protein_id"]
                 prop["trimmed_sequence"] = p["sequence"][
                     prop["protein_start"] : prop["protein_stop"]
                 ]
+                del prop["label"]
                 final.append(prop)
         return final
 
