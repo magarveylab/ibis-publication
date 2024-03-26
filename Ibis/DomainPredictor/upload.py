@@ -66,11 +66,13 @@ def upload_domains(
                 ON CREATE
                     SET n.protein_start = row.protein_start,
                         n.protein_stop = row.protein_stop,
-                        n.score = row.score
+                        n.score = row.score,
+                        n.date = date()
                 ON MATCH
                     SET n.protein_start = row.protein_start,
                         n.protein_stop = row.protein_stop,
                         n.score = row.score
+                        n.date = date()
             """
             )
     # add orf to domain rels

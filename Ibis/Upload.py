@@ -94,6 +94,8 @@ def upload_to_knowledge_graph(
     bgc_uploaded = SecondaryMetabolismPredictor.upload_bgcs_from_files(
         nuc_fasta_fp=nuc_fasta_filename,
         bgc_pred_fp=filelookup["bgc_pred_fp"],
+        prodigal_fp=filelookup["prodigal_fp"],
+        domain_pred_fp=filelookup["domain_pred_fp"],
         log_dir=filelookup["log_dir"],
         genome_id=genome_id,
         orfs_uploaded=orfs_uploaded,

@@ -355,6 +355,8 @@ def parallel_call_bgcs_by_chemotype_from_files(
 def upload_bgcs_from_files(
     nuc_fasta_fp: str,
     bgc_pred_fp: str,
+    prodigal_fp: str,
+    domain_pred_fp: str,
     log_dir: str,
     genome_id: Optional[int],
     orfs_uploaded: bool,
@@ -369,6 +371,23 @@ def upload_bgcs_from_files(
             seq = str(seq.seq)
             contig_id = xxhash.xxh32(seq).intdigest()
             seq_lookup[contig_id] = seq
+        # protein_hash_lookup
+        protein_hash_lookup = {}
+        for p in json.load(open(prodigal_fp)):
+            protein_id = p["protein_id"]
+            contig_id = p["contig_id"]
+            contig_start = p["contig_start"]
+            contig_stop = p["contig_stop"]
+            orf_id = f"{contig_id}_{contig_start}_{contig_stop}"
+            protein_hash_lookup[orf_id] = protein_id
+        # domain meta lookup
+        orf_module_count = {}
+        for o in json.load(open(domain_pred_fp)):
+            protein_id = o["protein_id"]
+            labels = [d["label"] for d in o["regions"]]
+            pks_modules = max([labels.count("KS"), labels.count("AT")])
+            nrps_modules = labels.count("A")
+            orf_module_count[protein_id] = pks_modules + nrps_modules
         # add hash_id to bgcs
         bgcs = json.load(open(bgc_pred_fp))
         for c in bgcs:
@@ -377,6 +396,13 @@ def upload_bgcs_from_files(
             contig_stop = c["contig_stop"]
             bgc_seq = seq_lookup[contig_id][contig_start:contig_stop]
             c["hash_id"] = xxhash.xxh32(bgc_seq).intdigest()
+            c["orf_count"] = len(c["orfs"])
+            c["module_count"] = sum(
+                [
+                    orf_module_count.get(protein_hash_lookup[o], 0)
+                    for o in c["orfs"]
+                ]
+            )
         upload_bgcs(
             bgcs=bgcs,
             genome_id=genome_id,

@@ -13,6 +13,8 @@ class BGCDict(TypedDict):
     orfs: List[str]  # {contig_id}_{contig_start}_{contig_stop}
     internal_chemotypes: List[str]
     mibig_chemotypes: List[str]
+    orf_count: int
+    module_count: int
 
 
 def upload_bgcs(
@@ -44,6 +46,8 @@ def upload_bgcs(
                 "contig_start",
                 "contig_stop",
                 "source",
+                "orf_count",
+                "module_count",
             ],
         )
         run_cypher(
@@ -54,7 +58,15 @@ def upload_bgcs(
                 SET n.hash_id = row.hash_id,
                     n.contig_start = row.contig_start,
                     n.contig_stop = row.contig_stop,
-                    n.source = row.source
+                    n.source = row.source,
+                    n.orf_count = row.orf_count,
+                    n.module_count = row.module_count,
+                    n.date = date()
+            ON MATCH
+                SET n.source = row.source,
+                    n.orf_count = row.orf_count,
+                    n.module_count = row.module_count,
+                    n.date = date()
         """
         )
     # connect contigs to bgcs
@@ -77,7 +89,7 @@ def upload_bgcs(
                     f"""
                     UNWIND {batch_str} as row
                     MATCH (n: MetabolomicRegion {{region_id: row.region_id}}),
-                        (m: Contig {{contig_id: row.contig_id}})
+                          (m: Contig {{contig_id: row.contig_id}})
                     MERGE (n)-[:metab_to_contig]->(m)
                 """
                 )
