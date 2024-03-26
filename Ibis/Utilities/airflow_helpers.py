@@ -63,3 +63,21 @@ def submit_genomes_to_airflow(
         }
     }
     r = requests.post(url, headers=headers, data=json.dumps(data))
+
+
+def submit_upload_to_airflow(
+    nuc_fasta_filename: str, ibis_working_dir: str, genome_id: int
+):
+    headers = {
+        "authorization": f"Basic {airflow_auth_token}",
+        "content-type": "application/json",
+    }
+    url = f"{airflow_base_url}/ibis_upload/dagRuns"
+    data = {
+        "conf": {
+            "nuc_fasta_filename": nuc_fasta_filename,
+            "output_dir": ibis_working_dir,
+            "genome_id": genome_id,
+        }
+    }
+    r = requests.post(url, headers=headers, data=json.dumps(data))
