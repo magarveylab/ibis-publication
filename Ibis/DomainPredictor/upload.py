@@ -71,7 +71,7 @@ def upload_domains(
                 ON MATCH
                     SET n.protein_start = row.protein_start,
                         n.protein_stop = row.protein_stop,
-                        n.score = row.score
+                        n.score = row.score,
                         n.date = date()
             """
             )
