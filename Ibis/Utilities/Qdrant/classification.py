@@ -21,6 +21,7 @@ def neighborhood_classification(
     homology_cutoff: float = 1.0,
     apply_homology_cutoff: bool = False,
     apply_cutoff_after_homology: bool = False,
+    return_distance: bool = False,
 ):
     # only consider top n hits
     hits = sorted(hits, key=lambda x: x["distance"])[:top_n]
@@ -56,12 +57,16 @@ def neighborhood_classification(
         if apply_cutoff_after_homology == True and distance > dist_cutoff:
             return None
     # output
-    return {
+    output = {
         "label": label,
         "reference_id": distance_lookup[label][distance],
         "homology": homology_score,
-        "similarity": dist2sim(distance),
     }
+    if return_distance == False:
+        output["similarity"] = dist2sim(distance)
+    else:
+        output["distance"] = distance
+    return output
 
 
 def ontology_neighborhood_classification(
@@ -72,6 +77,7 @@ def ontology_neighborhood_classification(
     homology_cutoff: float = 1.0,
     apply_homology_cutoff: bool = False,
     apply_cutoff_after_homology: bool = False,
+    return_distance: bool = False,
 ):
     # only consider top n hits
     hits = sorted(hits, key=lambda x: x["distance"])[:top_n]
@@ -126,12 +132,16 @@ def ontology_neighborhood_classification(
         ):
             return None
     # output
-    return {
+    output = {
         "label": pred["label"],
         "reference_id": pred["reference_id"],
         "homology": homology_score,
-        "similarity": dist2sim(pred["distance"]),
     }
+    if return_distance == False:
+        output["similarity"] = dist2sim(pred["distance"])
+    else:
+        output["distance"] = pred["distance"]
+    return output
 
 
 def KNNClassification(
@@ -145,6 +155,7 @@ def KNNClassification(
     apply_homology_cutoff: bool = False,
     apply_cutoff_after_homology: bool = False,
     batch_size: int = 100,
+    return_distance: bool = False,
 ) -> List[KnnOutput]:
     # Initialize Qdrant Database
     db = qdrant_db()
@@ -172,19 +183,18 @@ def KNNClassification(
                 homology_cutoff=homology_cutoff,
                 apply_homology_cutoff=apply_homology_cutoff,
                 apply_cutoff_after_homology=apply_cutoff_after_homology,
+                return_distance=return_distance,
             )
     # clean output
     output = []
     for hash_id, pred in result.items():
         if pred is None:
-            output.append(
-                {
-                    "hash_id": hash_id,
-                    "label": None,
-                    "similarity": None,
-                    "homology": None,
-                }
-            )
+            out = {"hash_id": hash_id, "label": None, "homology": None}
+            if return_distance == False:
+                out["similarity"] = None
+            else:
+                out["distance"] = None
+            output.append(out)
         else:
             pred["hash_id"] = hash_id
             output.append(pred)
