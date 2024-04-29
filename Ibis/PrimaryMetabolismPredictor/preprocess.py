@@ -10,8 +10,16 @@ def merge_protein_annotations(
     ec_pred_fp: str,
 ) -> List[EnzymeKOData]:
     prots = json.load(open(prodigal_fp, "r"))
-    ko_lookup = {x["hash_id"]: x for x in json.load(open(ko_pred_fp, "r"))}
-    ec_lookup = {x["hash_id"]: x for x in json.load(open(ec_pred_fp, "r"))}
+    ko_lookup = {
+        x["query_id"]: x["predictions"][0]
+        for x in json.load(open(ko_pred_fp, "r"))
+        if len(x["predictions"]) > 0
+    }
+    ec_lookup = {
+        x["query_id"]: x["predictions"][0]
+        for x in json.load(open(ec_pred_fp, "r"))
+        if len(x["predictions"]) > 0
+    }
     merged = []
     for annot in prots:
         # set defaults
@@ -28,11 +36,11 @@ def merge_protein_annotations(
         orf_id = f"{contig_id}_{contig_start}_{contig_stop}"
         # pull decoded labels
         ec = ec_lookup.get(hash_id)
-        if ec is not None and ec["label"] is not None:
+        if ec is not None:
             ec_num = ec["label"]
             ec_homol = ec["homology"]
         ko = ko_lookup.get(hash_id)
-        if ko is not None and ko["label"] is not None:
+        if ko is not None:
             ko_num = ko["label"]
             ko_homol = ko["homology"]
             ko_sim = ko["similarity"]

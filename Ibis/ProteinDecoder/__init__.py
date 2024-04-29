@@ -198,10 +198,12 @@ def upload_protein_decoding_from_files(
     knn_fp: str, log_dir: str, label_type: str, protein_embs_uploaded: bool
 ) -> bool:
     if protein_embs_uploaded:
-        log_fp = f"{log_dir}/{label_type}_uploaded.json"
+        root = knn_fp.split("/")[-1].split(".")[0]
+        log_fp = f"{log_dir}/{root}_uploaded.json"
         if os.path.exists(log_fp) == False:
-            data = [i for i in json.load(open(knn_fp)) if i["label"] != None]
-            upload_knn(annotations=data, label_type=label_type)
+            upload_knn(
+                annotations=json.load(open(knn_fp)), label_type=label_type
+            )
             json.dump({"upload": True}, open(log_fp, "w"))
         return True
     else:

@@ -15,13 +15,14 @@ def dist2sim(d: float) -> float:
 
 def neighborhood_classification(
     hits: List[DistHitResponse],
-    top_n: int = 1,
+    top_n: int = 1,  # top n hits to consider for vector database
     dist_cutoff: float = 0.0,
     apply_cutoff_before_homology: bool = True,
     homology_cutoff: float = 1.0,
     apply_homology_cutoff: bool = False,
     apply_cutoff_after_homology: bool = False,
     return_distance: bool = False,
+    return_n: int = 5,  # return n top hits
 ):
     # only consider top n hits
     hits = sorted(hits, key=lambda x: x["distance"])[:top_n]
@@ -44,40 +45,49 @@ def neighborhood_classification(
         lookup[label].append(h["distance"])
         distance_lookup[label][distance] = h["subject_id"]
     if len(lookup) == 0:
-        return None
+        return []
     # return most frequent, if tied return the closest in terms of distance
-    label = max(lookup, key=lambda x: (len(lookup[x]), -min(lookup[x])))
-    distance = min(lookup[label])
-    c = all_labels.count(label)
-    homology_score = round(c / top_n, 2)
-    # filters based on homology score and final distance
-    if apply_homology_cutoff == True:
-        if homology_score < homology_cutoff:
-            return None
-        if apply_cutoff_after_homology == True and distance > dist_cutoff:
-            return None
-    # output
-    output = {
-        "label": label,
-        "reference_id": distance_lookup[label][distance],
-        "homology": homology_score,
-    }
-    if return_distance == False:
-        output["similarity"] = dist2sim(distance)
-    else:
-        output["distance"] = distance
-    return output
+    return_labels = sorted(
+        lookup, key=lambda x: (len(lookup[x]), -min(lookup[x])), reverse=True
+    )[:return_n]
+    response = []
+    rank = 1
+    for label in return_labels:
+        distance = min(lookup[label])
+        c = all_labels.count(label)
+        homology_score = round(c / top_n, 2)
+        # filters based on homology score and final distance
+        if apply_homology_cutoff == True:
+            if homology_score < homology_cutoff:
+                continue
+            if apply_cutoff_after_homology == True and distance > dist_cutoff:
+                continue
+        # output
+        output = {
+            "label": label,
+            "reference_id": distance_lookup[label][distance],
+            "homology": homology_score,
+            "rank": rank,
+        }
+        if return_distance == False:
+            output["similarity"] = dist2sim(distance)
+        else:
+            output["distance"] = distance
+        response.append(output)
+        rank += 1
+    return response
 
 
 def ontology_neighborhood_classification(
     hits: List[DistHitResponse],
-    top_n: int = 1,
+    top_n: int = 1,  # top n hits to consider for vector database
     dist_cutoff: float = 0.0,
     apply_cutoff_before_homology: bool = True,
     homology_cutoff: float = 1.0,
     apply_homology_cutoff: bool = False,
     apply_cutoff_after_homology: bool = False,
     return_distance: bool = False,
+    return_n: int = 5,  # return n top hits
 ):
     # only consider top n hits
     hits = sorted(hits, key=lambda x: x["distance"])[:top_n]
@@ -112,36 +122,56 @@ def ontology_neighborhood_classification(
         all_observed.extend(breakdown)
     # if no hits present at distance cutoff
     if len(neighborhood) == 0:
-        return None
+        return []
     # calculate frequency of observed label
     label_freq = Counter(all_observed)
     # annotate each hit by observed frequency in neighborhood
     for n in neighborhood:
         n["scores"] = [label_freq[e] for e in n["breakdown"]]
+    # reorganize into labels
+    lookup = {}
+    distance_lookup = {}
+    for n in neighborhood:
+        label = n["label"]
+        distance = n["distance"]
+        if label not in lookup:
+            lookup[label] = {"scores": n["scores"], "distance": []}
+            distance_lookup[label] = {}
+        lookup[label]["distance"].append(distance)
+        distance_lookup[label][distance] = n["reference_id"]
     # choose best observed by frequency and then by distance
-    pred = max(neighborhood, key=lambda x: (x["scores"], -x["distance"]))
-    c = all_labels.count(label)
-    homology_score = round(c / top_n, 2)
-    # filters based on homology score and final distance
-    if apply_homology_cutoff == True:
-        if homology_score < homology_cutoff:
-            return None
-        if (
-            apply_cutoff_after_homology == True
-            and pred["distance"] > dist_cutoff
-        ):
-            return None
-    # output
-    output = {
-        "label": pred["label"],
-        "reference_id": pred["reference_id"],
-        "homology": homology_score,
-    }
-    if return_distance == False:
-        output["similarity"] = dist2sim(pred["distance"])
-    else:
-        output["distance"] = pred["distance"]
-    return output
+    return_labels = sorted(
+        lookup,
+        key=lambda x: (lookup[x]["scores"], -min(lookup[x]["distance"])),
+        reverse=True,
+    )[:return_n]
+    response = []
+    rank = 1
+    for label in return_labels:
+        c = all_labels.count(label)
+        homology_score = round(c / top_n, 2)
+        distance = min(lookup[label]["distance"])
+        # filters based on homology score and final distance
+        if apply_homology_cutoff == True:
+            if homology_score < homology_cutoff:
+                continue
+            if apply_cutoff_after_homology == True and distance > dist_cutoff:
+                continue
+        # output
+        reference_id = distance_lookup[label][distance]
+        output = {
+            "label": label,
+            "reference_id": reference_id,
+            "homology": homology_score,
+            "rank": rank,
+        }
+        if return_distance == False:
+            output["similarity"] = dist2sim(distance)
+        else:
+            output["distance"] = distance
+        response.append(output)
+        rank += 1
+    return response
 
 
 def KNNClassification(
@@ -156,6 +186,7 @@ def KNNClassification(
     apply_cutoff_after_homology: bool = False,
     batch_size: int = 100,
     return_distance: bool = False,
+    return_n: int = 5,
 ) -> List[KnnOutput]:
     # Initialize Qdrant Database
     db = qdrant_db()
@@ -169,13 +200,11 @@ def KNNClassification(
         distance_cutoff=dist_cutoff,
     )
     # classification
-    result = {}
+    response = []
     for p in predictions:
         query, hits = p["query_id"], p["hits"]
-        if len(hits) == 0:
-            result[query] = None
-        else:
-            result[query] = classification_method(
+        if len(hits) > 0:
+            cls_result = classification_method(
                 hits,
                 top_n=top_n,
                 dist_cutoff=dist_cutoff,
@@ -184,20 +213,11 @@ def KNNClassification(
                 apply_homology_cutoff=apply_homology_cutoff,
                 apply_cutoff_after_homology=apply_cutoff_after_homology,
                 return_distance=return_distance,
+                return_n=return_n,
             )
-    # clean output
-    output = []
-    for hash_id, pred in result.items():
-        if pred is None:
-            out = {"hash_id": hash_id, "label": None, "homology": None}
-            if return_distance == False:
-                out["similarity"] = None
-            else:
-                out["distance"] = None
-            output.append(out)
         else:
-            pred["hash_id"] = hash_id
-            output.append(pred)
+            cls_result = []
+        response.append({"query_id": query, "predictions": cls_result})
     # terminate connection
     del db
-    return output
+    return response

@@ -46,13 +46,13 @@ def run_on_files(
         if os.path.exists(export_fp) == False:
             proteins_to_run = set()
             mol_pred_fp = f"{output_dir}/{name}/molecule_predictions.json"
-            for p in json.load(open(mol_pred_fp)):
+            for query in json.load(open(mol_pred_fp)):
                 if (
-                    p["homology"] is not None
-                    and p["homology"] >= 0.6
-                    and p["label"] != "Bacteriocin"
+                    len(query["predictions"]) > 0
+                    and query["predictions"][0]["homology"] >= 0.6
+                    and query["predictions"][0]["label"] != "Bacteriocin"
                 ):
-                    proteins_to_run.add(p["hash_id"])
+                    proteins_to_run.add(query["query_id"])
             if len(proteins_to_run) > 0:
                 sequences = set()
                 prodigal_fp = f"{output_dir}/{name}/prodigal.json"
