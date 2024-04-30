@@ -5,6 +5,7 @@ from Ibis import (
     DomainDecoder,
     DomainEmbedder,
     DomainPredictor,
+    ModulePredictor,
     PrimaryMetabolismPredictor,
     Prodigal,
     PropeptidePredictor,
@@ -239,4 +240,18 @@ def run_ibis_on_genomes(
         domain_embs_created=domain_embs_created,
         bgc_preds_created=bgc_preds_created,
         gpu_id=gpu_id,
+    )
+    # compute modules
+    module_preds_created = ModulePredictor.run_on_files(
+        filenames=basenames,
+        output_dir=output_dir,
+        domain_preds_created=domain_preds_created,
+        adenylation_preds_created=adenylation_preds_created,
+        acyltransferase_preds_created=acyltransferase_preds_created,
+        ketosynthase_preds_created=ketosynthase_preds_created,
+        ketoreductase_preds_created=ketoreductase_preds_created,
+        dehydratase_preds_created=dehydratase_preds_created,
+        enoylreductase_preds_created=enoylreductase_preds_created,
+        thiolation_preds_created=thiolation_preds_created,
+        cpu_cores=cpu_cores,
     )

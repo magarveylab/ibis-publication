@@ -1,0 +1,310 @@
+tag_id,name,smiles
+1,2-EtMal,[1*]C(=O)C(CC)C(=O)N[2*]
+2,3-(3-Pyr)-L-alanine,[1*]C(=O)[C@H](Cc1cccnc1)N[2*]
+3,3-FASC,[1*]C(=O)c1cccc(NC=O)c1O
+4,3-HPA,[1*]C(=O)c1ncccc1O
+5,3-ICBA,[1*]C(=O)CC(C)[N+]#[C-]
+6,3NcpAla,[1*]C(=O)C(CC1CC1[N+](=O)O)N[2*]
+7,4-Acetamido-pyr-CA,[1*]C(=O)c1cc(NC(C)=O)c[nH]1
+8,4-AOHMEBA,[1*]C(=O)c1ccc(N)c(OC)c1O
+9,4-MeHex-2-EA,[1*]C(=O)/C=C/C(C)CC
+10,6-MSA,[1*]C(=O)c1c(C)cccc1O
+11,6C4H3CA,[1*]C(=O)c1c[nH]c2cc(Cl)cc(O)c12
+12,6OHisoquicarb,[1*]C(=O)C1c2ccc(O)cc2CCN1[2*]
+13,Abu,[1*]C(=O)C(CC)N[2*]
+14,ACPC,[1*]C(=O)C1(N[2*])CC1
+15,ADH,[1*]C(=O)C(N[2*])C(C)C=C(C)C
+16,Aeo,[1*]C(=O)C(CCCCCC(=O)C1CO1)N[2*]
+17,Ahp,[1*]C(=O)C(C(C)O)N1C(=O)C(N)CCC1O
+18,AHV,[1*]C(=O)C(CCCc1ccc(O)cc1)N[2*]
+19,Aib,[1*]C(=O)C(C)(C)N[2*]
+20,Ala,[1*]C(=O)C(C)N[2*]
+21,pyruvate,[1*]C(=O)C(C)=O
+22,bAla,[1*]C(=O)CCN[2*]
+23,lac,[1*]C(=O)C(C)O
+24,MeAla,[1*]C(=O)C(C)N([2*])C
+25,N-OHAla,[1*]C(=O)C(C)N([2*])O
+26,AMPA,[1*]C(=O)C(C)CN[2*]
+27,3-OH-AA,[1*]C(=O)c1cccc(O)c1N
+28,Ana,[1*]C(=O)c1ccccc1N
+29,4-MHA,[1*]C(=O)c1ccc(C)c(O)c1N
+30,DHAA,[1*]C(=O)c1ccc(O)c(O)c1N
+31,HMAA,[1*]C(=O)c1cc(O)c(C)c(O)c1N
+32,APA,[1*]C(=O)/C(N[2*])=C1/[C@@H](O)[C@H](O)C2CN12
+33,Arg,[1*]C(=O)C(CCCN=C(N)N)N[2*]
+34,"4,5-dearg",[1*]C(=O)[C@@H](C/C=C/NC(=N)N)N[2*]
+35,Dha,[1*]C(=O)/C(=C/CCNC(=N)N)N[2*]
+36,Cit,[1*]C(=O)C(CCCNC(N)=O)N[2*]
+37,Asn,[1*]C(=O)C(CC(N)=O)N[2*]
+38,3-CyaAla,[1*]C(=O)C(CC#N)N[2*]
+39,OHAsn,[1*]C(=O)C(N[2*])C(O)C(N)=O
+40,Asp,[1*]C(=O)C(CC(=O)O)N[2*]
+41,OHAsp,[1*]C(=O)C(N[2*])C(O)C(=O)O
+42,MeAsp,[1*]C(=O)C(CC(=O)O)N([2*])C
+43,y-Asp,[1*]C(=O)CC(N[2*])C(=O)O
+44,bMeAsp,[1*]C(=O)C(C)C(N[2*])C(=O)O
+45,O-MeAsp,[1*]C(=O)C[C@H](N[2*])C(=O)OC
+46,benz,[1*]C(=O)c1ccccc1
+47,bmt,[1*]C(=O)C(N[2*])C(O)C(C)C/C=C/C
+48,Cap,[1*]C(=O)C(N[2*])C1CCNC(=N)N1
+49,Choi,[1*]C(=O)C1CC2CCC(O)CC2N1[2*]
+50,ClPhg,[1*]C(=O)[C@H](N[2*])c1cc(O)c(C)c(O)c1Cl
+51,CouA,[1*]C(=O)/C=C/c1ccc(O)cc1
+52,Cro,[1*]C(=O)/C=C/C
+53,Cys,[1*]C(=O)C(CS)N[2*]
+54,Dab,[1*]C(=O)C(CCN)N[2*]
+55,Dab(OH),[1*]C(=O)C(N[2*])C(O)CN
+56,DABA,[1*]C(=O)C(C(C)N)N([2*])C
+57,"2,3-DABA",[1*]C(=O)C(N[2*])C(C)N
+58,DADH,[1*]C(=O)C(CCC(O)C(N)CO)N[2*]
+59,Dap,[1*]C(=O)C(CN)N[2*]
+60,Dhb,[1*]C(=O)C1C=C2c3cccc4[nH]cc(c34)CC2N(C)C1
+61,Dhl,[1*]C(=O)C(CCC(O)CN)N[2*]
+62,diClPIC,[1*]C(=O)C1CC2(O)c3ccc(Cl)c(Cl)c3NC2N1[2*]
+63,Bh-L-End,[1*]C(=O)C(N[2*])C(O)C1CNC(=N)N1
+64,End,[1*]C(=O)C(CC1CNC(=N)N1)N[2*]
+65,GaS,[1*]C(=O)[C@H](O)COS(=O)(=O)O
+66,Gln,[1*]C(=O)C(CCC(N)=O)N[2*]
+67,3HyG,[1*]C(=O)C(N[2*])C(O)CC(N)=O
+68,Glu,[1*]C(=O)C(CCC(=O)O)N[2*]
+69,FGln,[1*]C(=O)C(CCC(N)=O)N=O
+70,OH-Glu,[1*]C(=O)C(N[2*])C(O)CC(=O)O
+71,3-MeGlu,[1*]C(=O)C(N[2*])C(C)CC(=O)O
+72,Gly,[1*]C(=O)CN[2*]
+73,N-MeGly,[1*]C(=O)CN([2*])C
+74,GuaAc,[1*]C(=O)CN([2*])C(=N)N
+75,HClN,[1*]C(=O)CCc1ccccc1
+76,His,[1*]C(=O)C(Cc1cnc[nH]1)N[2*]
+77,Hpg,[1*]C(=O)C(N[2*])c1ccc(O)cc1
+78,Dhpg,[1*]C(=O)C(N[2*])c1cc(O)cc(O)c1
+79,4-HPGox,[1*]C(=O)C(=O)c1ccc(O)cc1
+80,3-Cl-4OHpheglyate,[1*]C(=O)C(=O)c1ccc(O)c(Cl)c1
+81,MeHpg,[1*]C(=O)[C@@H](c1ccc(O)cc1)N([2*])C
+82,Dpg,[1*]C(=O)C(N[2*])c1cc(Cl)c(O)c(Cl)c1
+83,Ile,[1*]C(=O)C(N[2*])C(C)CC
+84,2-HVC,[1*]C(=O)C(O)C(C)CC
+85,Leu,[1*]C(=O)C(CC(C)C)N[2*]
+86,N-MeLeu,[1*]C(=O)C(CC(C)C)N([2*])C
+87,Nle,[1*]C(=O)C(CCCC)N[2*]
+88,3_OHLeu,[1*]C(=O)C(N[2*])C(O)C(C)C
+89,tcl,[1*]C(=O)C(CC(C)C(Cl)(Cl)Cl)N[2*]
+90,D-Hleu,[1*]C(=O)[C@H](CCC(C)C)N[2*]
+91,5_OHLeu,[1*]C(=O)C(CC(C)CO)N[2*]
+92,Acyl-Leu,[1*]C(=O)[C@H](CC(C)C)N([2*])C(C)=O
+93,OH-3Pent,[1*]C(=O)C(CC(C)CC(O)CC(=O)CC)N[2*]
+94,1-HDecA,[1*]C(=O)CCCCCCCCCCCCCCCC
+95,13-MeMyA,[1*]C(=O)CCCCCCCCCCCC(C)C
+96,hexnoic_acid,[1*]C(=O)CCCCC
+97,Aoda,[1*]C(=O)C(CCCCCC(=O)CC)N[2*]
+98,DiMMyA,[1*]C(=O)CCCCCCCC[C@H](C)C[C@H](C)CC
+99,2-NDoDecA,[1*]C(=O)C(CCCCCCCCCC)N[2*]
+100,bAMHDA,[1*]C(=O)CC(CCCCCCCCCCC(C)CC)N[2*]
+101,C13B-A-FA,[1*]C(=O)CC(CCCCCCCCCC)N[2*]
+102,Lys,[1*]C(=O)C(CCCCN)N[2*]
+103,4-OHLys,[1*]C(=O)C(CC(O)CCN)N[2*]
+104,NHLys,[1*]C(=O)[C@H](CCCCNO)N[2*]
+105,NANHLys,[1*]C(=O)[C@H](CCCCN(O)C(=O)/C=C/C)N[2*]
+106,bLys,[1*]C(=O)CC(CCCN)N[2*]
+107,MecPGly,[1*]C(=O)C(N[2*])C1(C)CC1
+108,Met,[1*]C(=O)C(CCSC)N[2*]
+109,N-Ac(D)MPT,[1*]C(=O)NC(CC[P+](=O)O)C(=O)O
+110,N-Ac-DMPT,[1*]C(=O)C(CC[PH](=O)O)N([2*])C(C)=O
+111,N-Me-bmt,[1*]C(=O)C(C(O)C(C)C/C=C/C)N([2*])C
+112,NCA,[1*]C(=O)C1(N[2*])CC1C
+113,NPA,[1*]C(=O)c1cc(OC)cc2c(C)cccc12
+114,OHQA,[1*]C(=O)c1nc2ccccc2cc1O
+115,OH-Orn,[1*]C(=O)C(CCCNO)N[2*]
+116,AMHO,[1*]C(=O)C(CCCN(O)C(=O)/C=C(\C)CCO)N[2*]
+117,hfOrn,[1*]C(=O)NCCCCN(O)C=O
+118,NAc2hOrn,[1*]C(=O)C(CCCN(O)C(C)=O)N([2*])C(C)=O
+119,5hfOrn,[1*]C(=O)C(CCCN(O)C=O)N[2*]
+120,Orn,[1*]C(=O)C(CCCN)N[2*]
+121,2-am-5-NOH-pentacid,[1*]C(=O)C(CCCN(O)C(=O)C[C@@H](C)O)N[2*]
+122,N-ac-fOHOrn,[1*]C(=O)C(CCCN(O)C=O)N([2*])C(C)=O
+123,Me-fOHOrn,[1*]C(=O)[C@H](CCCNO)N([2*])C
+124,"4,5diOHOrn",[1*]C(=O)[C@H](C[C@@H](O)[C@H](N)O)N[2*]
+125,PABA,[1*]C(=O)c1ccc(N)cc1
+126,Phe,[1*]C(=O)C(Cc1ccccc1)N[2*]
+127,MePhe,[1*]C(=O)C(Cc1ccccc1)N([2*])C
+128,PAPS,[1*]C(=O)C(N[2*])C(O)c1ccc(N)cc1
+129,PhePyruvate,[1*]C(=O)C(=O)Cc1ccccc1
+130,PheAc,[1*]C(=O)Cc1ccccc1
+131,OMePhe,[1*]C(=O)[C@@H](N[2*])[C@H](OC)c1ccccc1
+132,3-MePhe,[1*]C(=O)C(N[2*])C(C)c1ccccc1
+133,Pic,[1*]C(=O)c1ccccn1
+134,Pip,[1*]C(=O)C1CCCCN1[2*]
+135,Piz,[1*]C(=O)C1CCCNN1[2*]
+136,Cl-Pip,[1*]C(=O)C1CC(Cl)CNN1[2*]
+137,PPCA,[1*]C(=O)C1CC(/C=C/C)=CN1[2*]
+138,Pro,[1*]C(=O)C1CCCN1[2*]
+139,3-MePro,[1*]C(=O)[C@@H]1[C@@H](C)CCN1[2*]
+140,DHPA,[1*]C(=O)C1CC(/C=C/C(N)=O)=CN1[2*]
+141,EPL,[1*]C(=O)C1C/C(=C\C)CN1[2*]
+142,MePro,[1*]C(=O)C1CC(C)CN1[2*]
+143,4HyP,[1*]C(=O)C1CC(O)CN1[2*]
+144,3HyP,[1*]C(=O)C1C(O)CCN1[2*]
+145,3OH4MePro,[1*]C(=O)[C@@H]1[C@@H](O)[C@@H](C)CN1[2*]
+146,4PP,[1*]C(=O)C1CC(C=CC)CN1[2*]
+147,3-OH-3-MePro,[1*]C(=O)C1N([2*])CCC1(C)O
+148,Py-2-Car,[1*]C(=O)c1ccc[nH]1
+149,QxCA,[1*]C(=O)c1cnc2ccccc2n1
+150,"2,3-DHB",[1*]C(=O)c1cccc(O)c1O
+151,Sal,[1*]C(=O)c1ccccc1O
+152,Ser,[1*]C(=O)C(CO)N[2*]
+153,MeSer,[1*]C(=O)C(COC)N[2*]
+154,aMe-Ser,[1*]C(=O)C(C)(CO)N[2*]
+155,N-OHSer,[1*]C(=O)C(CO)N([2*])O
+156,acylSer,[1*]C(=O)C(CO)N([2*])C(=O)CCCCCCCCC
+157,Hse1,[1*]C(=O)C(CCO)N[2*]
+158,Tam,[1*]C(=O)C(N[2*])C1CCCN1
+159,Thr,[1*]C(=O)C(N[2*])C(C)O
+160,N-Me-Thr,[1*]C(=O)C(C(C)O)N([2*])C
+161,Trans-2CroGly,[1*]C(=O)C(C/C=C/C)N[2*]
+162,Trp,[1*]C(=O)C(Cc1c[nH]c2ccccc12)N[2*]
+163,Kyn,[1*]C(=O)C(CC(=O)c1ccccc1N)N[2*]
+164,Mtrp,[1*]C(=O)C(Cc1cn(OC)c2ccccc12)N[2*]
+165,5-Cl-L-Trp,[1*]C(=O)[C@H](Cc1c[nH]c2ccc(Cl)cc12)N[2*]
+166,6-Cl-Trp,[1*]C(=O)C(Cc1c[nH]c2cc(Cl)ccc12)N[2*]
+167,Trp-bOH-diMePropenyl,[1*]C(=O)[C@@H](N[2*])[C@H](O)c1cn(C(C)(C)C=C)c2ccccc12
+168,N-diMeTrp,[1*]C(=O)C(Cc1cn(C(C)(C)C=C)c2ccccc12)N[2*]
+169,Tyr,[1*]C(=O)C(Cc1ccc(O)cc1)N[2*]
+170,4-O-DiMe-Tyr,[1*]C(=O)[C@H](Cc1ccc(OCC=C(C)C)cc1)N[2*]
+171,m-Tyr,[1*]C(=O)[C@H](Cc1cccc(O)c1)N[2*]
+172,3h5mOmTyr,[1*]C(=O)C(Cc1cc(C)c(OC)c(O)c1)N[2*]
+173,Hppy,[1*]C(=O)C(=O)Cc1ccc(O)cc1
+174,hpla,[1*]C(=O)C(O)Cc1ccc(O)cc1
+175,3hHyT,[1*]C(=O)C(N[2*])C(O)Cc1ccc(O)cc1
+176,"3,4diOHHomoTyr",[1*]C(=O)C(N[2*])[C@H](O)[C@@H](O)c1ccc(O)cc1
+177,bOHTyr,[1*]C(=O)C(N[2*])[C@@H](O)c1ccc(O)cc1
+178,3NTyr,[1*]C(=O)C(Cc1ccc(O)c([N+](=O)[O-])c1)N[2*]
+179,OHTyr,[1*]C(=O)C(Cc1ccc(O)c(O)c1)N[2*]
+180,ClN-MeTyr,[1*]C(=O)C(Cc1ccc(O)c(Cl)c1)N([2*])C
+181,OMeTyr,[1*]C(=O)[C@H](Cc1cccc(OC)c1)N[2*]
+182,N-MeTyr,[1*]C(=O)C(Cc1ccc(O)cc1)N([2*])C
+183,beta-Uda,[1*]C(=O)C(CNC(N)=O)N[2*]
+184,Val,[1*]C(=O)C(N[2*])C(C)C
+185,MeVal,[1*]C(=O)C(C(C)C)N([2*])C
+186,Moba,[1*]C(=O)C(=O)C(C)C
+187,hiv,[1*]C(=O)C(O)C(C)C
+188,Mopa,[1*]C(=O)C(=O)[C@@H](C)CC
+189,N-OHVal,[1*]C(=O)C(C(C)C)N([2*])O
+190,HDBA,[1*]C(=O)C(O)C(C)(C)C
+191,y-OH-Val,[1*]C(=O)C(N[2*])C(C)(C)O
+192,7-MeO-D-Trp,[1*]C(=O)C(CC1=C[N]c2c(OC)cccc21)N[2*]
+193,N-Me-B-OH-L-Phe,[1*]C(=O)[C@H]([C@@H](O)c1ccccc1)N([2*])C
+194,B-OH-L-Phe,[1*]C(=O)[C@@H](N[2*])[C@H](O)c1ccccc1
+195,AnThr,[1*]C(=O)/C(=C/C)N[2*]
+196,MeDeTyr,[1*]C(=O)/C(=C/c1ccc(O)cc1)N([2*])C
+197,Ahpb,[1*]C(=O)C(CCc1ccc(O)cc1)N[2*]
+198,4-Cl-Kyn,[1*]C(=O)C(CC(=O)c1ccc(Cl)cc1N)N[2*]
+199,AHIBA,[1*]C(=O)c1ccc(N)c(OC(C)C)c1O
+200,CysA,[1*]C(=O)C(N)CS(=O)(=O)O
+201,3-NH2-9-Me-DecA,[1*]C(=O)CC(N)CCCCCC(C)C
+202,Butyl-KS,[1*]C(=O)C([2*])(C)C
+203,Butyl-KR,[1*]C(O)C([2*])(C)C
+204,Butyl-ER,[1*]CC([2*])(C)C
+205,Butyl,[2*]C(C)C
+206,Butyl-KS | TE,[1*]C(=O)C(C)(C)C([3*])=O
+207,Butyl-KR | TE,[1*]C(O)C(C)(C)C([3*])=O
+208,Butyl-ER | TE,[1*]CC(C)(C)C([3*])=O
+209,EtMal-KS,[1*]C(=O)C([2*])CC
+210,EtMal-KR,[1*]C(O)C([2*])CC
+211,EtMal-DH,[1*]/C=C(/[2*])CC
+212,EtMal-ER,[1*]CC([2*])CC
+213,EtMal,[2*]CCC
+214,EtMal-KS | TE,[1*]C(=O)C(CC)C([3*])=O
+215,EtMal-KR | TE,[1*]C(O)C(CC)C([3*])=O
+216,EtMal-DH | TE,[1*]/C=C(\CC)C([3*])=O
+217,EtMal-ER | TE,[1*]CC(CC)C([3*])=O
+218,Mal-KS,[1*]C(=O)C[2*]
+219,Mal-KR,[1*]C(O)C[2*]
+220,Mal-DH,[1*]/C=C/[2*]
+221,Mal-ER,[1*]CC[2*]
+222,Mal-B,[1*]/C(C)=C/[2*]
+223,Mal,[2*]C
+224,Mal-KS | TE,[1*]C(=O)CC([3*])=O
+225,Mal-KR | TE,[1*]C(O)CC([3*])=O
+226,Mal-DH | TE,[1*]/C=C/C([3*])=O
+227,Mal-ER | TE,[1*]CCC([3*])=O
+228,Mal-B | TE,[1*]/C(C)=C/C([3*])=O
+229,MeMal-KS,[1*]C(=O)C([2*])C
+230,MeMal-KR,[1*]C(O)C([2*])C
+231,MeMal-DH,[1*]/C=C(/[2*])C
+232,MeMal-ER,[1*]CC([2*])C
+233,MeMal,[2*]CC
+234,MeMal-KS | TE,[1*]C(=O)C(C)C([3*])=O
+235,MeMal-KR | TE,[1*]C(O)C(C)C([3*])=O
+236,MeMal-DH | TE,[1*]/C=C(\C)C([3*])=O
+237,MeMal-ER | TE,[1*]CC(C)C([3*])=O
+238,OMeMal-KS,[1*]C(=O)C([2*])OC
+239,OMeMal-KR,[1*]C(O)C([2*])OC
+240,OMeMal-DH,[1*]/C=C(/[2*])OC
+241,OMeMal-ER,[1*]CC([2*])OC
+242,OMeMal,[2*]COC
+243,OMeMal-KS | TE,[1*]C(=O)C(OC)C([3*])=O
+244,OMeMal-KR | TE,[1*]C(O)C(OC)C([3*])=O
+245,OMeMal-DH | TE,[1*]/C=C(\OC)C([3*])=O
+246,OMeMal-ER | TE,[1*]CC(OC)C([3*])=O
+247,HexaMal-KS,[1*]C(=O)C([2*])CCCCCC
+248,HexaMal-KR,[1*]C(O)C([2*])CCCCCC
+249,HexaMal-DH,[1*]/C=C(/[2*])CCCCCC
+250,HexaMal-ER,[1*]CC([2*])CCCCCC
+251,HexaMal,[2*]CCCCCCC
+252,HexaMal-KS | TE,[1*]C(=O)C(CCCCCC)C([3*])=O
+253,HexaMal-KR | TE,[1*]C(O)C(CCCCCC)C([3*])=O
+254,HexaMal-DH | TE,[1*]/C=C(\CCCCCC)C([3*])=O
+255,HexaMal-ER | TE,[1*]CC(CCCCCC)C([3*])=O
+256,OH-ProMal-KS,[1*]C(=O)C([2*])CC=C
+257,OH-ProMal-KR,[1*]C(O)C([2*])CC=C
+258,OH-ProMal-DH,[1*]/C=C(/[2*])CC=C
+259,OH-ProMal-ER,[1*]CC([2*])CC=C
+260,OH-ProMal,[2*]CCC=C
+261,OH-ProMal-KS | TE,[1*]C(=O)C(CC=C)C([3*])=O
+262,OH-ProMal-KR | TE,[1*]C(O)C(CC=C)C([3*])=O
+263,OH-ProMal-DH | TE,[1*]/C=C(\CC=C)C([3*])=O
+264,OH-ProMal-ER | TE,[1*]CC(CC=C)C([3*])=O
+265,"3,5-AHBA",[1*]C(=O)c1cc(N)cc(O)c1
+266,Isoval,[1*]C(=O)C(C)(N)CC
+267,isoButMal-KS,[1*]C(=O)C([2*])CC(C)C
+268,isoButMal-KR,[1*]C(O)C([2*])CC(C)C
+269,isoButMal-DH,[1*]/C=C(/[2*])CC(C)C
+270,isoButMal-ER,[1*]CC([2*])CC(C)C
+271,isoButMal,[2*]CCC(C)C
+272,isoButMal-KS | TE,[1*]C(=O)C(CC(C)C)C([3*])=O
+273,isoButMal-KR | TE,[1*]C(O)C(CC(C)C)C([3*])=O
+274,isoButMal-DH | TE,[1*]/C=C(\CC(C)C)C([3*])=O
+275,isoButMal-ER | TE,[1*]CC(CC(C)C)C([3*])=O
+276,2Cl-pyrrole,[1*]C(=O)c1cc(Cl)c(Cl)[nH]1
+277,Py-indole,*c1ccc2c(c1)[C@]1(O)C[C@H](C([1*])=O)N([2*])C1N2
+278,2EtButMal-KS,[1*]C(=O)C([2*])CC(CC)CC
+279,2EtButMal-KR,[1*]C(O)C([2*])CC(CC)CC
+280,2EtButMal-DH,[1*]/C=C(/[2*])CC(CC)CC
+281,2EtButMal-ER,[1*]CC([2*])CC(CC)CC
+282,2EtButMal,[2*]CCC(CC)CC
+283,2EtButMal-KS | TE,[1*]C(=O)C(CC(CC)CC)C([3*])=O
+284,2EtButMal-KR | TE,[1*]C(O)C(CC(CC)CC)C([3*])=O
+285,2EtButMal-DH | TE,[1*]/C=C(\CC(CC)CC)C([3*])=O
+286,2EtButMal-ER | TE,[1*]CC(CC(CC)CC)C([3*])=O
+287,2Cl-Pyr-Mal-KS,[1*]C(=O)C([2*])C1CCc2cc(Cl)c(Cl)n21
+288,2Cl-Pyr-Mal-KR,[1*]C(O)C([2*])C1CCc2cc(Cl)c(Cl)n21
+289,2Cl-Pyr-Mal-DH,[1*]/C=C(/[2*])C1CCc2cc(Cl)c(Cl)n21
+290,2Cl-Pyr-Mal-ER,[1*]CC([2*])C1CCc2cc(Cl)c(Cl)n21
+291,2Cl-Pyr-Mal,[2*]CC1CCc2cc(Cl)c(Cl)n21
+292,2Cl-Pyr-Mal-KS | TE,[1*]C(=O)C(C([3*])=O)C1CCc2cc(Cl)c(Cl)n21
+293,2Cl-Pyr-Mal-KR | TE,[1*]C(O)C(C([3*])=O)C1CCc2cc(Cl)c(Cl)n21
+294,2Cl-Pyr-Mal-DH | TE,[1*]/C=C(/C([3*])=O)C1CCc2cc(Cl)c(Cl)n21
+295,2Cl-Pyr-Mal-ER | TE,[1*]CC(C([3*])=O)C1CCc2cc(Cl)c(Cl)n21
+296,D-HIC,[1*]C(=O)[C@H](O)CC(C)C
+297,DiDTyr,[1*]C(=O)/C(=C/c1ccc(O)cc1)N[2*]
+298,Ind,[1*]C(=O)Cc1c[nH]c2ccccc12
+299,NMeCys,[1*]C(=O)C(CS)N([2*])C
+300,Hph,[1*]C(=O)C(CCc1ccccc1)N[2*]
+301,"1,3BPG",[1*]C(=O)[C@H](O)COP(=O)(O)O
+302,tCin,[1*]C(=O)/C=C/c1ccccc1
+303,mDap,[1*]C(=O)[C@H](CNC)N[2*]
+304,kLeu,[1*]C(=O)C(=O)CC(C)C
+305,Dda,[1*]C(=O)/C=C/C=C/CCCCCCCCC
+306,C3:0,[1*]C(=O)CC
+307,oxoMal,[1*]C(=O)CCCC(C)=O
+308,3-ClTyr,[1*]C(=O)C(Cc1ccc(O)c(Cl)c1)N[2*]
+309,OH13MePda,[1*]C(=O)C(O)CCCCCCCCCCC(C)CC

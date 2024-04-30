@@ -1,0 +1,16 @@
+formula,module_type,priority,annotations
+{substrate}-ER | TE,pks,8,"['ER', 'TE']"
+{substrate}-DH | TE,pks,8,"['PS', 'TE']"
+{substrate}-B | TE,pks,8,"['B', 'TE']"
+{substrate}-DH | TE,pks,7,"['DH', 'TE']"
+{substrate}-KR | TE,pks,6,"['KR', 'TE']"
+{substrate}-KS | TE,pks,5,"['KS', 'TE']"
+{substrate},starter,4,['AT']
+{substrate}-ER,pks,3,['ER']
+{substrate}-DH,pks,3,['PS']
+{substrate}-B,pks,3,['B']
+{substrate}-DH,pks,2,['DH']
+{substrate}-KR,pks,1,['KR']
+{substrate}-KS,pks,0,['KS']
+{substrate}-KS,pks,0,['AT']
+{substrate},nrps,1,['A']
