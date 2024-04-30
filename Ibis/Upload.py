@@ -5,6 +5,7 @@ from Ibis import (
     DomainDecoder,
     DomainEmbedder,
     DomainPredictor,
+    ModulePredictor,
     PrimaryMetabolismPredictor,
     Prodigal,
     PropeptidePredictor,
@@ -39,6 +40,7 @@ def get_filelookup(nuc_fasta_filename: str, output_dir: str) -> Dict[str, str]:
         "thiolation_pred_fp": f"{output_dir}/{name}/T_predictions.json",
         "propeptide_pred_fp": f"{output_dir}/{name}/propeptide_predictions.json",
         "bgc_embedding_fp": f"{output_dir}/{name}/bgc_embedding.pkl",
+        "module_pred_fp": f"{output_dir}/{name}/module_predictions.json",
     }
     os.makedirs(filelookup["log_dir"], exist_ok=True)
     # check if missing files
@@ -227,4 +229,12 @@ def upload_to_knowledge_graph(
             log_dir=filelookup["log_dir"],
             bgcs_uploaded=bgc_uploaded,
         )
+    )
+    # upload module predictions
+    module_pred_uploaded = ModulePredictor.upload_modules_from_files(
+        prodigal_fp=filelookup["prodigal_fp"],
+        module_pred_fp=filelookup["module_pred_fp"],
+        log_dir=filelookup["log_dir"],
+        orfs_uploaded=orfs_uploaded,
+        domains_uploaded=domains_uploaded,
     )

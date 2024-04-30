@@ -29,7 +29,6 @@ def load_characterizations():
 
 
 characterizations = load_characterizations()
-tag_lookup = load_tag_lookup()
 
 
 class Module:

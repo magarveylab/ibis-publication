@@ -7,6 +7,11 @@ from tqdm import tqdm
 
 from Ibis.ModulePredictor.Domain import Domain
 from Ibis.ModulePredictor.Module import Module
+from Ibis.ModulePredictor.upload import tag_lookup, upload_modules
+
+########################################################################
+# General functions
+########################################################################
 
 
 def predict_modules_from_ibis_dir(
@@ -167,6 +172,11 @@ def predict_modules_from_ibis_dir(
     return True
 
 
+########################################################################
+# Airflow inference functions
+########################################################################
+
+
 def run_on_files(
     filenames: List[str],
     output_dir: str,
@@ -209,4 +219,76 @@ def run_on_files(
     process = pool.imap_unordered(predict_modules_from_ibis_dir, ibis_dirs)
     [p for p in tqdm(process, total=len(ibis_dirs), desc="Predicting modules")]
     pool.close()
+    return True
+
+
+########################################################################
+# Airflow upload functions
+########################################################################
+
+
+def upload_modules_from_files(
+    prodigal_fp: str,
+    module_pred_fp: str,
+    log_dir: str,
+    orfs_uploaded: bool,
+    domains_uploaded: str,
+):
+    if orfs_uploaded == False:
+        raise ValueError("ORFs not uploaded")
+    if domains_uploaded == False:
+        raise ValueError("Domains not uploaded")
+    if os.path.exists(f"{log_dir}/module_predictions_uploaded.json"):
+        return True
+    # load protein to orf ids
+    protein_to_orfs = {}
+    for p in json.load(open(prodigal_fp)):
+        protein_id = p["protein_id"]
+        orf_id = f'{p["contig_id"]}_{p["contig_start"]}_{p["contig_stop"]}'
+        if protein_id not in protein_to_orfs:
+            protein_to_orfs[protein_id] = set()
+        protein_to_orfs[protein_id].add(orf_id)
+    # load module predictions
+    data = json.load(open(module_pred_fp))
+    observed_modules = []
+    for protein in data:
+        protein_id = protein["protein_id"]
+        orfs = list(protein_to_orfs[protein_id])
+        modules = protein["modules"]
+        last_idx = len(modules) - 1
+        for idx, m in enumerate(modules):
+            protein_start = m["protein_start"]
+            protein_stop = m["protein_stop"]
+            module_id = f"{protein_id}_{protein_start}_{protein_stop}"
+            domains = m["domains"]
+            tags = [
+                {"tag_id": tag_lookup[t["tag"]], "rank": t["rank"]}
+                for t in m["tags"]
+            ]
+            if idx == last_idx:
+                adjacency_modules = []
+            else:
+                adj_m = modules[idx + 1]
+                adj_start = adj_m["protein_start"]
+                adj_stop = adj_m["protein_stop"]
+                adj_module_id = f"{protein_id}_{adj_start}_{adj_stop}"
+                adjacency_modules = [adj_module_id]
+            # cache
+            observed_modules.append(
+                {
+                    "module_id": module_id,
+                    "protein_start": protein_start,
+                    "protein_stop": protein_stop,
+                    "orfs": orfs,
+                    "domains": domains,
+                    "tags": tags,
+                    "adjacency_modules": adjacency_modules,
+                }
+            )
+    # upload modules
+    upload_modules(observed_modules)
+    json.dump(
+        {"uploaded": True},
+        open(f"{log_dir}/module_predictions_uploaded.json", "w"),
+    )
     return True
