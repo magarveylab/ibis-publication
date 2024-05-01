@@ -38,15 +38,14 @@ class Module:
         self.domains = domains
         self.annotations = self.get_annotations()
         self.substrates = [s for d in self.domains for s in d.substrates]
-        self.module_start = min(
-            [d.start for d in self.domains if d.start != None]
-        )
-        self.module_stop = min(
-            [d.stop for d in self.domains if d.stop != None]
-        )
-        self.protein_id = [
+        start_pos = [d.start for d in self.domains if d.start != None]
+        stop_pos = [d.stop for d in self.domains if d.stop != None]
+        self.module_start = None if len(start_pos) == 0 else min(start_pos)
+        self.module_stop = None if len(stop_pos) == 0 else max(stop_pos)
+        protein_ids = [
             d.protein_id for d in self.domains if d.protein_id != None
-        ][0]
+        ]
+        self.protein_id = None if len(protein_ids) == 0 else protein_ids[0]
 
     def get_annotations(self):
         # parse domains
@@ -261,7 +260,7 @@ class Module:
             module_domains = domains[value : module_boundaries[idx + 1]]
             if len(module_domains) > 0:
                 module = cls(module_idx, module_domains)
-                if module.module_type != "other":
+                if module.module_type != "other" and module.protein_id != None:
                     modules.append(module)
                     module_idx += 1
         return modules

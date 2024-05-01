@@ -50,7 +50,7 @@ class CondensationDomain:
         self.protein_id = None
         self.start = None
         self.stop = None
-        self.substrate = None
+        self.substrates = []
         self.functional = True
         self.subclass = None
         self.insilico = True
@@ -70,7 +70,7 @@ class KetosynthaseDomain:
         self.protein_id = None
         self.start = None
         self.stop = None
-        self.substrate = None
+        self.substrates = []
         self.functional = True
         self.subclass = None
         self.insilico = True
@@ -87,9 +87,10 @@ class ThiolationDomain:
     # dummy domain annotation to determine incomplete modules
     def __init__(self):
         self.label = "T"
+        self.protein_id = None
         self.start = None
         self.stop = None
-        self.substrate = None
+        self.substrates = []
         self.functional = True
         self.subclass = None
         self.insilico = True
