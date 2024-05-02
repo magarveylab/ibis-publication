@@ -261,9 +261,12 @@ def upload_modules_from_files(
             protein_stop = m["protein_stop"]
             module_id = f"{protein_id}_{protein_start}_{protein_stop}"
             domains = m["domains"]
+            # some tags are not in the lookup
+            # need to look into this
             tags = [
                 {"tag_id": tag_lookup[t["tag"]], "rank": t["rank"]}
                 for t in m["tags"]
+                if t["tag"] in tag_lookup
             ]
             if idx == last_idx:
                 adjacency_modules = []
