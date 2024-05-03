@@ -150,11 +150,19 @@ def upload_domain_decoding_from_files(
 ) -> bool:
     if domain_embs_uploaded:
         root = knn_fp.split("/")[-1].split(".")[0]
+        domain_label = root.split("_")[1]
         log_fp = f"{log_dir}/{root}_uploaded.json"
         if os.path.exists(log_fp) == False:
-            upload_knn(
-                annotations=json.load(open(knn_fp)), label_type=label_type
-            )
+            annotations = json.load(open(knn_fp))
+            # fix the labels for functional
+            if domain_label in ["KS", "KR", "DH", "ER"]:
+                for q in annotations:
+                    for d in q["predictions"]:
+                        if d["label"] == "inactive":
+                            d["label"] = f"{domain_label}0"
+                        else:
+                            d["label"] = domain_label
+            upload_knn(annotations=annotations, label_type=label_type)
             json.dump({"uploaded": True}, open(log_fp, "w"))
         return True
     else:
