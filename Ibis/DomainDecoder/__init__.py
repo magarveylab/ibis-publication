@@ -150,7 +150,7 @@ def upload_domain_decoding_from_files(
 ) -> bool:
     if domain_embs_uploaded:
         root = knn_fp.split("/")[-1].split(".")[0]
-        domain_label = root.split("_")[1]
+        domain_label = root.split("_")[0]
         log_fp = f"{log_dir}/{root}_uploaded.json"
         if os.path.exists(log_fp) == False:
             annotations = json.load(open(knn_fp))

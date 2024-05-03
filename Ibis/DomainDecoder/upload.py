@@ -28,7 +28,7 @@ knn_meta_lookup = {
         "process": "ran_subclass_knn",
     },
     "DomainFunctionalLabel": {
-        "rel": "domain_anno_to_function",
+        "rel": "domain_anno_to_functional",
         "process": "ran_functional_knn",
     },
 }
