@@ -211,9 +211,10 @@ class Module:
             ("KS", "C"),
             ("AT", "C"),
             ("AT", "KS"),
+            ("A", "KS"),
         ]
         skip_boundaries = [("KS", "AT")]
-        boundary_end_domains = ["C", "KS", "AT"]
+        boundary_end_domains = ["C", "KS", "AT", "A"]
         # capture all indexes of boundary end domains
         domain_str = []
         boundary_ends = []
