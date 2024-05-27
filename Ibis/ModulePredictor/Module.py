@@ -194,7 +194,7 @@ class Module:
         )
         # sometimes in PKS modules, we are missing ketosynthase domains (KS)
         target_domain = KetosynthaseDomain()
-        boundaries = [("KR", "AT"), ("PS", "AT")]
+        boundaries = [("KR", "AT"), ("PS", "AT"), ("T", "AT")]
         for b in boundaries:
             domains = cls.patch_module_boundaries(
                 domains, boundaries=[b], target_domain=target_domain
