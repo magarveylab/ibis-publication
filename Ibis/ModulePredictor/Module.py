@@ -38,6 +38,9 @@ class Module:
         self.domains = domains
         self.annotations = self.get_annotations()
         self.substrates = [s for d in self.domains for s in d.substrates]
+        if len(self.substrates) == 0:
+            if self.contains({"KS", "AT"}):
+                self.substrates = [{"label": "Mal", "rank": 1}]
         start_pos = [d.start for d in self.domains if d.start != None]
         stop_pos = [d.stop for d in self.domains if d.stop != None]
         self.module_start = None if len(start_pos) == 0 else min(start_pos)
@@ -213,7 +216,6 @@ class Module:
             ("AT", "KS"),
             ("A", "KS"),
         ]
-        skip_boundaries = [("KS", "AT")]
         boundary_end_domains = ["C", "KS", "AT", "A"]
         # capture all indexes of boundary end domains
         domain_str = []
@@ -233,11 +235,7 @@ class Module:
             for pos_last in boundary_ends[idx + 1 :]:
                 domain_first = domains[pos_first].label
                 domain_last = domains[pos_last].label
-                if (domain_first, domain_last) in skip_boundaries:
-                    continue
                 if (domain_first, domain_last) in boundaries:
-                    if pos_first not in module_boundaries:
-                        module_boundaries.append(pos_first)
                     module_boundaries.append(pos_last)
                     current_idx = boundary_ends.index(pos_last)
                     break
