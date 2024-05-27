@@ -94,12 +94,24 @@ class Module:
                 "formula"
             ]
             for s in self.substrates:
+                tag_name = tag_formula.format(substrate=s["label"])
+                if tag_name in ["Butyl-DH | TE", "Butyl-DH"]:
+                    continue
                 tags.append(
                     {
-                        "tag": tag_formula.format(substrate=s["label"]),
+                        "tag": tag_name,
                         "rank": s["rank"],
                     }
                 )
+            # sometimes DH paired with invalid substrates (assume as Mal)
+            if len(tags) == 0 and self.module_type == "pks":
+                for s in [{"label": "Mal", "rank": 1}]:
+                    tags.append(
+                        {
+                            "tag": tag_formula.format(substrate=s["label"]),
+                            "rank": s["rank"],
+                        }
+                    )
         return tags
 
     @property
