@@ -179,9 +179,9 @@ class Module:
             "DH",
             "ER",
             "PS",
-            "oMT",
-            "nMT",
-            "cMT",
+            "OMT",
+            "NMT",
+            "CMT",
         ]
         domains = [d for d in domains if d.label in domains_to_consider]
         modules = []
@@ -227,6 +227,7 @@ class Module:
             ("AT", "C"),
             ("AT", "KS"),
             ("A", "KS"),
+            ("A", "C"),
         ]
         boundary_end_domains = ["C", "KS", "AT", "A"]
         # capture all indexes of boundary end domains
