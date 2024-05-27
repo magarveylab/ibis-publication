@@ -228,6 +228,8 @@ class Module:
             ("AT", "KS"),
             ("A", "KS"),
             ("A", "C"),
+            ("A", "AT"),
+            ("A", "A"),
         ]
         boundary_end_domains = ["C", "KS", "AT", "A"]
         # capture all indexes of boundary end domains
