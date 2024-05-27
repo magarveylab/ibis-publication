@@ -194,11 +194,10 @@ class Module:
         )
         # sometimes in PKS modules, we are missing ketosynthase domains (KS)
         target_domain = KetosynthaseDomain()
-        boundaries = [("KR", "AT"), ("PS", "AT"), ("T", "AT")]
-        for b in boundaries:
-            domains = cls.patch_module_boundaries(
-                domains, boundaries=[b], target_domain=target_domain
-            )
+        boundaries = [("KR", "AT"), ("PS", "AT")]
+        domains = cls.patch_module_boundaries(
+            domains, boundaries=boundaries, target_domain=target_domain
+        )
         # add in thiolation domains
         target_domain = ThiolationDomain()
         # consider each boundary seperately to accurately place T domain
@@ -213,6 +212,17 @@ class Module:
             domains = cls.patch_module_boundaries(
                 domains, boundaries=[b], target_domain=target_domain
             )
+        # with T domains better defined - insert any missing KS, C
+        target_domain = CondensationDomain()
+        boundaries = [("T", "A")]
+        domains = cls.patch_module_boundaries(
+            domains, boundaries=boundaries, target_domain=target_domain
+        )
+        target_domain = KetosynthaseDomain()
+        boundaries = [("T", "AT")]
+        domains = cls.patch_module_boundaries(
+            domains, boundaries=boundaries, target_domain=target_domain
+        )
         # cache starting index
         # define boundary as it must start with the domain
         # and it goes up to the end domain
