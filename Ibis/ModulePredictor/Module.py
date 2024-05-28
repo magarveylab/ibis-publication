@@ -38,6 +38,9 @@ class Module:
         self.domains = domains
         self.annotations = self.get_annotations()
         self.substrates = [s for d in self.domains for s in d.substrates]
+        if len(self.substrates) == 0:
+            if self.contains({"KS", "AT"}):
+                self.substrates = [{"label": "Mal", "rank": 1}]
         start_pos = [d.start for d in self.domains if d.start != None]
         stop_pos = [d.stop for d in self.domains if d.stop != None]
         self.module_start = None if len(start_pos) == 0 else min(start_pos)
@@ -91,12 +94,24 @@ class Module:
                 "formula"
             ]
             for s in self.substrates:
+                tag_name = tag_formula.format(substrate=s["label"])
+                if tag_name in ["Butyl-DH | TE", "Butyl-DH"]:
+                    continue
                 tags.append(
                     {
-                        "tag": tag_formula.format(substrate=s["label"]),
+                        "tag": tag_name,
                         "rank": s["rank"],
                     }
                 )
+            # sometimes DH paired with invalid substrates (assume as Mal)
+            if len(tags) == 0 and self.module_type == "pks":
+                for s in [{"label": "Mal", "rank": 1}]:
+                    tags.append(
+                        {
+                            "tag": tag_formula.format(substrate=s["label"]),
+                            "rank": s["rank"],
+                        }
+                    )
         return tags
 
     @property
@@ -164,9 +179,9 @@ class Module:
             "DH",
             "ER",
             "PS",
-            "oMT",
-            "nMT",
-            "cMT",
+            "OMT",
+            "NMT",
+            "CMT",
         ]
         domains = [d for d in domains if d.label in domains_to_consider]
         modules = []
@@ -180,10 +195,9 @@ class Module:
         # sometimes in PKS modules, we are missing ketosynthase domains (KS)
         target_domain = KetosynthaseDomain()
         boundaries = [("KR", "AT"), ("PS", "AT")]
-        for b in boundaries:
-            domains = cls.patch_module_boundaries(
-                domains, boundaries=[b], target_domain=target_domain
-            )
+        domains = cls.patch_module_boundaries(
+            domains, boundaries=boundaries, target_domain=target_domain
+        )
         # add in thiolation domains
         target_domain = ThiolationDomain()
         # consider each boundary seperately to accurately place T domain
@@ -198,6 +212,17 @@ class Module:
             domains = cls.patch_module_boundaries(
                 domains, boundaries=[b], target_domain=target_domain
             )
+        # with T domains better defined - insert any missing KS, C
+        target_domain = CondensationDomain()
+        boundaries = [("T", "A")]
+        domains = cls.patch_module_boundaries(
+            domains, boundaries=boundaries, target_domain=target_domain
+        )
+        target_domain = KetosynthaseDomain()
+        boundaries = [("T", "AT")]
+        domains = cls.patch_module_boundaries(
+            domains, boundaries=boundaries, target_domain=target_domain
+        )
         # cache starting index
         # define boundary as it must start with the domain
         # and it goes up to the end domain
@@ -212,8 +237,10 @@ class Module:
             ("AT", "C"),
             ("AT", "KS"),
             ("A", "KS"),
+            ("A", "C"),
+            ("A", "AT"),
+            ("A", "A"),
         ]
-        skip_boundaries = [("KS", "AT")]
         boundary_end_domains = ["C", "KS", "AT", "A"]
         # capture all indexes of boundary end domains
         domain_str = []
@@ -233,11 +260,7 @@ class Module:
             for pos_last in boundary_ends[idx + 1 :]:
                 domain_first = domains[pos_first].label
                 domain_last = domains[pos_last].label
-                if (domain_first, domain_last) in skip_boundaries:
-                    continue
                 if (domain_first, domain_last) in boundaries:
-                    if pos_first not in module_boundaries:
-                        module_boundaries.append(pos_first)
                     module_boundaries.append(pos_last)
                     current_idx = boundary_ends.index(pos_last)
                     break
