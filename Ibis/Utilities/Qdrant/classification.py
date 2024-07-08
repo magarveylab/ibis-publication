@@ -187,6 +187,7 @@ def KNNClassification(
     batch_size: int = 100,
     return_distance: bool = False,
     return_n: int = 5,
+    ignore_self_matches: bool = False,
 ) -> List[KnnOutput]:
     # Initialize Qdrant Database
     db = qdrant_db()
@@ -198,6 +199,7 @@ def KNNClassification(
         return_embeds=False,
         return_data=True,
         distance_cutoff=dist_cutoff,
+        ignore_self_matches=ignore_self_matches,
     )
     # classification
     response = []
