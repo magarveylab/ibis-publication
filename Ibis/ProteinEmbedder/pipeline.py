@@ -148,7 +148,7 @@ class ProteinEmbedderPipeline:
                     np.mean(np.take(v, indices, axis=0), axis=0)
                 )
                 label_id = int(logits.argmax())
-                cls_dict = self.get_attr(f"{ec_level}_cls_dict")
+                cls_dict = getattr(self, f"{ec_level}_cls_dict")
                 label = cls_dict.get(label_id)
                 score = round(float(logits[label_id]), 2)
                 output[ec_level] = label
