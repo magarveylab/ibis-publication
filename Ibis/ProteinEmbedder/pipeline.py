@@ -26,15 +26,30 @@ class ProteinEmbedderPipeline:
     def __init__(
         self,
         model_fp: str = f"{curdir}/Models/protein_embedder.onnx",
-        ec1_head_fp: str = f"{curdir}/Models/ec1_predictor.onnx",
         protein_tokenizer: PreTrainedTokenizerFast = get_protbert_tokenizer(),
+        ec1_head_fp: str = f"{curdir}/Models/ec1_predictor.onnx",
         ec1_cls_dict_fp: str = f"{curdir}/ProteinEmbedder/tables/ec1.csv",
+        ec2_head_fp: str = None,
+        ec2_cls_dict_fp: str = None,
+        ec3_head_fp: str = None,
+        ec3_cls_dict_fp: str = None,
+        ec4_head_fp: str = None,
+        ec4_cls_dict_fp: str = None,
         gpu_id: Optional[int] = None,
     ):
         self.model = get_onnx_base_model(model_fp=model_fp, gpu_id=gpu_id)
         self.tokenizer = protein_tokenizer
         self.ec1_head = get_onnx_head(model_fp=ec1_head_fp, gpu_id=gpu_id)
         self.ec1_cls_dict = get_class_dict(ec1_cls_dict_fp)
+        if ec2_head_fp:
+            self.ec2_head = get_onnx_head(model_fp=ec2_head_fp, gpu_id=gpu_id)
+            self.ec2_cls_dict = get_class_dict(ec2_cls_dict_fp)
+        if ec3_head_fp:
+            self.ec3_head = get_onnx_head(model_fp=ec3_head_fp, gpu_id=gpu_id)
+            self.ec3_cls_dict = get_class_dict(ec3_cls_dict_fp)
+        if ec4_head_fp:
+            self.ec4_head = get_onnx_head(model_fp=ec4_head_fp, gpu_id=gpu_id)
+            self.ec4_cls_dict = get_class_dict(ec4_cls_dict_fp)
 
     def __call__(self, sequence: str):
         model_inputs = self.preprocess(sequence)
@@ -74,13 +89,40 @@ class ProteinEmbedderPipeline:
                 for inp in batch_pooler_output
             ]
         )
-        # return output
-        return {
+        # Generate output
+        output = {
             "sequence": model_inputs["sequence"],
             "lengths": model_inputs["lengths"],
             "cls_window_embeddings": pooler_output,
             "ec1_window_predictions": ec1_predictions,
         }
+        # Optionally annotate with additional heads if instantiated
+        if hasattr(self, "ec2_head"):
+            ec2_predictions = np.concatenate(
+                [
+                    self.ec2_head.run(["output"], {"input": inp})[0]
+                    for inp in batch_pooler_output
+                ]
+            )
+            output["ec2_window_predictions"] = ec2_predictions
+        if hasattr(self, "ec3_head"):
+            ec3_predictions = np.concatenate(
+                [
+                    self.ec3_head.run(["output"], {"input": inp})[0]
+                    for inp in batch_pooler_output
+                ]
+            )
+            output["ec3_window_predictions"] = ec3_predictions
+        if hasattr(self, "ec4_head"):
+            ec4_predictions = np.concatenate(
+                [
+                    self.ec4_head.run(["output"], {"input": inp})[0]
+                    for inp in batch_pooler_output
+                ]
+            )
+            output["ec4_window_predictions"] = ec4_predictions
+        # return output
+        return output
 
     def postprocess(self, model_outputs: ModelOutput) -> PipelineOutput:
         # parameters
@@ -93,21 +135,26 @@ class ProteinEmbedderPipeline:
         avg_cls_embedding = np.mean(
             np.take(cls_embeddings, indices, axis=0), axis=0
         )
-        # finalize protein ec1 prediction (across windows)
-        logits = model_outputs["ec1_window_predictions"]
-        logits = self.softmax(
-            np.mean(np.take(logits, indices, axis=0), axis=0)
-        )
-        label_id = int(logits.argmax())
-        label = self.ec1_cls_dict.get(label_id)
-        score = round(float(logits[label_id]), 2)
-        # return output
-        return {
+        # generate output
+        output = {
             "protein_id": xxhash.xxh32(sequence).intdigest(),
             "embedding": avg_cls_embedding,
-            "ec1": label,
-            "ec1_score": score,
         }
+        # finalize protein ec predictions (across windows)
+        for k, v in model_outputs.items():
+            if "ec" in k:
+                ec_level = k.split("_")[0]
+                logits = self.softmax(
+                    np.mean(np.take(v, indices, axis=0), axis=0)
+                )
+                label_id = int(logits.argmax())
+                cls_dict = getattr(self, f"{ec_level}_cls_dict")
+                label = cls_dict.get(label_id)
+                score = round(float(logits[label_id]), 2)
+                output[ec_level] = label
+                output[f"{ec_level}_score"] = score
+        # return output
+        return output
 
     @staticmethod
     def softmax(x):
