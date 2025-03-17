@@ -1,60 +1,78 @@
 # ibis-publication
-Ibis package for external use (released with publication)
-
+Integrated Biosynthetic Inference Suite (IBIS) \
 Authors: Mathusan Gunabalasingam and Norman Spencer
 
 ## Citation
 If you use this code or models in your research, please cite our work:
 
+```
+@article{yourpaper2025,
+  author    = {Your Name and Co-Authors},
+  title     = {Title of Your Paper},
+  journal   = {Journal Name},
+  volume    = {XX},
+  number    = {X},
+  pages     = {XX--XX},
+  year      = {2025},
+  doi       = {10.XXXX/XXXXXX}
+}
+```
+
 ## Installation
 
-### Inference-only installation
-Install the package via pip symlinks.
+### Inference-Only Installation
+1. Install the Package via Pip Symlinks:
+    - Create and activate the Conda environment, then install the package in editable mode:
 ```
-conda env create -f environment.yml
-conda activate ibispub_test
-pip install -e .
+    conda env create -f environment.yml
+    conda activate ibispub_test
+    pip install -e .
 ```
-Replace the contents of the `Ibis/Models` with the Models.zip file obtained from [Zenodo](10.5281/zenodo.14246984). Also install Qdrant and restore the Qdrant reference databases from the provided snapshots under Qdrant Setup.
+2. Set Up Models:
+    - Download Models.zip from [Zenodo (10.5281/zenodo.14246984)](https://zenodo.org/doi/10.5281/zenodo.14246984).
+    - Replace the contents of the `Ibis/Models` directory with the extracted files.
+3. Set Up Qdrant
+    - Install Qdrant and restore the Qdrant reference databases from the provided snapshots. Look under **Qdrant Setup** for more details.
 
 ### Training Installation
-Should you wish to fine-tune or re-train versions of the models generated in this work, you will need to install two corresponding supplemental packages implementing our custom training approach.
-
-To install the `predacons` repository enabling multi-task multi-dataset Transformer training:
-```
-git clone https://github.com/magarveylab/ibis-transformer-training.git
-
-cd ibis-transformer-test
-pip install -e .
-```
-To install the `omnicons` repository enabling multi-task multi-dataset Graphormer training:
-```
-git clone https://github.com/magarveylab/ibis-graphormer-training.git
-
-cd ibis-graphormer-test
-pip install -e .
-```
+If you plan to fine-tune or retrain the models used in this work, install the following supplementary packages, which implement our custom Multi-Task Multi-Dataset Training approach:
+1. [predacons](https://github.com/magarveylab/ibis-transformer-training.git) – enables Transformer-based training.
+2. [omnicons](https://github.com/magarveylab/ibis-transformer-training.git) supports Graphormer-based training.
 
 ## Qdrant Setup 
-IBIS inference piplelines make use of [Qdrant](https://qdrant.tech/) embedding databases to perform ANN lookups. Since individual system setups will vary, we recommend setting up Qdrant locally using a docker container as described in the [documentation](https://qdrant.tech/documentation/quickstart/). The Qdrant databases required for inference are provided as Qdrant snapshots (QdrantSnapshots.zip) at the accompanying [Zenodo Repository](10.5281/zenodo.14246984). Once Qdrant is set up on your local machine, you may restore the databases as follows:
-```bash
-# Note, it may be necessary to change file paths or port numbers in accordance with
-# your local setup. This script assumes that the snapshots will be placed in a local
-# folder Ibis/Utilities/Qdrant/PrepareSnapshots/snapshots/. Please adjust as necessary.
+IBIS inference piplelines utilize [Qdrant](https://qdrant.tech/) embedding databases for approximate nearest neighbor (ANN) lookups. Since system configurations may vary, we recommend setting up Qdrant locally using a Docker container, following the [official documentation](https://qdrant.tech/documentation/quickstart/).
+
+The required Qdrant databases for inference are provided as QdrantSnapshots.zip in the accompanying [Zenodo repository](https://zenodo.org/doi/10.5281/zenodo.14246984)
+
+### Restoring Qdrant Databases
+To restore the Qdrant databases, ensure that the snapshot files are placed in the expected directory and run the following script:
+```
+# Adjust file paths or port numbers based on your local setup.
+# This script assumes that snapshots are located in:
+# Ibis/Utilities/Qdrant/PrepareSnapshots/snapshots/
 python Ibis/Utilities/Qdrant/PrepareSnapshots/restore.py
 ```
+Adjust paths or configurations as necessary to match your environment.
 
 ## Training
-The scripts for training the following models are included:
-1. [IBIS-Enzyme](https://github.com/magarveylab/ibis-transformer-training/tree/main/training/ibis_enzyme): A Transformer-based model designed to embed protein sequences by capturing patterns associated with enzyme commission numbers, proteins involved in specialized metabolism, and RiPP classes. Additionally, the model predicts residues corresponding to domains within multi-modular assembly proteins (e.g., Type I polyketide synthases, non-ribosomal peptide synthetase), as well as propeptide designation.
-2. [IBIS-Domain](https://github.com/magarveylab/ibis-transformer-training/tree/main/training/ibis_domain): A Transformer-based model that embeds protein domains by identifying patterns relevant to substrate prediction for adenylation and acyltransferase domains. It also distinguishes between functional and inactive states for ketosynthase, ketoreductase, enoylreductase, and dehydratase domains. Furthermore, the model encodes domain subclasses, such as thiolation domains involved in β-branching cascades within polyketide biosynthesis.
-3. [IBIS-SM]
-4. [IBIS-BGC]
+The following training scripts are included for model development and fine-tuning:
+1. [IBIS-Enzyme](https://github.com/magarveylab/ibis-transformer-training/tree/main/training/ibis_enzyme)
+    - A Transformer-based model designed to embed protein sequences by capturing patterns associated with enzyme commission numbers, specialized metabolism proteins, and RiPP classes.
+    - Predicts residues corresponding to domains within multi-modular assembly proteins (e.g., Type I polyketide synthases, non-ribosomal peptide synthetases).
+    - Identifies propeptide regions in RiPPs.
+2. [IBIS-Domain](https://github.com/magarveylab/ibis-transformer-training/tree/main/training/ibis_domain)
+    - A Transformer-based model that embeds protein domains for substrate prediction in adenylation and acyltransferase domains.
+    - Differentiates between functional and inactive states in ketosynthase, ketoreductase, enoylreductase, and dehydratase domains.
+    - Encodes domain subclasses, such as thiolation domains involved in β-branching cascades within polyketide biosynthesis.
+3. [IBIS-SM](https://github.com/magarveylab/ibis-graphormer-training/tree/main/training/ibis_sm)
+    - A Graphormer-based model designed to predict biosynthetic gene cluster (BGC) boundaries.
+4. [IBIS-BGC](https://github.com/magarveylab/ibis-graphormer-training/tree/main/training/ibis_bgc)
+    - A Graphormer-based model that generates BGC embeddings for fast, large-scale comparative analysis.
 
 ## Inference
 
-### Complete Genome annotation with IBIS
-High-level inference functions are provided for each module of IBIS. To completely annotate a genome with all components of IBIS, one need only run the following function:
+### Complete Genome Annotation with IBIS
+IBIS provides high-level inference functions for streamlined genome annotation. To fully annotate a genome using all IBIS components, simply run the following function:
 ```python
 from Ibis.Analysis import run_ibis_on_genomes
 
@@ -71,9 +89,13 @@ run_ibis_on_genomes(
     cpu_cores = 1 # for parallelization of CPU-based tasks, such as Pyrodigal.
 )
 ```
+Adjust gpu_id and cpu_cores based on your system configuration to optimize performance.
 
-### Modular Genome annotation with individual IBIS components
-Many users may want to use individual modules of IBIS, without having to perform complete genome annotation. For example, it may be desirable to generate IBIS-Enzyme embeddings for all proteins and determine their EC numbers without performing primary metabolic assignment, calling BGCs, etc. To facilitate this process, each module of IBIS is self-contained and the underlying order-of-operations of `Ibis.Analysis.run_on_genomes()` describes the necessary prerequisites for each function. A sample use-case is provided below.
+### Modular Genome Annotation with Individual IBIS Components
+
+IBIS allows users to run individual modules without performing full genome annotation. For example, users may want to generate IBIS-Enzyme embeddings for all proteins and predict EC numbers without assigning primary metabolism or detecting BGCs.
+
+Each IBIS module is self-contained, and the sequence of operations in `Ibis.Analysis.run_on_genomes` defines the necessary prerequisites for each function. The following example demonstrates a modular workflow:
 
 ```python
 
@@ -118,11 +140,31 @@ ec_preds_created = ProteinDecoder.run_on_files(
     decode_name="ec",
 )
 ```
-### Determining which IBIS modules to run for partial anntoation.
-The output of each function is a boolean value indicating whether the function has been completed. Downstream functions will require an input stating that all prerequisite steps have been completed. Referring to the above example, EC number prediction requires that the protein embeddings have been generated, which in turn requires that the ORFs have been called with Pyrodigal. This enables users to rapidly determine which modules must be run, at minimum, to achieve the user's desired level of annotation.
 
-### Single-threaded IBIS module execution
-Note, while all modules are set up to enable parallel computation, single-threaded equivalents are provided in the corresponding modules as well. For example:
+This approach allows flexible use of IBIS modules based on specific research needs. Adjust parameters such as cpu_cores and gpu_id to optimize performance for your system.
+
+
+
+
+
+
+
+
+### Selecting IBIS Modules for Partial Annotation
+
+Each IBIS function returns a boolean value indicating whether it has been successfully completed. Downstream functions require confirmation that all prerequisite steps have been performed.
+
+For example, in the previous workflow:
+    - EC number prediction requires protein embeddings.
+    - Protein embeddings require ORF predictions using Pyrodigal.
+
+This structure allows users to efficiently determine the minimum required modules to achieve their desired level of annotation.
+
+### Single-Threaded IBIS Module Execution
+
+While all IBIS modules support parallel computation, single-threaded execution is also available for cases where parallelization is not needed or possible. Each module includes a single-threaded equivalent.
+
+For example, to run Prodigal on a single nucleotide FASTA file:
 
 ```python
 from Ibis.Analysis import (
@@ -134,6 +176,7 @@ nuc_fasta_fp = "/path/to/nuc_fasta/file.fasta"
 Prodigal.run_on_single_file(nuc_fasta_fp, output_dir=save_dir)
 
 ```
+This option ensures flexibility for different computational environments.
 
 
 ## Web Platform
