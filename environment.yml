@@ -1,4 +1,4 @@
-name: ibispub_test
+name: test
 channels:
   - pyg
   - pytorch
@@ -28,7 +28,7 @@ dependencies:
   - cuda-nvtx=11.8.86=0
   - cuda-runtime=11.8.0=0
   - cudatoolkit=11.8.0=h6a678d5_0
-  - cudnn=8.9.2.26=cuda11_0
+  - cudnn=8.2.1.32=h86fa8c9_0
   - ffmpeg=4.3=hf484d3e_0
   - freetype=2.12.1=h4a9f257_0
   - future=0.18.3=py39h06a4308_0
@@ -116,7 +116,6 @@ dependencies:
   - torchmetrics=1.6.2=pyhd8ed1ab_0
   - torchtriton=2.2.0=py39
   - torchvision=0.15.2=cuda118py39h196c800_0
-  - typing_extensions=4.12.2=pyha770c72_1
   - wheel=0.41.2=py39h06a4308_0
   - xz=5.4.6=h5eee18b_0
   - yaml=0.2.5=h7b6447c_0
@@ -311,4 +310,4 @@ dependencies:
       - xxhash==3.2.0
       - yarl==1.9.4
       - zipp==3.17.0
-prefix: /home/norman/.conda/envs/norman_base/envs/ibispub_test
+prefix: /home/norman/.conda/envs/norman_base/envs/test
