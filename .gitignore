@@ -2,7 +2,14 @@ Ibis.egg-info/*
 **.pyc
 **-checkpoint.ipynb
 Ibis/.env
-Ibis/Models/*
+Ibis/Models/internal_metabolism_predictor/*
+Ibis/Models/metabolism_embedder/*
+Ibis/Models/mibig_metabolism_predictor/*
+Ibis/Models/domain_embedder.onnx
+Ibis/Models/domain_predictor.onnx
+Ibis/Models/ec1_predictor.onnx
+Ibis/Models/protein_embedder.onnx
+Ibis/Models/propeptide_predictor.onnx
 Ibis/Models.zip
 Ibis/QdrantSnapshots/*
 Ibis/QdrantSnapshots.zip
