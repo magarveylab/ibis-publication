@@ -36,7 +36,7 @@ If you use this code or models in your research, please cite our work:
 
 ### Training Installation
 If you plan to fine-tune or retrain the models used in this work, install the following supplementary packages, which implement our custom Multi-Task Multi-Dataset Training approach:
-1. [predacons](https://github.com/magarveylab/ibis-transformer-training.git) – enables Transformer-based training.
+1. [predacons](https://github.com/magarveylab/ibis-transformer-training.git) enables Transformer-based training.
 2. [omnicons](https://github.com/magarveylab/ibis-transformer-training.git) supports Graphormer-based training.
 
 ## Qdrant Setup 
