@@ -155,8 +155,8 @@ This approach allows flexible use of IBIS modules based on specific research nee
 Each IBIS function returns a boolean value indicating whether it has been successfully completed. Downstream functions require confirmation that all prerequisite steps have been performed.
 
 For example, in the previous workflow:
-    - EC number prediction requires protein embeddings.
-    - Protein embeddings require ORF predictions using Pyrodigal.
+* EC number prediction requires protein embeddings.
+* Protein embeddings require ORF predictions using Pyrodigal.
 
 This structure allows users to efficiently determine the minimum required modules to achieve their desired level of annotation.
 
