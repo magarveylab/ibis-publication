@@ -22,3 +22,6 @@ The scripts for training the following models are included:
 4. [IBIS-BGC]
 
 ## Inference
+
+## Web Platform
+A dedicated website for presenting processed genomes from NCBI will be launched soon. In future updates, users will be able to submit internal genomes directly through the platform.
