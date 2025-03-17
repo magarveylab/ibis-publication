@@ -38,8 +38,9 @@ pip install -e .
 ## Qdrant Setup 
 IBIS inference piplelines make use of [Qdrant](https://qdrant.tech/) embedding databases to perform ANN lookups. Since individual system setups will vary, we recommend setting up Qdrant locally using a docker container as described in the [documentation](https://qdrant.tech/documentation/quickstart/). The Qdrant databases required for inference are provided as Qdrant snapshots (QdrantSnapshots.zip) at the accompanying [Zenodo Repository](10.5281/zenodo.14246984). Once Qdrant is set up on your local machine, you may restore the databases as follows:
 ```bash
-# Note, it may be necessary to change file paths or port numbers in accordance with your local setup.
-# This script assumes that the snapshots will be placed in a local folder Ibis/Utilities/Qdrant/PrepareSnapshots/snapshots/. Please adjust as necessary.
+# Note, it may be necessary to change file paths or port numbers in accordance with
+# your local setup. This script assumes that the snapshots will be placed in a local
+# folder Ibis/Utilities/Qdrant/PrepareSnapshots/snapshots/. Please adjust as necessary.
 python Ibis/Utilities/Qdrant/PrepareSnapshots/restore.py
 ```
 
