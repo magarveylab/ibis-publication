@@ -29,7 +29,7 @@ If you use this code or models in your research, please cite our work:
     pip install -e .
 ```
 2. Set Up Models:
-    - Download Models.zip from [Zenodo (10.5281/zenodo.14246984)](https://zenodo.org/doi/10.5281/zenodo.14246984).
+    - Download Models.zip from [Zenodo (10.5281/zenodo.14246983)](https://zenodo.org/doi/10.5281/zenodo.14246983).
     - Replace the contents of the `Ibis/Models` directory with the extracted files.
 3. Set Up Qdrant
     - Install Qdrant and restore the Qdrant reference databases from the provided snapshots. Look under **Qdrant Setup** for more details.
@@ -46,7 +46,7 @@ Please be aware that the Conda environment provided with this installation conta
 ## Qdrant Setup 
 IBIS inference piplelines utilize [Qdrant](https://qdrant.tech/) embedding databases for approximate nearest neighbor (ANN) lookups. Since system configurations may vary, we recommend setting up Qdrant locally using a Docker container, following the [official documentation](https://qdrant.tech/documentation/quickstart/).
 
-The required Qdrant databases for inference are provided as QdrantSnapshots.zip in the accompanying [Zenodo repository](https://zenodo.org/doi/10.5281/zenodo.14246984)
+The required Qdrant databases for inference are provided as QdrantSnapshots.zip in the accompanying [Zenodo repository](https://zenodo.org/doi/10.5281/zenodo.14246983)
 
 ### Restoring Qdrant Databases
 To restore the Qdrant databases, ensure that the snapshot files are placed in the expected directory and run the following script:
