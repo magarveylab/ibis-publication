@@ -39,6 +39,10 @@ If you plan to fine-tune or retrain the models used in this work, install the fo
 1. [predacons](https://github.com/magarveylab/ibis-transformer-training.git) enables Transformer-based training.
 2. [omnicons](https://github.com/magarveylab/ibis-transformer-training.git) supports Graphormer-based training.
 
+#### Installation Notes
+
+Please be aware that the Conda environment provided with this installation contains core dependencies for PyTorch (including lightning, geometric, etc.), ONNX, and torchscript compatible with CUDA 11.1. If you plan on using GPU-accelerated inference or performing training, please be aware that different CUDA versions may require you to modify the provided conda environment to be compatible with your hardware. Should you experience any issues using these dependencies, please ensure that the package versions are compatible with your hardware.
+
 ## Qdrant Setup 
 IBIS inference piplelines utilize [Qdrant](https://qdrant.tech/) embedding databases for approximate nearest neighbor (ANN) lookups. Since system configurations may vary, we recommend setting up Qdrant locally using a Docker container, following the [official documentation](https://qdrant.tech/documentation/quickstart/).
 
