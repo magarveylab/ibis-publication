@@ -1,20 +1,17 @@
 # ibis-publication
 Integrated Biosynthetic Inference Suite (IBIS) \
-Authors: Mathusan Gunabalasingam and Norman Spencer
+Developers to contact: Mathusan Gunabalasingam and Norman Spencer
 
 ## Citation
 If you use this code or models in your research, please cite our work:
 
 ```
-@article{yourpaper2025,
-  author    = {Your Name and Co-Authors},
-  title     = {Title of Your Paper},
-  journal   = {Journal Name},
-  volume    = {XX},
-  number    = {X},
-  pages     = {XX--XX},
+@article{ibis2025,
+  author    = {Norman R. Spencer, Mathusan Gunabalasingam, Keshav Dial, Xiaxia Di, Tonya Malcolm, Nathan A. Magarvey}
+  title     = {An integrated AI knowledge graph framework of bacterial enzymology and metabolism},
+  journal   = {Proceedings of the National Academy of Sciences},
   year      = {2025},
-  doi       = {10.XXXX/XXXXXX}
+  doi       = {10.1073/pnas.2425048122}
 }
 ```
 
