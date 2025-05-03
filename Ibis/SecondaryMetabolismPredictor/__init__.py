@@ -26,7 +26,6 @@ from Ibis.SecondaryMetabolismPredictor.postprocess import (
 from Ibis.SecondaryMetabolismPredictor.preprocess import (
     get_tensors_from_genome,
 )
-from Ibis.SecondaryMetabolismPredictor.upload import upload_bgcs
 
 ########################################################################
 # General functions
@@ -363,6 +362,8 @@ def upload_bgcs_from_files(
     contigs_uploaded: bool,
     genome_uploaded: bool,
 ) -> bool:
+    from Ibis.SecondaryMetabolismPredictor.upload import upload_bgcs
+
     log_fp = f"{log_dir}/bgcs_uploaded.json"
     if os.path.exists(log_fp) == False:
         # nucleotide sequence lookup

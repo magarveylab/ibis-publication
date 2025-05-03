@@ -7,10 +7,6 @@ from tqdm import tqdm
 
 from Ibis.ProteinEmbedder.datastructs import PipelineOutput
 from Ibis.ProteinEmbedder.pipeline import ProteinEmbedderPipeline
-from Ibis.ProteinEmbedder.upload import (
-    upload_ec1_annotations,
-    upload_protein_embeddings,
-)
 
 ########################################################################
 # General functions
@@ -66,6 +62,11 @@ def upload_protein_embeddings_from_files(
     log_dir: str,
     orfs_uploaded: bool,
 ) -> bool:
+    from Ibis.ProteinEmbedder.upload import (
+        upload_ec1_annotations,
+        upload_protein_embeddings,
+    )
+
     log_fp = f"{log_dir}/upload_protein_embeddings.json"
     if os.path.exists(log_fp) == False:
         # only upload protein embeddings for ones involved in metabolism

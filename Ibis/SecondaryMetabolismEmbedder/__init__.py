@@ -14,7 +14,6 @@ from Ibis.SecondaryMetabolismEmbedder.datastructs import (
 from Ibis.SecondaryMetabolismEmbedder.pipeline import (
     MetabolismEmbedderPipeline,
 )
-from Ibis.SecondaryMetabolismEmbedder.upload import upload_bgc_embeddings
 
 ########################################################################
 # General functions
@@ -143,6 +142,8 @@ def upload_bgc_embeddings_from_files(
     log_dir: str,
     bgcs_uploaded: bool,
 ) -> bool:
+    from Ibis.SecondaryMetabolismEmbedder.upload import upload_bgc_embeddings
+
     log_fp = f"{log_dir}/bgc_embeddings_uploaded.json"
     if os.path.exists(log_fp) == False:
         # nucleotide sequence lookup

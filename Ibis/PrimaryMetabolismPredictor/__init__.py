@@ -13,7 +13,6 @@ from Ibis.PrimaryMetabolismPredictor.annotation import (
 from Ibis.PrimaryMetabolismPredictor.preprocess import (
     merge_protein_annotations,
 )
-from Ibis.PrimaryMetabolismPredictor.upload import upload_predicted_pathways
 
 ########################################################################
 # Airflow inference functions
@@ -60,11 +59,6 @@ def run_on_single_file(
     return True
 
 
-########################################################################
-# Airflow upload functions
-########################################################################
-
-
 def parallel_run_on_files(
     filenames: List[str],
     output_dir: str,
@@ -87,6 +81,11 @@ def parallel_run_on_files(
     return True
 
 
+########################################################################
+# Airflow upload functions
+########################################################################
+
+
 def upload_primary_metabolism_from_files(
     primary_metabolism_pred_fp: str,
     log_dir: str,
@@ -94,6 +93,10 @@ def upload_primary_metabolism_from_files(
     orfs_uploaded: bool,
     genome_uploaded: bool,
 ):
+    from Ibis.PrimaryMetabolismPredictor.upload import (
+        upload_predicted_pathways,
+    )
+
     if isinstance(genome_id, int) == False:
         return False
     log_fp = f"{log_dir}/primary_metabolism_uploaded.json"
