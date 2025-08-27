@@ -1,20 +1,17 @@
 # ibis-publication
 Integrated Biosynthetic Inference Suite (IBIS) \
-Authors: Mathusan Gunabalasingam and Norman Spencer
+Developers to contact: Mathusan Gunabalasingam and Norman Spencer
 
 ## Citation
 If you use this code or models in your research, please cite our work:
 
 ```
-@article{yourpaper2025,
-  author    = {Your Name and Co-Authors},
-  title     = {Title of Your Paper},
-  journal   = {Journal Name},
-  volume    = {XX},
-  number    = {X},
-  pages     = {XX--XX},
+@article{ibis2025,
+  author    = {Norman R. Spencer, Mathusan Gunabalasingam, Keshav Dial, Xiaxia Di, Tonya Malcolm, Nathan A. Magarvey}
+  title     = {An integrated AI knowledge graph framework of bacterial enzymology and metabolism},
+  journal   = {Proceedings of the National Academy of Sciences},
   year      = {2025},
-  doi       = {10.XXXX/XXXXXX}
+  doi       = {10.1073/pnas.2425048122}
 }
 ```
 
@@ -29,7 +26,7 @@ If you use this code or models in your research, please cite our work:
     pip install -e .
 ```
 2. Set Up Models:
-    - Download Models.zip from [Zenodo (10.5281/zenodo.14246984)](https://zenodo.org/doi/10.5281/zenodo.14246984).
+    - Download Models.zip from [Zenodo (10.5281/zenodo.14246983)](https://zenodo.org/doi/10.5281/zenodo.14246983).
     - Replace the contents of the `Ibis/Models` directory with the extracted files.
 3. Set Up Qdrant
     - Install Qdrant and restore the Qdrant reference databases from the provided snapshots. Look under **Qdrant Setup** for more details.
@@ -37,12 +34,16 @@ If you use this code or models in your research, please cite our work:
 ### Training Installation
 If you plan to fine-tune or retrain the models used in this work, install the following supplementary packages, which implement our custom Multi-Task Multi-Dataset Training approach:
 1. [predacons](https://github.com/magarveylab/ibis-transformer-training.git) enables Transformer-based training.
-2. [omnicons](https://github.com/magarveylab/ibis-transformer-training.git) supports Graphormer-based training.
+2. [omnicons](https://github.com/magarveylab/ibis-graphormer-training.git) supports Graphormer-based training.
+
+#### Installation Notes
+
+Please be aware that the Conda environment provided with this installation contains core dependencies for PyTorch (including lightning, geometric, etc.), ONNX, and torchscript compatible with CUDA 11.1. If you plan on using GPU-accelerated inference or performing training, please be aware that different CUDA versions may require you to modify the provided conda environment to be compatible with your hardware. Should you experience any issues using these dependencies, please ensure that the package versions are compatible with your hardware.
 
 ## Qdrant Setup 
 IBIS inference piplelines utilize [Qdrant](https://qdrant.tech/) embedding databases for approximate nearest neighbor (ANN) lookups. Since system configurations may vary, we recommend setting up Qdrant locally using a Docker container, following the [official documentation](https://qdrant.tech/documentation/quickstart/).
 
-The required Qdrant databases for inference are provided as QdrantSnapshots.zip in the accompanying [Zenodo repository](https://zenodo.org/doi/10.5281/zenodo.14246984)
+The required Qdrant databases for inference are provided as QdrantSnapshots.zip in the accompanying [Zenodo repository](https://zenodo.org/doi/10.5281/zenodo.14246983)
 
 ### Restoring Qdrant Databases
 To restore the Qdrant databases, ensure that the snapshot files are placed in the expected directory and run the following script:
@@ -155,8 +156,8 @@ This approach allows flexible use of IBIS modules based on specific research nee
 Each IBIS function returns a boolean value indicating whether it has been successfully completed. Downstream functions require confirmation that all prerequisite steps have been performed.
 
 For example, in the previous workflow:
-    - EC number prediction requires protein embeddings.
-    - Protein embeddings require ORF predictions using Pyrodigal.
+* EC number prediction requires protein embeddings.
+* Protein embeddings require ORF predictions using Pyrodigal.
 
 This structure allows users to efficiently determine the minimum required modules to achieve their desired level of annotation.
 

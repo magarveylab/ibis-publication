@@ -7,7 +7,6 @@ from tqdm import tqdm
 
 from Ibis.ModulePredictor.Domain import Domain
 from Ibis.ModulePredictor.Module import Module
-from Ibis.ModulePredictor.upload import tag_lookup, upload_modules
 
 ########################################################################
 # General functions
@@ -234,6 +233,8 @@ def upload_modules_from_files(
     orfs_uploaded: bool,
     domains_uploaded: str,
 ):
+    from Ibis.ModulePredictor.upload import tag_lookup, upload_modules
+
     if orfs_uploaded == False:
         raise ValueError("ORFs not uploaded")
     if domains_uploaded == False:

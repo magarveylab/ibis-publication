@@ -5,7 +5,6 @@ from typing import List
 from tqdm import tqdm
 
 from Ibis.DomainPredictor.pipeline import DomainPredictorPipeline
-from Ibis.DomainPredictor.upload import upload_domains
 
 ########################################################################
 # General functions
@@ -81,6 +80,8 @@ def run_on_files(
 def upload_domains_from_files(
     domain_pred_fp: str, prodigal_fp: str, log_dir: str, orfs_uploaded: bool
 ):
+    from Ibis.DomainPredictor.upload import upload_domains
+
     log_fp = f"{log_dir}/domain_uploaded.json"
     if os.path.exists(log_fp) == False:
         # domain lookup

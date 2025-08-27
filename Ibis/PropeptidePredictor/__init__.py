@@ -5,7 +5,6 @@ from typing import List, Optional
 from tqdm import tqdm
 
 from Ibis.PropeptidePredictor.pipeline import PropeptidePredictorPipeline
-from Ibis.PropeptidePredictor.upload import upload_propeptides
 
 ########################################################################
 # General functions
@@ -76,6 +75,8 @@ def run_on_files(
 def upload_propetides_from_files(
     propeptide_pred_fp: str, log_dir: str, orfs_uploaded: bool
 ) -> bool:
+    from Ibis.PropeptidePredictor.upload import upload_propeptides
+
     log_fp = f"{log_dir}/propeptide_uploaded.json"
     if os.path.exists(log_fp) == False:
         propeptides = json.load(open(propeptide_pred_fp))

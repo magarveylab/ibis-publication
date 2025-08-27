@@ -16,7 +16,6 @@ from Ibis.DomainDecoder.databases import (
     IbisKetosynthase,
     IbisThiolation,
 )
-from Ibis.DomainDecoder.upload import upload_knn
 from Ibis.Utilities.Qdrant.classification import (
     KNNClassification,
     neighborhood_classification,
@@ -148,6 +147,8 @@ def run_on_files(
 def upload_domain_decoding_from_files(
     knn_fp: str, log_dir: str, label_type: str, domain_embs_uploaded: bool
 ) -> bool:
+    from Ibis.DomainDecoder.upload import upload_knn
+
     if domain_embs_uploaded:
         root = knn_fp.split("/")[-1].split(".")[0]
         domain_label = root.split("_")[0]

@@ -7,10 +7,6 @@ from tqdm import tqdm
 
 from Ibis.DomainEmbedder.datastructs import PipelineOutput
 from Ibis.DomainEmbedder.pipeline import DomainEmbedderPipeline
-from Ibis.DomainEmbedder.upload import (
-    initialize_domain_annotations,
-    upload_domain_embeddings,
-)
 
 ########################################################################
 # General functions
@@ -85,6 +81,11 @@ def upload_domain_embeddings_from_files(
     log_dir: str,
     domains_uploaded: bool,
 ):
+    from Ibis.DomainEmbedder.upload import (
+        initialize_domain_annotations,
+        upload_domain_embeddings,
+    )
+
     log_fp = f"{log_dir}/domain_embeddings_uploaded.json"
     if os.path.exists(log_fp) == False:
         # domain embedding lookup

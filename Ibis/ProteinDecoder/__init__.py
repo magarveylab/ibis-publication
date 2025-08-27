@@ -13,7 +13,6 @@ from Ibis.ProteinDecoder.databases import (
     IbisKO,
     IbisMolecule,
 )
-from Ibis.ProteinDecoder.upload import upload_knn
 from Ibis.Utilities.Qdrant.classification import (
     KNNClassification,
     neighborhood_classification,
@@ -197,6 +196,8 @@ def trimmed_run_on_files(
 def upload_protein_decoding_from_files(
     knn_fp: str, log_dir: str, label_type: str, protein_embs_uploaded: bool
 ) -> bool:
+    from Ibis.ProteinDecoder.upload import upload_knn
+
     if protein_embs_uploaded:
         root = knn_fp.split("/")[-1].split(".")[0]
         log_fp = f"{log_dir}/{root}_uploaded.json"

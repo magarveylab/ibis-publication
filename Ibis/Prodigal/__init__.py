@@ -10,7 +10,6 @@ from Bio import SeqIO
 from tqdm import tqdm
 
 from Ibis.Prodigal.datastructs import ProdigalOutput
-from Ibis.Prodigal.upload import upload_contigs, upload_genomes, upload_orfs
 
 ########################################################################
 # General functions
@@ -80,6 +79,8 @@ def parallel_run_on_files(
 
 
 def upload_contigs_from_files(prodigal_fp: str, log_dir: str) -> bool:
+    from Ibis.Prodigal.upload import upload_contigs
+
     log_fp = f"{log_dir}/contigs_uploaded.json"
     if os.path.exists(log_fp) == False:
         contig_ids = set(
@@ -97,6 +98,8 @@ def upload_genome_from_files(
     genome_id: int,
     contigs_uploaded: bool,
 ) -> bool:
+    from Ibis.Prodigal.upload import upload_genomes
+
     if isinstance(genome_id, int):
         log_fp = f"{log_dir}/genomes_uploaded.json"
         if os.path.exists(log_fp) == False:
@@ -118,6 +121,8 @@ def upload_genome_from_files(
 def upload_orfs_from_files(
     prodigal_fp: str, log_dir: str, contigs_uploaded: bool = False
 ):
+    from Ibis.Prodigal.upload import upload_orfs
+
     log_fp = f"{log_dir}/orfs_uploaded.json"
     if os.path.exists(log_fp) == False:
         orfs = []
