@@ -89,8 +89,8 @@ def upload_bgcs(
                     f"""
                     UNWIND {batch_str} as row
                     MATCH (n: MetabolomicRegion {{region_id: row.region_id}}),
-                          (m: Contig {{contig_id: row.contig_id}})
-                    MERGE (n)-[:metab_to_contig]->(m)
+                          (m: Contig {{hash_id: row.contig_id}})
+                    MERGE (m)-[:contig_to_metab]->(n)
                 """
                 )
     # connect bgc to internal chemotypes
